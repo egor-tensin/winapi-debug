@@ -9,7 +9,6 @@
 #include <DbgHelp.h>
 
 #include <cstddef>
-#include <cstring>
 
 #include <limits>
 #include <stdexcept>
@@ -115,7 +114,7 @@ namespace pdb
 
     SymbolInfo DbgHelp::resolve_symbol(Address online) const
     {
-        DWORD64 displacement = 0;
+        Address displacement = 0;
         SymbolInfo symbol;
 
         const auto ret = SymFromAddr(
@@ -127,6 +126,7 @@ namespace pdb
         if (!ret)
             throw error::windows(GetLastError());
 
+        symbol.set_displacement(displacement);
         return symbol;
     }
 

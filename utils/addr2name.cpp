@@ -72,6 +72,16 @@ namespace
         return oss.str();
     }
 
+    std::string format_symbol(const pdb::Symbol& symbol)
+    {
+        std::ostringstream oss;
+        oss << symbol.get_name();
+        const auto displacement = symbol.get_displacement();
+        if (displacement)
+            oss << '+' << format_address(displacement);
+        return oss.str();
+    }
+
     void dump_error(const std::exception& e)
     {
         std::cerr << "error: " << e.what() << '\n';
@@ -81,7 +91,7 @@ namespace
     {
         try
         {
-            std::cout << repo.resolve_symbol(address).get_name() << '\n';
+            std::cout << format_symbol(repo.resolve_symbol(address)) << '\n';
         }
         catch (const std::exception& e)
         {

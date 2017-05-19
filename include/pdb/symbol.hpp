@@ -28,7 +28,7 @@ namespace pdb
             raw.MaxNameLen = MAX_SYM_NAME;
         }
 
-        SymbolInfo(const Raw& raw)
+        explicit SymbolInfo(const Raw& raw)
             : SymbolInfo{}
         {
             std::memcpy(buffer, &raw, raw.SizeOfStruct + raw.NameLen - 1);
@@ -37,6 +37,13 @@ namespace pdb
         explicit operator Raw&() { return raw; }
 
         explicit operator const Raw&() const { return raw; }
+
+        Address get_displacement() const { return displacement; }
+
+        void set_displacement(Address new_value)
+        {
+            displacement = new_value;
+        }
 
         std::string get_name() const { return {raw.Name, raw.NameLen}; }
 
@@ -60,6 +67,7 @@ namespace pdb
 
     private:
         unsigned char buffer[sizeof(Raw) + MAX_SYM_NAME - 1];
+        Address displacement = 0;
 
     protected:
         Raw& raw;
