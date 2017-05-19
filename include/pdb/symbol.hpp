@@ -5,13 +5,18 @@
 
 #pragma once
 
+#include "address.hpp"
 #include "module.hpp"
+
+#include <safeint.h>
 
 #include <Windows.h>
 #include <DbgHelp.h>
 
+#include <cstddef>
 #include <cstring>
 
+#include <stdexcept>
 #include <string>
 
 namespace pdb
@@ -31,7 +36,9 @@ namespace pdb
         explicit SymbolInfo(const Raw& raw)
             : SymbolInfo{}
         {
-            std::memcpy(buffer, &raw, raw.SizeOfStruct + raw.NameLen - 1);
+            if (raw.SizeOfStruct != sizeof(raw))
+                throw std::runtime_error{"unexpected symbol structure size"};
+            std::memcpy(buffer, &raw, calc_size(raw));
         }
 
         explicit operator Raw&() { return raw; }
@@ -66,7 +73,22 @@ namespace pdb
         bool is_function() const { return get_type() == Type::Function; }
 
     private:
-        unsigned char buffer[sizeof(Raw) + MAX_SYM_NAME - 1];
+        static std::size_t calc_size(const Raw& raw)
+        {
+            try
+            {
+                msl::utilities::SafeInt<std::size_t> size{raw.SizeOfStruct};
+                size += raw.NameLen;
+                size -= 1;
+                return size;
+            }
+            catch (const msl::utilities::SafeIntException&)
+            {
+                throw std::runtime_error{"symbol name is too long"};
+            }
+        }
+
+        unsigned char buffer[sizeof(Raw) + MAX_SYM_NAME - 1] = {0};
         Address displacement = 0;
 
     protected:
