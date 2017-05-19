@@ -37,15 +37,12 @@ namespace pdb
             if (!GetFileSizeEx(handle.get(), &size))
                 throw error::windows(GetLastError());
 
-            try
-            {
-                const msl::utilities::SafeInt<decltype(size.QuadPart)> safe_size{size.QuadPart};
-                return static_cast<std::size_t>(safe_size);
-            }
-            catch (const msl::utilities::SafeIntException&)
-            {
-                throw std::range_error{"invalid file size"};
-            }
+            std::size_t result = 0;
+
+            if (!msl::utilities::SafeCast(size.QuadPart, result))
+                throw std::runtime_error{"unsupported file size"};
+
+            return result;
         }
     }
 }

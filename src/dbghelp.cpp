@@ -5,6 +5,8 @@
 
 #include "pdb/all.hpp"
 
+#include <safeint.h>
+
 #include <Windows.h>
 #include <DbgHelp.h>
 
@@ -41,9 +43,10 @@ namespace pdb
         Address gen_next_offline_base(std::size_t pdb_size)
         {
             static Address id = 0x10000000;
-            const auto next = id;
-            id += pdb_size;
-            return next;
+            const auto base = id;
+            if (!msl::utilities::SafeAdd(id, pdb_size, id))
+                throw std::runtime_error{"no more PDB files can be added, the internal address space is exhausted"};
+            return base;
         }
 
         BOOL CALLBACK enum_symbols_callback(
@@ -65,10 +68,9 @@ namespace pdb
 
     ModuleInfo DbgHelp::load_pdb(const std::string& path) const
     {
-        const auto size = file::get_size(path);
-
-        if (size > std::numeric_limits<DWORD>::max())
-            throw std::range_error{"PDB file size is too large"};
+        DWORD size = 0;
+        if (!msl::utilities::SafeCast(file::get_size(path), size))
+            throw std::range_error{"PDB file is too large"};
 
         const auto offline_base = SymLoadModule64(
             id,
@@ -76,7 +78,7 @@ namespace pdb
             path.c_str(),
             NULL,
             gen_next_offline_base(size),
-            static_cast<DWORD>(size));
+            size);
 
         if (!offline_base)
             throw error::windows(GetLastError());
