@@ -40,14 +40,27 @@ namespace pdb
 
             return it->second;
         }
+
+        std::string pdb_already_loaded(Address online_base)
+        {
+            std::ostringstream oss;
+            oss << "module with online base address " << format_address
+                << " has already been loaded";
+            return oss.str();
+        }
     }
 
     Address Repo::add_pdb(Address online_base, const std::string& path)
     {
+        if (online_modules.find(online_base) != online_modules.cend())
+            throw std::runtime_error{pdb_already_loaded(online_base)};
+
         Module module{online_base, dbghelp.load_pdb(path)};
         const auto offline_base = module.get_offline_base();
+
         const auto it = online_modules.emplace(online_base, std::move(module));
         offline_modules.emplace(offline_base, it.first->second);
+
         return offline_base;
     }
 
