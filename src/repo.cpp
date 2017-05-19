@@ -40,16 +40,6 @@ namespace pdb
 
             return it->second;
         }
-
-        Address address_online_to_offline(const Module& module, Address online)
-        {
-            return module.get_offline_base() + online - module.get_online_base();
-        }
-
-        Address address_offline_to_online(const Module& module, Address offline)
-        {
-            return module.get_online_base() + offline - module.get_offline_base();
-        }
     }
 
     Address Repo::add_pdb(Address online_base, const std::string& path)
@@ -103,17 +93,19 @@ namespace pdb
 
     Symbol Repo::symbol_from_buffer(const Module& module, const SymbolInfo& raw) const
     {
-        return {pdb::address_offline_to_online(module, raw.get_offline_address()), raw};
+        return {module.translate_offline_address(raw.get_offline_address()), raw};
     }
 
     Address Repo::address_online_to_offline(Address online) const
     {
-        return pdb::address_online_to_offline(module_from_online_address(online), online);
+        return module_from_online_address(online)
+            .translate_online_address(online);
     }
 
     Address Repo::address_offline_to_online(Address offline) const
     {
-        return pdb::address_offline_to_online(module_from_offline_address(offline), offline);
+        return module_from_offline_address(offline)
+            .translate_offline_address(offline);
     }
 
     const Module& Repo::module_from_online_address(Address online) const

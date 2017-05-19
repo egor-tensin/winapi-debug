@@ -12,6 +12,7 @@
 
 #include <exception>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -65,20 +66,13 @@ namespace
         bool help_flag = false;
     };
 
-    std::string format_address(pdb::Address address)
-    {
-        std::ostringstream oss;
-        oss << std::showbase << std::hex << address;
-        return oss.str();
-    }
-
     std::string format_symbol(const pdb::Symbol& symbol)
     {
         std::ostringstream oss;
         oss << symbol.get_name();
         const auto displacement = symbol.get_displacement();
         if (displacement)
-            oss << '+' << format_address(displacement);
+            oss << '+' << pdb::format_address(displacement);
         return oss.str();
     }
 
@@ -96,7 +90,7 @@ namespace
         catch (const std::exception& e)
         {
             dump_error(e);
-            std::cout << format_address(address) << '\n';
+            std::cout << pdb::format_address(address) << '\n';
         }
     }
 }

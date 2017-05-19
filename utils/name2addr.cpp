@@ -12,7 +12,6 @@
 
 #include <exception>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -66,13 +65,6 @@ namespace
         bool help_flag = false;
     };
 
-    std::string format_address(pdb::Address address)
-    {
-        std::ostringstream oss;
-        oss << std::showbase << std::hex << address;
-        return oss.str();
-    }
-
     void dump_error(const std::exception& e)
     {
         std::cerr << "error: " << e.what() << '\n';
@@ -83,7 +75,7 @@ namespace
         try
         {
             const auto address = repo.resolve_symbol(name).get_online_address();
-            std::cout << format_address(address) << '\n';
+            std::cout << pdb::format_address(address) << '\n';
         }
         catch (const std::exception& e)
         {

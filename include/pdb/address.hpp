@@ -7,7 +7,17 @@
 
 #include <Windows.h>
 
+#include <sstream>
+#include <string>
+
 namespace pdb
 {
     typedef DWORD64 Address;
+
+    inline std::string format_address(Address address)
+    {
+        std::ostringstream oss;
+        oss << std::hex << std::showbase << address;
+        return oss.str();
+    }
 }
