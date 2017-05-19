@@ -40,11 +40,15 @@ namespace pdb
                 throw error::windows(GetLastError());
         }
 
+        Address next_offline_base = 0x10000000;
+
         Address gen_next_offline_base(std::size_t pdb_size)
         {
-            static Address id = 0x10000000;
-            const auto base = id;
-            if (!msl::utilities::SafeAdd(id, pdb_size, id))
+            const auto base = next_offline_base;
+            if (!msl::utilities::SafeAdd(
+                    next_offline_base,
+                    pdb_size,
+                    next_offline_base))
                 throw std::runtime_error{"no more PDB files can be added, the internal address space is exhausted"};
             return base;
         }
