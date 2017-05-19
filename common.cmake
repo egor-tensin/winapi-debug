@@ -1,6 +1,12 @@
+# Copyright (c) 2017 Egor Tensin <Egor.Tensin@gmail.com>
 # It's a CMake code snippet I use in all of my CMake projects.
 # It makes targets link the runtime statically by default + strips debug
 # symbols in release builds.
+# The latest version can be found at
+# https://gist.github.com/egor-tensin/cmake-common.
+# Distributed under the MIT License.
+
+# Version: 2017-05-19T13:51:22+00:00
 
 get_directory_property(parent_directory PARENT_DIRECTORY)
 set(is_root_project $<NOT:parent_directory>)
