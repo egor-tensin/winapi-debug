@@ -9,10 +9,12 @@
 #include "dbghelp.hpp"
 #include "module.hpp"
 #include "symbol.hpp"
+#include "utils/file.hpp"
 
 #include <functional>
 #include <map>
 #include <string>
+#include <unordered_set>
 
 namespace pdb
 {
@@ -45,5 +47,7 @@ namespace pdb
 
         std::map<Address, Module> online_modules;
         std::map<Address, const Module&> offline_modules;
+
+        std::unordered_set<file::ID> module_ids;
     };
 }

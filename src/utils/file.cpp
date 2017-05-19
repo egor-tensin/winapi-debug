@@ -44,5 +44,31 @@ namespace pdb
 
             return result;
         }
+
+        ID query_id(const std::string& path)
+        {
+            const Handle handle{CreateFileA(
+                path.c_str(),
+                FILE_READ_ATTRIBUTES,
+                FILE_SHARE_READ | FILE_SHARE_WRITE,
+                NULL,
+                OPEN_EXISTING,
+                FILE_ATTRIBUTE_NORMAL,
+                NULL)};
+
+            if (handle.get() == INVALID_HANDLE_VALUE)
+                throw error::windows(GetLastError());
+
+            ID id;
+
+            if (!GetFileInformationByHandleEx(
+                    handle.get(),
+                    FileIdInfo,
+                    &id,
+                    sizeof(id)))
+                throw error::windows(GetLastError());
+
+            return id;
+        }
     }
 }

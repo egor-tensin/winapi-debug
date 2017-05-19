@@ -6,6 +6,7 @@
 #include "pdb/all.hpp"
 
 #include <map>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -41,11 +42,18 @@ namespace pdb
             return it->second;
         }
 
-        std::string pdb_already_loaded(Address online_base)
+        std::string pdb_already_loaded(Address online_base, const std::string& path)
         {
             std::ostringstream oss;
-            oss << "module with online base address " << format_address
-                << " has already been loaded";
+            oss << "module with online base address " << format_address(online_base)
+                << " has already been loaded: " << path;
+            return oss.str();
+        }
+
+        std::string pdb_already_loaded(const std::string& path)
+        {
+            std::ostringstream oss;
+            oss << "module has already been loaded: " << path;
             return oss.str();
         }
     }
@@ -53,13 +61,18 @@ namespace pdb
     Address Repo::add_pdb(Address online_base, const std::string& path)
     {
         if (online_modules.find(online_base) != online_modules.cend())
-            throw std::runtime_error{pdb_already_loaded(online_base)};
+            throw std::runtime_error{pdb_already_loaded(online_base, path)};
+
+        auto file_id = file::query_id(path);
+        if (module_ids.find(file_id) != module_ids.cend())
+            throw std::runtime_error{pdb_already_loaded(path)};
 
         Module module{online_base, dbghelp.load_pdb(path)};
         const auto offline_base = module.get_offline_base();
 
         const auto it = online_modules.emplace(online_base, std::move(module));
         offline_modules.emplace(offline_base, it.first->second);
+        module_ids.emplace(std::move(file_id));
 
         return offline_base;
     }
