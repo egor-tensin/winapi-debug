@@ -59,7 +59,7 @@ namespace pdb
             if (handle.get() == INVALID_HANDLE_VALUE)
                 throw error::windows(GetLastError());
 
-            ID id;
+            FILE_ID_INFO id;
 
             if (!GetFileInformationByHandleEx(
                     handle.get(),
@@ -68,7 +68,7 @@ namespace pdb
                     sizeof(id)))
                 throw error::windows(GetLastError());
 
-            return id;
+            return {id};
         }
     }
 }
