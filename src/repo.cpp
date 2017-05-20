@@ -15,33 +15,6 @@ namespace pdb
 {
     namespace
     {
-        template <typename Value>
-        const Module& guess_module(
-            const std::map<Address, Value>& modules,
-            Address pivot)
-        {
-            if (modules.empty())
-                throw std::range_error{"there're no modules to choose from"};
-
-            auto it = modules.lower_bound(pivot);
-
-            if (it == modules.cend())
-            {
-                --it;
-                return it->second;
-            }
-
-            if (it->first > pivot)
-            {
-                if (it == modules.cbegin())
-                    throw std::range_error{"couldn't choose a module"};
-                --it;
-                return it->second;
-            }
-
-            return it->second;
-        }
-
         std::string pdb_already_loaded(Address online_base, const std::string& path)
         {
             std::ostringstream oss;
@@ -63,6 +36,68 @@ namespace pdb
             oss << "module with offline base address " << format_address(base)
                 << " has already been loaded (shouldn't happen)";
             return oss.str();
+        }
+
+        std::string module_not_found(Address base)
+        {
+            std::ostringstream oss;
+            oss << "module with base address " << format_address(base)
+                << " wasn't found";
+            return oss.str();
+        }
+
+        std::string guess_module_no_modules(Address pivot)
+        {
+            std::ostringstream oss;
+            oss << "couldn't select a module for address " << format_address(pivot)
+                << ": no modules have been loaded yet";
+            return oss.str();
+        }
+
+        std::string guess_module_address_too_low(Address pivot)
+        {
+            std::ostringstream oss;
+            oss << "couldn't select a module for address " << format_address(pivot)
+                << ": it's too low";
+            return oss.str();
+        }
+
+        template <typename Value>
+        const Module& lookup_module(
+            const std::map<Address, Value>& modules,
+            Address base)
+        {
+            const auto it = modules.find(base);
+            if (it == modules.cend())
+                throw std::runtime_error{module_not_found(base)};
+            return it->second;
+        }
+
+        template <typename Value>
+        const Module& guess_module(
+            const std::map<Address, Value>& modules,
+            Address pivot)
+        {
+            if (modules.empty())
+                throw std::range_error{guess_module_no_modules(pivot)};
+
+            auto it = modules.lower_bound(pivot);
+
+            if (it == modules.cend())
+            {
+                --it;
+                return it->second;
+            }
+
+            if (it->first > pivot)
+            {
+                if (it == modules.cbegin())
+                    throw std::range_error{guess_module_address_too_low(pivot)};
+                --it;
+                return it->second;
+            }
+
+            return it->second;
         }
     }
 
@@ -120,13 +155,19 @@ namespace pdb
         return symbol_from_buffer(dbghelp.resolve_symbol(name));
     }
 
+    const Module& Repo::module_with_online_base(Address base) const
+    {
+        return lookup_module(online_bases, base);
+    }
+
+    const Module& Repo::module_with_offline_base(Address base) const
+    {
+        return lookup_module(offline_bases, base);
+    }
+
     Symbol Repo::symbol_from_buffer(const SymbolInfo& raw) const
     {
-        const auto offline_base = raw.get_offline_base();
-        const auto it = offline_bases.find(offline_base);
-        if (it == offline_bases.cend())
-            throw std::runtime_error{"symbol's module hasn't been loaded (shouldn't happen)"};
-        return symbol_from_buffer(it->second, raw);
+        return symbol_from_buffer(module_with_offline_base(raw.get_offline_base()), raw);
     }
 
     Symbol Repo::symbol_from_buffer(const Module& module, const SymbolInfo& raw)
