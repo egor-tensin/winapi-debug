@@ -35,7 +35,7 @@ namespace pdb
 
     private:
         Symbol symbol_from_buffer(const SymbolInfo&) const;
-        Symbol symbol_from_buffer(const Module&, const SymbolInfo&) const;
+        static Symbol symbol_from_buffer(const Module&, const SymbolInfo&);
 
         const Module& module_from_online_address(Address) const;
         const Module& module_from_offline_address(Address) const;
@@ -45,9 +45,8 @@ namespace pdb
 
         const DbgHelp dbghelp;
 
-        std::map<Address, Module> online_modules;
-        std::map<Address, const Module&> offline_modules;
-
-        std::unordered_set<file::ID> module_ids;
+        std::unordered_set<file::ID> file_ids;
+        std::map<Address, Module> online_bases;
+        std::map<Address, const Module&> offline_bases;
     };
 }

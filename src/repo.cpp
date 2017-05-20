@@ -56,37 +56,48 @@ namespace pdb
             oss << "module has already been loaded: " << path;
             return oss.str();
         }
+
+        std::string offline_base_already_used(Address base)
+        {
+            std::ostringstream oss;
+            oss << "module with offline base address " << format_address(base)
+                << " has already been loaded (shouldn't happen)";
+            return oss.str();
+        }
     }
 
     Address Repo::add_pdb(Address online_base, const std::string& path)
     {
-        if (online_modules.find(online_base) != online_modules.cend())
+        if (online_bases.find(online_base) != online_bases.cend())
             throw std::runtime_error{pdb_already_loaded(online_base, path)};
 
         auto file_id = file::query_id(path);
-        if (module_ids.find(file_id) != module_ids.cend())
+        if (file_ids.find(file_id) != file_ids.cend())
             throw std::runtime_error{pdb_already_loaded(path)};
 
         Module module{online_base, dbghelp.load_pdb(path)};
         const auto offline_base = module.get_offline_base();
 
-        const auto it = online_modules.emplace(online_base, std::move(module));
-        offline_modules.emplace(offline_base, it.first->second);
-        module_ids.emplace(std::move(file_id));
+        if (offline_bases.find(offline_base) != offline_bases.cend())
+            throw std::runtime_error{offline_base_already_used(offline_base)};
+
+        file_ids.emplace(std::move(file_id));
+        const auto it = online_bases.emplace(online_base, std::move(module));
+        offline_bases.emplace(offline_base, it.first->second);
 
         return offline_base;
     }
 
     void Repo::enum_symbols(const OnSymbol& callback) const
     {
-        for (const auto& it : offline_modules)
+        for (const auto& it : offline_bases)
             enum_symbols(it.second, callback);
     }
 
     void Repo::enum_symbols(Address offline_base, const OnSymbol& callback) const
     {
-        const auto it = offline_modules.find(offline_base);
-        if (it == offline_modules.cend())
+        const auto it = offline_bases.find(offline_base);
+        if (it == offline_bases.cend())
             throw std::runtime_error{"unknown module"};
         enum_symbols(it->second, callback);
     }
@@ -111,13 +122,14 @@ namespace pdb
 
     Symbol Repo::symbol_from_buffer(const SymbolInfo& raw) const
     {
-        const auto it = offline_modules.find(raw.get_offline_base());
-        if (it == offline_modules.cend())
-            throw std::runtime_error{"symbol's module is unknown"};
+        const auto offline_base = raw.get_offline_base();
+        const auto it = offline_bases.find(offline_base);
+        if (it == offline_bases.cend())
+            throw std::runtime_error{"symbol's module hasn't been loaded (shouldn't happen)"};
         return symbol_from_buffer(it->second, raw);
     }
 
-    Symbol Repo::symbol_from_buffer(const Module& module, const SymbolInfo& raw) const
+    Symbol Repo::symbol_from_buffer(const Module& module, const SymbolInfo& raw)
     {
         return {module.translate_offline_address(raw.get_offline_address()), raw};
     }
@@ -136,11 +148,11 @@ namespace pdb
 
     const Module& Repo::module_from_online_address(Address online) const
     {
-        return guess_module(online_modules, online);
+        return guess_module(online_bases, online);
     }
 
     const Module& Repo::module_from_offline_address(Address offline) const
     {
-        return guess_module(offline_modules, offline);
+        return guess_module(offline_bases, offline);
     }
 }
