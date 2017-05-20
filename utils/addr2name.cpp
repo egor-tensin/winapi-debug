@@ -65,10 +65,10 @@ namespace
         bool help_flag = false;
     };
 
-    std::string format_symbol(const pdb::Symbol& symbol)
+    std::string format_symbol(const pdb::Module& module, const pdb::Symbol& symbol)
     {
         std::ostringstream oss;
-        oss << symbol.get_name();
+        oss << module.get_name() << '!' << symbol.get_name();
         const auto displacement = symbol.get_displacement();
         if (displacement)
             oss << '+' << pdb::format_address(displacement);
@@ -84,7 +84,9 @@ namespace
     {
         try
         {
-            std::cout << format_symbol(repo.resolve_symbol(address)) << '\n';
+            const auto symbol = repo.resolve_symbol(address);
+            const auto& module = repo.module_with_offline_base(symbol.get_offline_base());
+            std::cout << format_symbol(module, symbol) << '\n';
         }
         catch (const std::exception& e)
         {
