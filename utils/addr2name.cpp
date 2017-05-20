@@ -33,7 +33,6 @@ namespace
         }
 
         std::vector<PDB> pdbs;
-
         std::vector<pdb::Address> addresses;
 
     private:

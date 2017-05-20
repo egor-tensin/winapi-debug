@@ -32,7 +32,6 @@ namespace
         }
 
         std::vector<PDB> pdbs;
-
         std::vector<std::string> names;
 
     private:

@@ -20,4 +20,12 @@ namespace pdb
         oss << std::hex << std::showbase << address;
         return oss.str();
     }
+
+    inline bool parse_address(Address& dest, const std::string& src)
+    {
+        std::istringstream iss{src};
+        iss >> std::hex;
+        char c;
+        return iss >> dest && !iss.get(c);
+    }
 }

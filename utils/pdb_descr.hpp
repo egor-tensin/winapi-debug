@@ -17,38 +17,28 @@ namespace
 {
     struct PDB
     {
-        PDB(pdb::Address online_base, const std::string& path)
-            : online_base{online_base}
-            , path{path}
-        { }
-
         pdb::Address online_base;
         std::string path;
 
         static PDB parse(std::string src)
         {
             static constexpr auto sep = ',';
+
             const auto sep_pos = src.find(sep);
             if (sep_pos == std::string::npos)
                 boost::throw_exception(boost::program_options::invalid_option_value{src});
-            pdb::Address online_base;
-            if (!parse_address(online_base, src.substr(0, sep_pos)))
-                boost::throw_exception(boost::program_options::invalid_option_value{src});
-            return {online_base, src.substr(sep_pos + 1)};
-        }
 
-        static bool parse_address(pdb::Address& dest, const std::string& src)
-        {
-            std::istringstream iss{src};
-            iss >> std::hex;
-            char c;
-            return iss >> dest && !iss.get(c);
+            pdb::Address online_base;
+            if (!pdb::parse_address(online_base, src.substr(0, sep_pos)))
+                boost::throw_exception(boost::program_options::invalid_option_value{src});
+
+            return {online_base, src.substr(sep_pos + 1)};
         }
 
         static pdb::Address parse_address(const std::string& src)
         {
             pdb::Address dest;
-            if (!parse_address(dest, src))
+            if (!pdb::parse_address(dest, src))
                 boost::throw_exception(boost::program_options::invalid_option_value{src});
             return dest;
         }
