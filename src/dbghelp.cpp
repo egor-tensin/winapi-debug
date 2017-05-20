@@ -12,7 +12,6 @@
 
 #include <cstddef>
 
-#include <limits>
 #include <stdexcept>
 #include <string>
 
@@ -28,15 +27,14 @@ namespace pdb
         void initialize(HANDLE id)
         {
             enable_debug_output();
-            const auto ret = SymInitialize(id, NULL, FALSE);
-            if (!ret)
+
+            if (!SymInitialize(id, NULL, FALSE))
                 throw error::windows(GetLastError());
         }
 
         void clean_up(HANDLE id)
         {
-            const auto ret = SymCleanup(id);
-            if (!ret)
+            if (!SymCleanup(id))
                 throw error::windows(GetLastError());
         }
 
@@ -45,10 +43,8 @@ namespace pdb
         Address gen_next_offline_base(std::size_t pdb_size)
         {
             const auto base = next_offline_base;
-            if (!msl::utilities::SafeAdd(
-                    next_offline_base,
-                    pdb_size,
-                    next_offline_base))
+            using msl::utilities::SafeAdd;
+            if (!SafeAdd(next_offline_base, pdb_size, next_offline_base))
                 throw std::runtime_error{"no more PDB files can be added, the internal address space is exhausted"};
             return base;
         }
@@ -68,6 +64,25 @@ namespace pdb
     DbgHelp::DbgHelp()
     {
         initialize(id);
+    }
+
+    DbgHelp::~DbgHelp()
+    {
+        try
+        {
+            close();
+        }
+        catch (...)
+        { }
+    }
+
+    void DbgHelp::close()
+    {
+        if (!closed)
+        {
+            clean_up(id);
+            closed = true;
+        }
     }
 
     ModuleInfo DbgHelp::load_pdb(const std::string& path) const
@@ -94,12 +109,10 @@ namespace pdb
     {
         ModuleInfo info;
 
-        const auto ret = SymGetModuleInfo64(
-            id,
-            offline_base,
-            &static_cast<ModuleInfo::Raw&>(info));
-
-        if (!ret)
+        if (!SymGetModuleInfo64(
+                id,
+                offline_base,
+                &static_cast<ModuleInfo::Raw&>(info)))
             throw error::windows(GetLastError());
 
         return info;
@@ -107,14 +120,12 @@ namespace pdb
 
     void DbgHelp::enum_symbols(const ModuleInfo& module, const OnSymbol& callback) const
     {
-        const auto ret = SymEnumSymbols(
-            id,
-            module.get_offline_base(),
-            NULL,
-            &enum_symbols_callback,
-            const_cast<OnSymbol*>(&callback));
-
-        if (!ret)
+        if (!SymEnumSymbols(
+                id,
+                module.get_offline_base(),
+                NULL,
+                &enum_symbols_callback,
+                const_cast<OnSymbol*>(&callback)))
             throw error::windows(GetLastError());
     }
 
@@ -123,13 +134,11 @@ namespace pdb
         Address displacement = 0;
         SymbolInfo symbol;
 
-        const auto ret = SymFromAddr(
-            id,
-            online,
-            &displacement,
-            &static_cast<SYMBOL_INFO&>(symbol));
-
-        if (!ret)
+        if (!SymFromAddr(
+                id,
+                online,
+                &displacement,
+                &static_cast<SYMBOL_INFO&>(symbol)))
             throw error::windows(GetLastError());
 
         symbol.set_displacement(displacement);
@@ -140,33 +149,12 @@ namespace pdb
     {
         SymbolInfo symbol;
 
-        const auto ret = SymFromName(
-            id,
-            name.c_str(),
-            &static_cast<SYMBOL_INFO&>(symbol));
-
-        if (!ret)
+        if (!SymFromName(
+                id,
+                name.c_str(),
+                &static_cast<SYMBOL_INFO&>(symbol)))
             throw error::windows(GetLastError());
 
         return symbol;
-    }
-
-    void DbgHelp::close()
-    {
-        if (!closed)
-        {
-            clean_up(id);
-            closed = true;
-        }
-    }
-
-    DbgHelp::~DbgHelp()
-    {
-        try
-        {
-            close();
-        }
-        catch (...)
-        { }
     }
 }

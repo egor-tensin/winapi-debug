@@ -22,6 +22,8 @@ namespace pdb
         DbgHelp();
         ~DbgHelp();
 
+        void close();
+
         ModuleInfo load_pdb(const std::string& path) const;
 
         typedef std::function<void (const SymbolInfo&)> OnSymbol;
@@ -29,8 +31,6 @@ namespace pdb
 
         SymbolInfo resolve_symbol(Address) const;
         SymbolInfo resolve_symbol(const std::string&) const;
-
-        void close();
 
     private:
         ModuleInfo get_module_info(Address offline_base) const;

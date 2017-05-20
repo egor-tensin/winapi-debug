@@ -37,8 +37,11 @@ namespace pdb
             : SymbolInfo{}
         {
             if (raw.SizeOfStruct != sizeof(raw))
-                throw std::runtime_error{"unexpected symbol structure size"};
-            std::memcpy(buffer, &raw, calc_size(raw));
+                throw std::runtime_error{"invalid SYMBOL_INFO.SizeOfStruct"};
+            const auto raw_size = calc_size(raw);
+            if (raw_size > sizeof(buffer))
+                throw std::runtime_error{"SYMBOL_INFO is too large"};
+            std::memcpy(buffer, &raw, raw_size);
         }
 
         explicit operator Raw&() { return raw; }
@@ -73,22 +76,22 @@ namespace pdb
         bool is_function() const { return get_type() == Type::Function; }
 
     private:
+        static constexpr std::size_t max_buffer_size = sizeof(Raw) + MAX_SYM_NAME - 1;
+
         static std::size_t calc_size(const Raw& raw)
         {
+            using namespace msl::utilities;
             try
             {
-                msl::utilities::SafeInt<std::size_t> size{raw.SizeOfStruct};
-                size += raw.NameLen;
-                size -= 1;
-                return size;
+                return SafeInt<std::size_t>{raw.SizeOfStruct} + raw.NameLen - 1;
             }
-            catch (const msl::utilities::SafeIntException&)
+            catch (const SafeIntException&)
             {
-                throw std::runtime_error{"symbol name is too long"};
+                throw std::runtime_error{"invalid SYMBOL_INFO size"};
             }
         }
 
-        unsigned char buffer[sizeof(Raw) + MAX_SYM_NAME - 1] = {0};
+        unsigned char buffer[max_buffer_size] = {0};
         Address displacement = 0;
 
     protected:

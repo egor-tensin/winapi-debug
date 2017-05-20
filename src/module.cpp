@@ -23,7 +23,7 @@ namespace pdb
         : raw{raw}
     {
         if (raw.SizeOfStruct != sizeof(raw))
-            throw std::runtime_error{"unexpected module structure size"};
+            throw std::runtime_error{"invalid IMAGEHLP_MODULE64.SizeOfStruct"};
     }
 
     ModuleInfo::Raw ModuleInfo::create_raw()
