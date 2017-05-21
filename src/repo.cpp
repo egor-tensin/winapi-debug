@@ -155,6 +155,11 @@ namespace pdb
         return symbol_from_buffer(dbghelp.resolve_symbol(name));
     }
 
+    LineInfo Repo::resolve_line(Address online) const
+    {
+        return dbghelp.resolve_line(address_online_to_offline(online));
+    }
+
     const Module& Repo::module_with_online_base(Address base) const
     {
         return lookup_module(online_bases, base);

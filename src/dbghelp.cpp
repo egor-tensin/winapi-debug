@@ -11,6 +11,7 @@
 #include <DbgHelp.h>
 
 #include <cstddef>
+#include <cstring>
 
 #include <stdexcept>
 #include <string>
@@ -19,14 +20,17 @@ namespace pdb
 {
     namespace
     {
-        void enable_debug_output()
+        void set_dbghelp_options()
         {
-            SymSetOptions(SymGetOptions() | SYMOPT_DEBUG | SYMOPT_UNDNAME);
+            SymSetOptions(SymGetOptions()
+                | SYMOPT_DEBUG
+                | SYMOPT_LOAD_LINES
+                | SYMOPT_UNDNAME);
         }
 
         void initialize(HANDLE id)
         {
-            enable_debug_output();
+            set_dbghelp_options();
 
             if (!SymInitialize(id, NULL, FALSE))
                 throw error::windows(GetLastError());
@@ -129,14 +133,14 @@ namespace pdb
             throw error::windows(GetLastError());
     }
 
-    SymbolInfo DbgHelp::resolve_symbol(Address online) const
+    SymbolInfo DbgHelp::resolve_symbol(Address offline) const
     {
         Address displacement = 0;
         SymbolInfo symbol;
 
         if (!SymFromAddr(
                 id,
-                online,
+                offline,
                 &displacement,
                 &static_cast<SYMBOL_INFO&>(symbol)))
             throw error::windows(GetLastError());
@@ -156,5 +160,23 @@ namespace pdb
             throw error::windows(GetLastError());
 
         return symbol;
+    }
+
+    LineInfo DbgHelp::resolve_line(Address offline) const
+    {
+        IMAGEHLP_LINE64 raw;
+        std::memset(&raw, 0, sizeof(raw));
+        raw.SizeOfStruct = sizeof(raw);
+
+        DWORD displacement = 0;
+
+        if (!SymGetLineFromAddr64(
+                id,
+                offline,
+                &displacement,
+                &raw))
+            throw error::windows(GetLastError());
+
+        return LineInfo{raw};
     }
 }

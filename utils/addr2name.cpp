@@ -34,6 +34,7 @@ namespace
 
         std::vector<PDB> pdbs;
         std::vector<pdb::Address> addresses;
+        bool lines = false;
 
     private:
         Options build_options()
@@ -51,7 +52,10 @@ namespace
                 ("address",
                     program_options::value<std::vector<pdb::Address>>(&addresses)
                         ->value_name("ADDR"),
-                    "add an address to resolve");
+                    "add an address to resolve")
+                ("lines,l",
+                    program_options::bool_switch(&lines),
+                    "try to resolve source files & line numbers");
             return descr;
         }
 
@@ -75,18 +79,42 @@ namespace
         return oss.str();
     }
 
+    std::string format_line_info(const pdb::LineInfo& line_info)
+    {
+        std::ostringstream oss;
+        oss << '[' << line_info.file_path << " @ " << line_info.line_number << ']';
+        return oss.str();
+    }
+
     void dump_error(const std::exception& e)
     {
         std::cerr << "error: " << e.what() << '\n';
     }
 
-    void resolve_symbol(const pdb::Repo& repo, pdb::Address address)
+    void resolve_symbol(const pdb::Repo& repo, pdb::Address address, bool lines = false)
     {
         try
         {
             const auto symbol = repo.resolve_symbol(address);
             const auto& module = repo.module_with_offline_base(symbol.get_offline_base());
-            std::cout << format_symbol(module, symbol) << '\n';
+
+            std::ostringstream msg;
+            msg << format_symbol(module, symbol);
+
+            if (lines)
+            {
+                try
+                {
+                    const auto line_info = repo.resolve_line(address);
+                    msg << ' ' << format_line_info(line_info);
+                }
+                catch (const std::exception& e)
+                {
+                    dump_error(e);
+                }
+            }
+
+            std::cout << msg.str() << '\n';
         }
         catch (const std::exception& e)
         {
@@ -124,7 +152,7 @@ int main(int argc, char* argv[])
             repo.add_pdb(pdb.online_base, pdb.path);
 
         for (const auto& address : settings.addresses)
-            resolve_symbol(repo, address);
+            resolve_symbol(repo, address, settings.lines);
     }
     catch (const std::exception& e)
     {

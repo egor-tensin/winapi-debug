@@ -111,4 +111,29 @@ namespace pdb
     private:
         const Address online_address;
     };
+
+    class LineInfo
+    {
+    public:
+        typedef IMAGEHLP_LINE64 Raw;
+
+        explicit LineInfo(const Raw& raw)
+            : file_path{raw.FileName}
+            , line_number{cast_line_number(raw.LineNumber)}
+        { }
+
+        const std::string file_path;
+        const unsigned long line_number;
+
+    private:
+        static unsigned long cast_line_number(DWORD raw)
+        {
+            unsigned long dest = 0;
+
+            if (!msl::utilities::SafeCast(raw, dest))
+                throw std::runtime_error{"invalid line number"};
+
+            return dest;
+        }
+    };
 }

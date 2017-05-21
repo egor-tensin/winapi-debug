@@ -33,6 +33,8 @@ namespace pdb
         Symbol resolve_symbol(Address) const;
         Symbol resolve_symbol(const std::string&) const;
 
+        LineInfo resolve_line(Address) const;
+
         const Module& module_with_online_base(Address) const;
         const Module& module_with_offline_base(Address) const;
 

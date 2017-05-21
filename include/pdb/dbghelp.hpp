@@ -32,6 +32,8 @@ namespace pdb
         SymbolInfo resolve_symbol(Address) const;
         SymbolInfo resolve_symbol(const std::string&) const;
 
+        LineInfo resolve_line(Address) const;
+
     private:
         ModuleInfo get_module_info(Address offline_base) const;
 
