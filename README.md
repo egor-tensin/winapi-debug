@@ -9,34 +9,34 @@ hopeless again.
 Do all kinds of crazy shit like resolving symbol names from their addresses &
 vice versa, etc.
 
-Prerequisites
--------------
-
-* Boost.Filesystem
-* Boost.Program_options
-* Boost.System
-
 Building
 --------
 
-Create the build files using CMake and build using Visual Studio.
-For example, using Visual Studio 2015 Update 3 (targetting x86-64 and using
-static Boost libraries):
+Create the build files using CMake and build the project using Visual Studio.
 
-```
-> cd
-C:\workspace\build\pdb-repo\msvc\x64
+* **Prerequisites.**
+The following Boost libraries are required to build the project: Filesystem,
+Program_options, System.
+* **Customization.**
+The runtime libraries are linked statically by default (when this project is
+the root CMake project).
+Therefore, the Boost dependencies must also link them statically.
+You can link the runtime dynamically by passing `-D USE_STATIC_RUNTIME=OFF` to
+`cmake`.
+* **Example.**
+In the example below, the project directory is
+"C:\workspace\personal\pdb-repo", Boost can be found in
+"C:\workspace\third-party\boost_1_61_0" and Visual Studio 2015 is used,
+targeting x86-64.
 
-> cmake -G "Visual Studio 14 2015 Win64"                ^
-    -D BOOST_ROOT=C:\workspace\third-party\boost_1_61_0 ^
-    -D Boost_USE_STATIC_LIBS=ON                         ^
-    -D Boost_USE_STATIC_RUNTIME=ON                      ^
-    C:\workspace\personal\pdb-repo
-...
+      > cmake -G "Visual Studio 14 2015 Win64"                ^
+          -D BOOST_ROOT=C:\workspace\third-party\boost_1_61_0 ^
+          -D Boost_USE_STATIC_RUNTIME=ON                      ^
+          C:\workspace\personal\pdb-repo
+      ...
 
-> cmake --build . --config release -- /m
-...
-```
+      > cmake --build . --config release -- /m
+      ...
 
 License
 -------
