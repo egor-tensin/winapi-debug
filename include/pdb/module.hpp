@@ -8,7 +8,9 @@
 #include "address.hpp"
 
 #include <Windows.h>
+#pragma warning(push, 0)
 #include <DbgHelp.h>
+#pragma warning(pop)
 
 #include <string>
 

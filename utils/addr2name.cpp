@@ -8,7 +8,9 @@
 
 #include "pdb/all.hpp"
 
+#pragma warning(push, 0)
 #include <boost/program_options.hpp>
+#pragma warning(pop)
 
 #include <exception>
 #include <iostream>
