@@ -23,10 +23,20 @@ namespace
     {
     public:
         explicit Name2Addr(const std::string& argv0)
-            : SettingsParser{argv0, build_options(), build_args()}
-        { }
-
-        bool exit_with_usage() const { return help_flag; }
+            : SettingsParser{argv0}
+        {
+            visible.add_options()
+                ("pdb",
+                    boost::program_options::value<std::vector<PDB>>(&pdbs)
+                        ->value_name("ADDR,PATH"),
+                    "load a PDB file");
+            hidden.add_options()
+                ("name",
+                    boost::program_options::value<std::vector<std::string>>(&names)
+                        ->value_name("NAME"),
+                    "add a name to resolve");
+            positional.add("name", -1);
+        }
 
         const char* get_short_description() const override
         {
@@ -35,35 +45,6 @@ namespace
 
         std::vector<PDB> pdbs;
         std::vector<std::string> names;
-
-    private:
-        Options build_options()
-        {
-            namespace program_options = boost::program_options;
-            Options descr{"options"};
-            descr.add_options()
-                ("help,h",
-                    program_options::bool_switch(&help_flag),
-                    "show this message and exit")
-                ("pdb",
-                    program_options::value<std::vector<PDB>>(&pdbs)
-                        ->value_name("ADDR,PATH"),
-                    "load a PDB file")
-                ("name",
-                    program_options::value<std::vector<std::string>>(&names)
-                        ->value_name("NAME"),
-                    "add a name to resolve");
-            return descr;
-        }
-
-        static Arguments build_args()
-        {
-            Arguments descr;
-            descr.add("name", -1);
-            return descr;
-        }
-
-        bool help_flag = false;
     };
 
     void dump_error(const std::exception& e)
@@ -90,7 +71,7 @@ int main(int argc, char* argv[])
 {
     try
     {
-        const Name2Addr settings{argv[0]};
+        Name2Addr settings{argv[0]};
 
         try
         {
@@ -102,7 +83,7 @@ int main(int argc, char* argv[])
             return 1;
         }
 
-        if (settings.exit_with_usage())
+        if (settings.exit_with_usage)
         {
             settings.usage();
             return 0;

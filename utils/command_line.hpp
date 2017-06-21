@@ -20,39 +20,39 @@ namespace
     class SettingsParser
     {
     public:
-        typedef boost::program_options::options_description Options;
-        typedef boost::program_options::positional_options_description Arguments;
-
         explicit SettingsParser(const std::string& argv0)
             : prog_name{extract_filename(argv0)}
-        { }
-
-        SettingsParser(const std::string& argv0, const Options& options)
-            : prog_name{extract_filename(argv0)}
-            , options{options}
-        { }
-
-        SettingsParser(const std::string& argv0, const Options& options, const Arguments& args)
-            : prog_name{extract_filename(argv0)}
-            , options{options}
-            , args{args}
-        { }
+        {
+            visible.add_options()
+                ("help,h",
+                    "show this message and exit");
+        }
 
         virtual ~SettingsParser() = default;
 
-        virtual const char* get_short_description() const { return "[OPTION]..."; }
-
-        void parse(int argc, char* argv[]) const
+        virtual const char* get_short_description() const
         {
+            return "[--option VALUE]...";
+        }
+
+        virtual void parse(int argc, char* argv[])
+        {
+            boost::program_options::options_description all;
+            all.add(hidden).add(visible);
             boost::program_options::variables_map vm;
             boost::program_options::store(
                 boost::program_options::command_line_parser{argc, argv}
-                    .options(options)
-                    .positional(args)
+                    .options(all)
+                    .positional(positional)
                     .run(),
                 vm);
-            boost::program_options::notify(vm);
+            if (vm.count("help"))
+                exit_with_usage = true;
+            else
+                boost::program_options::notify(vm);
         }
+
+        bool exit_with_usage = false;
 
         void usage() const
         {
@@ -65,6 +65,11 @@ namespace
             std::cerr << *this;
         }
 
+    protected:
+        boost::program_options::options_description hidden;
+        boost::program_options::options_description visible;
+        boost::program_options::positional_options_description positional;
+
     private:
         static std::string extract_filename(const std::string& path)
         {
@@ -72,17 +77,13 @@ namespace
         }
 
         const std::string prog_name;
-        const Options options;
-        const Arguments args;
 
-        friend std::ostream& operator<<(std::ostream&, const SettingsParser&);
+        friend std::ostream& operator<<(std::ostream& os, const SettingsParser& parser)
+        {
+            const auto short_descr = parser.get_short_description();
+            os << "usage: " << parser.prog_name << ' ' << short_descr << '\n';
+            os << parser.visible;
+            return os;
+        }
     };
-
-    std::ostream& operator<<(std::ostream& os, const SettingsParser& cmd_parser)
-    {
-        const auto short_descr = cmd_parser.get_short_description();
-        os << "usage: " << cmd_parser.prog_name << ' ' << short_descr << '\n';
-        os << cmd_parser.options;
-        return os;
-    }
 }

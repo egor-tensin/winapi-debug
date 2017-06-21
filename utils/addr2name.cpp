@@ -24,10 +24,23 @@ namespace
     {
     public:
         explicit Addr2Name(const std::string& argv0)
-            : SettingsParser{argv0, build_options(), build_args()}
-        { }
-
-        bool exit_with_usage() const { return help_flag; }
+            : SettingsParser{argv0}
+        {
+            visible.add_options()
+                ("pdb",
+                    boost::program_options::value<std::vector<PDB>>(&pdbs)
+                        ->value_name("ADDR,PATH"),
+                    "load a PDB file")
+                ("lines,l",
+                    boost::program_options::bool_switch(&lines),
+                    "try to resolve source files & line numbers");
+            hidden.add_options()
+                ("address",
+                    boost::program_options::value<std::vector<pdb::Address>>(&addresses)
+                        ->value_name("ADDR"),
+                    "add an address to resolve");
+            positional.add("address", -1);
+        }
 
         const char* get_short_description() const override
         {
@@ -37,38 +50,6 @@ namespace
         std::vector<PDB> pdbs;
         std::vector<pdb::Address> addresses;
         bool lines = false;
-
-    private:
-        Options build_options()
-        {
-            namespace program_options = boost::program_options;
-            Options descr{"options"};
-            descr.add_options()
-                ("help,h",
-                    program_options::bool_switch(&help_flag),
-                    "show this message and exit")
-                ("pdb",
-                    program_options::value<std::vector<PDB>>(&pdbs)
-                        ->value_name("ADDR,PATH"),
-                    "load a PDB file")
-                ("address",
-                    program_options::value<std::vector<pdb::Address>>(&addresses)
-                        ->value_name("ADDR"),
-                    "add an address to resolve")
-                ("lines,l",
-                    program_options::bool_switch(&lines),
-                    "try to resolve source files & line numbers");
-            return descr;
-        }
-
-        static Arguments build_args()
-        {
-            Arguments descr;
-            descr.add("address", -1);
-            return descr;
-        }
-
-        bool help_flag = false;
     };
 
     std::string format_symbol(const pdb::Module& module, const pdb::Symbol& symbol)
@@ -130,7 +111,7 @@ int main(int argc, char* argv[])
 {
     try
     {
-        const Addr2Name settings{argv[0]};
+        Addr2Name settings{argv[0]};
 
         try
         {
@@ -142,7 +123,7 @@ int main(int argc, char* argv[])
             return 1;
         }
 
-        if (settings.exit_with_usage())
+        if (settings.exit_with_usage)
         {
             settings.usage();
             return 0;
