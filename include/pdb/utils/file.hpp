@@ -7,12 +7,15 @@
 
 #include <Windows.h>
 
+#pragma warning(push, 0)
+#include <boost/functional/hash.hpp>
+#pragma warning(pop)
+
 #include <cstddef>
 #include <cstring>
 
 #include <functional>
 #include <string>
-#include <type_traits>
 
 namespace pdb
 {
@@ -20,14 +23,19 @@ namespace pdb
     {
         std::size_t get_size(const std::string&);
 
+        inline bool operator==(const FILE_ID_128& a, const FILE_ID_128& b)
+        {
+            return 0 == std::memcmp(a.Identifier, b.Identifier, sizeof(a.Identifier));
+        }
+
         struct ID
         {
             const FILE_ID_INFO raw;
 
             bool operator==(const ID& other) const
             {
-                static_assert(std::is_pod<FILE_ID_INFO>::value, "Can't memcmp if file IDs aren't PODs");
-                return 0 == std::memcmp(&raw, &other.raw, sizeof(FILE_ID_INFO));
+                return raw.VolumeSerialNumber == other.raw.VolumeSerialNumber
+                    && raw.FileId == other.raw.FileId;
             }
         };
 
@@ -42,7 +50,10 @@ namespace std
     {
         std::size_t operator()(const pdb::file::ID& id) const
         {
-            return _Bitwise_hash<FILE_ID_INFO>{}(id.raw);
+            std::size_t seed = 0;
+            boost::hash_combine(seed, id.raw.VolumeSerialNumber);
+            boost::hash_combine(seed, id.raw.FileId.Identifier);
+            return seed;
         }
     };
 }
