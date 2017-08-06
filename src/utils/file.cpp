@@ -40,7 +40,7 @@ namespace pdb
             std::size_t result = 0;
 
             if (!msl::utilities::SafeCast(size.QuadPart, result))
-                throw std::runtime_error{"unsupported file size"};
+                throw std::runtime_error{"invalid file size"};
 
             return result;
         }
