@@ -1,6 +1,7 @@
 param(
-    [string] $BuildDir = 'C:\Projects\build',
+    [string] $BuildDir = $null,
     [string] $ProjectDir = $null,
+    [string] $Generator = $null,
     [string] $Platform = $null,
     [string] $Configuration = $null,
     [string] $BoostDir = $null,
@@ -8,6 +9,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop";
+Set-PSDebug -Strict
 
 function Invoke-Exe {
     param(
@@ -54,12 +56,29 @@ function Get-AppVeyorBoostLibraryDir {
     }
 }
 
+function Set-AppVeyorDefaults {
+    $script:ProjectDir = $env:APPVEYOR_BUILD_FOLDER
+    $script:BuildDir = 'C:\Projects\build'
+    $script:Generator = switch ($env:APPVEYOR_BUILD_WORKER_IMAGE) {
+        'Visual Studio 2013' { 'Visual Studio 12 2013' }
+        'Visual Studio 2015' { 'Visual Studio 14 2015' }
+        'Visual Studio 2017' { 'Visual Studio 15 2017' }
+        default { throw "Unsupported AppVeyor image: $env:APPVEYOR_BUILD_WORKER_IMAGE" }
+    }
+    $script:Platform = $env:PLATFORM
+    $script:Configuration = $env:CONFIGURATION
+    $script:BoostDir = Get-AppVeyorBoostDir
+    $script:BoostLibraryDir = Get-AppVeyorBoostLibraryDir -Platform $script:Platform
+}
+
 function Build-Project {
     param(
         [Parameter(Mandatory=$true)]
         [string] $ProjectDir,
         [Parameter(Mandatory=$true)]
         [string] $BuildDir,
+        [Parameter(Mandatory=$true)]
+        [string] $Generator,
         [Parameter(Mandatory=$true)]
         [string] $Platform,
         [Parameter(Mandatory=$true)]
@@ -76,36 +95,38 @@ function Build-Project {
     mkdir $BuildDir
     cd $BuildDir
 
-    Invoke-Exe { cmake -Wno-dev                 `
-        -G "Visual Studio 14 2015" -A $Platform `
-        -D "BOOST_ROOT=$BoostDir"               `
-        -D "BOOST_LIBRARYDIR=$BoostLibraryDir"  `
-        -D Boost_USE_STATIC_LIBS=ON             `
-        -D Boost_USE_STATIC_RUNTIME=ON          `
+    Invoke-Exe { cmake.exe -Wno-dev            `
+        -G $Generator -A $Platform             `
+        -D "BOOST_ROOT=$BoostDir"              `
+        -D "BOOST_LIBRARYDIR=$BoostLibraryDir" `
+        -D Boost_USE_STATIC_LIBS=ON            `
+        -D Boost_USE_STATIC_RUNTIME=ON         `
         $ProjectDir
     }
     
-    Invoke-Exe { cmake --build . --config "$Configuration" -- /m }
+    Invoke-Exe { cmake.exe --build . --config $Configuration -- /m }
 }
 
-if (Test-AppVeyor) {
-    $cwd = pwd
-    $ProjectDir = $env:APPVEYOR_BUILD_FOLDER
-    $BuildDir = 'C:\Projects\build'
-    $Platform = $env:PLATFORM
-    $Configuration = $env:CONFIGURATION
-    $BoostDir = Get-AppVeyorBoostDir
-    $BoostLibraryDir = Get-AppVeyorBoostLibraryDir -Platform $Platform
+function Build-ProjectAppVeyor {
+    if (Test-AppVeyor) {
+        Set-AppVeyorDefaults
+        $appveyor_cwd = pwd
+    }
+
+    try {
+        Build-Project                            `
+            -ProjectDir $script:ProjectDir       `
+            -BuildDir $script:BuildDir           `
+            -Generator $script:Generator         `
+            -Platform $script:Platform           `
+            -Configuration $script:Configuration `
+            -BoostDir $script:BoostDir           `
+            -BoostLibraryDir $script:BoostLibraryDir
+    } finally {
+        if (Test-AppVeyor) {
+            cd $appveyor_cwd
+        }
+    }
 }
 
-Build-Project                         `
-    -ProjectDir $ProjectDir           `
-    -BuildDir $BuildDir               `
-    -Platform $Platform               `
-    -Configuration $Configuration     `
-    -BoostDir $BoostDir               `
-    -BoostLibraryDir $BoostLibraryDir
-
-if (Test-AppVeyor) {
-    cd $cwd
-}
+Build-ProjectAppVeyor
