@@ -1,10 +1,6 @@
 version: '{build}'
 image: 'Visual Studio 2017'
 
-branches:
-  only:
-    - master
-
 environment:
   appveyor_boost_version: 1.69.0
 
