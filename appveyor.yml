@@ -1,8 +1,7 @@
 version: '{build}'
-image: 'Visual Studio 2017'
-
-environment:
-  appveyor_boost_version: 1.69.0
+image:
+  - Visual Studio 2015
+  - Visual Studio 2017
 
 platform:
   - Win32
@@ -14,3 +13,16 @@ configuration:
 
 build_script:
   - ps: .\.appveyor\build.ps1
+
+for:
+- matrix:
+    only:
+      - image: Visual Studio 2015
+  environment:
+    appveyor_boost_version: 1.62.0
+
+- matrix:
+    only:
+      - image: Visual Studio 2017
+  environment:
+    appveyor_boost_version: 1.69.0
