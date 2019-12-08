@@ -4,7 +4,7 @@ endif(COMMAND cmake_policy)
 
 project(pdb_repo CXX)
 
-include(common.cmake)
+include(cmake/common.cmake)
 
 find_package(Boost REQUIRED)
 
