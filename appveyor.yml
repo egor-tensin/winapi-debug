@@ -3,6 +3,7 @@ version: '{build}'
 image:
   - Visual Studio 2015
   - Visual Studio 2017
+  - Visual Studio 2019
 
 platform:
   - Win32
@@ -22,11 +23,42 @@ for:
 - matrix:
     only:
       - image: Visual Studio 2015
+        platform: Win32
   environment:
-    appveyor_boost_version: 1.62.0
-
+    appveyor_boost_root: C:\Libraries\boost_1_62_0
+    appveyor_boost_librarydir: C:\Libraries\boost_1_62_0\lib32-msvc-14.0
+- matrix:
+    only:
+      - image: Visual Studio 2015
+        platform: x64
+  environment:
+    appveyor_boost_root: C:\Libraries\boost_1_62_0
+    appveyor_boost_librarydir: C:\Libraries\boost_1_62_0\lib64-msvc-14.0
 - matrix:
     only:
       - image: Visual Studio 2017
+        platform: Win32
   environment:
-    appveyor_boost_version: 1.69.0
+    appveyor_boost_root: C:\Libraries\boost_1_69_0
+    appveyor_boost_librarydir: C:\Libraries\boost_1_69_0\lib32-msvc-14.1
+- matrix:
+    only:
+      - image: Visual Studio 2017
+        platform: x64
+  environment:
+    appveyor_boost_root: C:\Libraries\boost_1_69_0
+    appveyor_boost_librarydir: C:\Libraries\boost_1_69_0\lib64-msvc-14.1
+- matrix:
+    only:
+      - image: Visual Studio 2019
+        platform: Win32
+  environment:
+    appveyor_boost_root: C:\Libraries\boost_1_71_0
+    appveyor_boost_librarydir: C:\Libraries\boost_1_71_0\lib32-msvc-14.2
+- matrix:
+    only:
+      - image: Visual Studio 2019
+        platform: x64
+  environment:
+    appveyor_boost_root: C:\Libraries\boost_1_71_0
+    appveyor_boost_librarydir: C:\Libraries\boost_1_71_0\lib64-msvc-14.2

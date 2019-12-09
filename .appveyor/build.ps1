@@ -34,28 +34,6 @@ function Test-AppVeyor {
     return Test-Path env:APPVEYOR
 }
 
-function Format-AppVeyorBoostDir {
-    return "boost_" + $env:appveyor_boost_version.replace('.', '_')
-}
-
-function Get-AppVeyorBoostDir {
-    return "C:\Libraries\$(Format-AppVeyorBoostDir)"
-}
-
-function Get-AppVeyorBoostLibraryDir {
-    param(
-        [string] $Platform = $env:PLATFORM
-    )
-
-    $BoostDir = Get-AppVeyorBoostDir
-
-    if ($Platform -eq 'x64') {
-        return "$BoostDir\lib64-msvc-14.1"
-    } else {
-        return "$BoostDir\lib32-msvc-14.1"
-    }
-}
-
 function Set-AppVeyorDefaults {
     $script:ProjectDir = $env:APPVEYOR_BUILD_FOLDER
     $script:BuildDir = 'C:\Projects\build'
@@ -63,12 +41,13 @@ function Set-AppVeyorDefaults {
         'Visual Studio 2013' { 'Visual Studio 12 2013' }
         'Visual Studio 2015' { 'Visual Studio 14 2015' }
         'Visual Studio 2017' { 'Visual Studio 15 2017' }
+        'Visual Studio 2019' { 'Visual Studio 16 2019' }
         default { throw "Unsupported AppVeyor image: $env:APPVEYOR_BUILD_WORKER_IMAGE" }
     }
     $script:Platform = $env:PLATFORM
     $script:Configuration = $env:CONFIGURATION
-    $script:BoostDir = Get-AppVeyorBoostDir
-    $script:BoostLibraryDir = Get-AppVeyorBoostLibraryDir -Platform $script:Platform
+    $script:BoostDir = $env:appveyor_boost_root
+    $script:BoostLibraryDir = $env:appveyor_boost_librarydir
 }
 
 function Build-Project {
