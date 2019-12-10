@@ -20,6 +20,13 @@ install:
   - git submodule update --init --recursive
 
 for:
+# Only build Release builds on master to speed things up:
+- branches:
+    except:
+      - master
+  configuration:
+    - Debug
+
 - matrix:
     only:
       - image: Visual Studio 2015
