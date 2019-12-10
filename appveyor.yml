@@ -5,6 +5,9 @@ image:
   - Visual Studio 2017
   - Visual Studio 2019
 
+environment:
+  python_exe: C:\Python36-x64\python.exe
+
 platform:
   - Win32
   - x64
@@ -13,11 +16,11 @@ configuration:
   - Debug
   - Release
 
-build_script:
-  - ps: .\.appveyor\build.ps1
-
 install:
   - git submodule update --init --recursive
+
+build_script:
+  - '"%python_exe%" cmake\build\build_appveyor.py --boost "%appveyor_boost_root%" --boost-librarydir "%appveyor_boost_librarydir%"'
 
 for:
 # Only build Release builds on master to speed things up:
