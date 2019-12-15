@@ -15,3 +15,5 @@ target_include_directories(pdb_repo SYSTEM PUBLIC ${Boost_INCLUDE_DIRS})
 target_link_libraries(pdb_repo PRIVATE DbgHelp)
 
 add_subdirectory(utils)
+
+install(FILES LICENSE.txt DESTINATION share)
