@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5) # for Boost::* imported targets
 
 project(pdb_repo CXX)
 
-include(cmake/common.cmake)
+include(cmake/cmake/common.cmake)
 
 find_package(Boost REQUIRED)
 
