@@ -39,17 +39,15 @@ struct PDB {
     }
 };
 
-namespace boost {
-namespace program_options {
-
 template <typename charT>
 void validate(boost::any& dest,
               const std::vector<std::basic_string<charT>>& src_tokens,
               PDB*,
               int) {
-    validators::check_first_occurrence(dest);
-    const auto& src_token = validators::get_single_string(src_tokens);
-    dest = any{PDB::parse(src_token)};
+    namespace po = boost::program_options;
+    po::validators::check_first_occurrence(dest);
+    const auto& src_token = po::validators::get_single_string(src_tokens);
+    dest = boost::any{PDB::parse(src_token)};
 }
 
 template <typename charT>
@@ -57,10 +55,8 @@ void validate(boost::any& dest,
               const std::vector<std::basic_string<charT>>& src_tokens,
               pdb::Address*,
               int) {
-    validators::check_first_occurrence(dest);
-    const auto& src_token = validators::get_single_string(src_tokens);
-    dest = any{PDB::parse_address(src_token)};
+    namespace po = boost::program_options;
+    po::validators::check_first_occurrence(dest);
+    const auto& src_token = po::validators::get_single_string(src_tokens);
+    dest = boost::any{PDB::parse_address(src_token)};
 }
-
-} // namespace program_options
-} // namespace boost
