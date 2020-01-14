@@ -22,6 +22,11 @@ if(MINGW)
         _WIN32_WINNT=_WIN32_WINNT_WIN8)
 endif()
 
+if(MSVC_VERSION EQUAL 1900)
+    # DbgHelp warnings on Visual Studio 2015:
+    target_compile_options(pdb_repo PUBLIC /wd4091)
+endif()
+
 add_subdirectory(utils)
 
 install(FILES LICENSE.txt DESTINATION share)
