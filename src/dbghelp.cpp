@@ -14,6 +14,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace pdb {
 namespace {
@@ -73,11 +74,18 @@ void DbgHelp::close() {
 
 ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
     DWORD size = 0;
+
     if (!SafeCast(file::get_size(path), size))
         throw std::range_error{"PDB file is too large"};
 
+    // MinGW-w64 (as of version 7.0) requires PSTR as the third argument.
+    std::vector<char> _path;
+    _path.reserve(path.length() + 1);
+    _path.assign(path.cbegin(), path.cend());
+    _path.emplace_back('\0');
+
     const auto offline_base =
-        SymLoadModule64(id, NULL, path.c_str(), NULL, gen_next_offline_base(size), size);
+        SymLoadModule64(id, NULL, _path.data(), NULL, gen_next_offline_base(size), size);
 
     if (!offline_base)
         throw error::windows(GetLastError());
