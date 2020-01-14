@@ -13,12 +13,26 @@
 #include <DbgHelp.h>
 #include <Windows.h>
 
+#include <climits>
 #include <cstddef>
 #include <cstring>
 #include <stdexcept>
 #include <string>
 
 namespace pdb {
+namespace symbol {
+
+// MinGW-w64 (as of version 7.0) doesn't have SymTagEnum
+typedef ULONG Tag;
+
+constexpr Tag SYM_TAG_FUNCTION = 5;
+
+#ifdef _MSC_VER
+static_assert(static_cast<Tag>(SymTagFunction) == SYM_TAG_FUNCTION,
+              "unexpected SymTagFunction value");
+#endif
+
+} // namespace symbol
 
 class SymbolInfo {
 public:
@@ -52,13 +66,11 @@ public:
 
     Address get_offline_address() const { return raw.Address; }
 
-    typedef ULONG Tag;
+    symbol::Tag get_tag() const { return raw.Tag; }
 
-    Tag get_tag() const { return raw.Tag; }
-
-    enum class Type : Tag {
-        Function = SymTagFunction,
-        RESERVED = SymTagMax,
+    enum class Type : symbol::Tag {
+        Function = symbol::SYM_TAG_FUNCTION,
+        RESERVED = ULONG_MAX,
     };
 
     Type get_type() const { return static_cast<Type>(get_tag()); }

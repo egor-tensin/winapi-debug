@@ -25,7 +25,7 @@ public:
             "pdb", po::value<std::vector<PDB>>(&pdbs)->value_name("ADDR,PATH"), "load a PDB file");
         visible.add_options()(
             "functions",
-            po::value<pdb::Symbol::Tag>(&tag)->implicit_value(function_tag)->zero_tokens(),
+            po::value<pdb::symbol::Tag>(&tag)->implicit_value(function_tag)->zero_tokens(),
             "only list functions");
     }
 
@@ -40,10 +40,10 @@ public:
     pdb::Symbol::Type get_type() const { return static_cast<pdb::Symbol::Type>(tag); }
 
 private:
-    static const auto reserved_tag = static_cast<pdb::Symbol::Tag>(pdb::Symbol::Type::RESERVED);
-    static const auto function_tag = static_cast<pdb::Symbol::Tag>(pdb::Symbol::Type::Function);
+    static const auto reserved_tag = static_cast<pdb::symbol::Tag>(pdb::Symbol::Type::RESERVED);
+    static const auto function_tag = static_cast<pdb::symbol::Tag>(pdb::Symbol::Type::Function);
 
-    pdb::Symbol::Tag tag = reserved_tag;
+    pdb::symbol::Tag tag = reserved_tag;
 };
 
 } // namespace
