@@ -24,6 +24,7 @@ install:
   - git submodule update --init --recursive
 
 build_script:
+  - '"%python_exe%" cmake\tools\clang-format.py'
   - >-
     "%python_exe%" cmake\cmake\build\ci\appveyor.py
     --install "%install_dir%"
