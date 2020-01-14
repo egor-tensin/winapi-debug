@@ -5,70 +5,60 @@
 
 #include "pdb/all.hpp"
 
+#include <Windows.h>
 #include <safeint.h>
 
-#include <Windows.h>
-
 #include <cstddef>
-
 #include <stdexcept>
 #include <string>
 
-namespace pdb
-{
-    namespace file
-    {
-        std::size_t get_size(const std::string& path)
-        {
-            const Handle handle{CreateFileA(
-                path.c_str(),
-                FILE_READ_ATTRIBUTES,
-                FILE_SHARE_READ,
-                NULL,
-                OPEN_EXISTING,
-                FILE_ATTRIBUTE_NORMAL,
-                NULL)};
+namespace pdb {
+namespace file {
 
-            if (handle.get() == INVALID_HANDLE_VALUE)
-                throw error::windows(GetLastError());
+std::size_t get_size(const std::string& path) {
+    const Handle handle{CreateFileA(path.c_str(),
+                                    FILE_READ_ATTRIBUTES,
+                                    FILE_SHARE_READ,
+                                    NULL,
+                                    OPEN_EXISTING,
+                                    FILE_ATTRIBUTE_NORMAL,
+                                    NULL)};
 
-            LARGE_INTEGER size;
+    if (handle.get() == INVALID_HANDLE_VALUE)
+        throw error::windows(GetLastError());
 
-            if (!GetFileSizeEx(handle.get(), &size))
-                throw error::windows(GetLastError());
+    LARGE_INTEGER size;
 
-            std::size_t result = 0;
+    if (!GetFileSizeEx(handle.get(), &size))
+        throw error::windows(GetLastError());
 
-            if (!msl::utilities::SafeCast(size.QuadPart, result))
-                throw std::runtime_error{"invalid file size"};
+    std::size_t result = 0;
 
-            return result;
-        }
+    if (!msl::utilities::SafeCast(size.QuadPart, result))
+        throw std::runtime_error{"invalid file size"};
 
-        ID query_id(const std::string& path)
-        {
-            const Handle handle{CreateFileA(
-                path.c_str(),
-                FILE_READ_ATTRIBUTES,
-                FILE_SHARE_READ | FILE_SHARE_WRITE,
-                NULL,
-                OPEN_EXISTING,
-                FILE_ATTRIBUTE_NORMAL,
-                NULL)};
-
-            if (handle.get() == INVALID_HANDLE_VALUE)
-                throw error::windows(GetLastError());
-
-            FILE_ID_INFO id;
-
-            if (!GetFileInformationByHandleEx(
-                    handle.get(),
-                    FileIdInfo,
-                    &id,
-                    sizeof(id)))
-                throw error::windows(GetLastError());
-
-            return {id};
-        }
-    }
+    return result;
 }
+
+ID query_id(const std::string& path) {
+    const Handle handle{CreateFileA(path.c_str(),
+                                    FILE_READ_ATTRIBUTES,
+                                    FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                    NULL,
+                                    OPEN_EXISTING,
+                                    FILE_ATTRIBUTE_NORMAL,
+                                    NULL)};
+
+    if (handle.get() == INVALID_HANDLE_VALUE)
+        throw error::windows(GetLastError());
+
+    FILE_ID_INFO id;
+
+    if (!GetFileInformationByHandleEx(handle.get(), FileIdInfo, &id, sizeof(id)))
+        throw error::windows(GetLastError());
+
+    return {id};
+}
+
+} // namespace file
+} // namespace pdb

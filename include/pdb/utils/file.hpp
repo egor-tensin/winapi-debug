@@ -5,55 +5,50 @@
 
 #pragma once
 
-#include <Windows.h>
-
 #pragma warning(push, 0)
 #include <boost/functional/hash.hpp>
 #pragma warning(pop)
 
+#include <Windows.h>
+
 #include <cstddef>
 #include <cstring>
-
 #include <functional>
 #include <string>
 
-namespace pdb
-{
-    namespace file
-    {
-        std::size_t get_size(const std::string&);
+namespace pdb {
+namespace file {
 
-        inline bool operator==(const FILE_ID_128& a, const FILE_ID_128& b)
-        {
-            return 0 == std::memcmp(a.Identifier, b.Identifier, sizeof(a.Identifier));
-        }
+std::size_t get_size(const std::string&);
 
-        struct ID
-        {
-            const FILE_ID_INFO raw;
+inline bool operator==(const FILE_ID_128& a, const FILE_ID_128& b) {
+    return 0 == std::memcmp(a.Identifier, b.Identifier, sizeof(a.Identifier));
+}
 
-            bool operator==(const ID& other) const
-            {
-                return raw.VolumeSerialNumber == other.raw.VolumeSerialNumber
-                    && raw.FileId == other.raw.FileId;
-            }
-        };
+struct ID {
+    const FILE_ID_INFO raw;
 
-        ID query_id(const std::string&);
+    bool operator==(const ID& other) const {
+        return raw.VolumeSerialNumber == other.raw.VolumeSerialNumber &&
+               raw.FileId == other.raw.FileId;
     }
-}
+};
 
-namespace std
-{
-    template <>
-    struct hash<pdb::file::ID>
-    {
-        std::size_t operator()(const pdb::file::ID& id) const
-        {
-            std::size_t seed = 0;
-            boost::hash_combine(seed, id.raw.VolumeSerialNumber);
-            boost::hash_combine(seed, id.raw.FileId.Identifier);
-            return seed;
-        }
-    };
-}
+ID query_id(const std::string&);
+
+} // namespace file
+} // namespace pdb
+
+namespace std {
+
+template <>
+struct hash<pdb::file::ID> {
+    std::size_t operator()(const pdb::file::ID& id) const {
+        std::size_t seed = 0;
+        boost::hash_combine(seed, id.raw.VolumeSerialNumber);
+        boost::hash_combine(seed, id.raw.FileId.Identifier);
+        return seed;
+    }
+};
+
+} // namespace std

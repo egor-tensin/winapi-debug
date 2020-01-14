@@ -4,9 +4,8 @@
 // Distributed under the MIT License.
 
 #include "command_line.hpp"
-#include "pdb_descr.hpp"
-
 #include "pdb/all.hpp"
+#include "pdb_descr.hpp"
 
 #pragma warning(push, 0)
 #include <boost/program_options.hpp>
@@ -17,74 +16,57 @@
 #include <string>
 #include <vector>
 
-namespace
-{
-    class Name2Addr : public SettingsParser
-    {
-    public:
-        explicit Name2Addr(const std::string& argv0)
-            : SettingsParser{argv0}
-        {
-            visible.add_options()
-                ("pdb",
-                    boost::program_options::value<std::vector<PDB>>(&pdbs)
-                        ->value_name("ADDR,PATH"),
-                    "load a PDB file");
-            hidden.add_options()
-                ("name",
-                    boost::program_options::value<std::vector<std::string>>(&names)
-                        ->value_name("NAME"),
-                    "add a name to resolve");
-            positional.add("name", -1);
-        }
+namespace {
 
-        const char* get_short_description() const override
-        {
-            return "[-h|--help] [--pdb ADDR,PATH]... [--] [NAME]...";
-        }
+class Name2Addr : public SettingsParser {
+public:
+    explicit Name2Addr(const std::string& argv0) : SettingsParser{argv0} {
+        namespace po = boost::program_options;
 
-        std::vector<PDB> pdbs;
-        std::vector<std::string> names;
-    };
-
-    void dump_error(const std::exception& e)
-    {
-        std::cerr << "error: " << e.what() << '\n';
+        visible.add_options()(
+            "pdb", po::value<std::vector<PDB>>(&pdbs)->value_name("ADDR,PATH"), "load a PDB file");
+        hidden.add_options()("name",
+                             po::value<std::vector<std::string>>(&names)->value_name("NAME"),
+                             "add a name to resolve");
+        positional.add("name", -1);
     }
 
-    void resolve_symbol(const pdb::Repo& repo, const std::string& name)
-    {
-        try
-        {
-            const auto address = repo.resolve_symbol(name).get_online_address();
-            std::cout << pdb::format_address(address) << '\n';
-        }
-        catch (const std::exception& e)
-        {
-            dump_error(e);
-            std::cout << name << '\n';
-        }
+    const char* get_short_description() const override {
+        return "[-h|--help] [--pdb ADDR,PATH]... [--] [NAME]...";
+    }
+
+    std::vector<PDB> pdbs;
+    std::vector<std::string> names;
+};
+
+void dump_error(const std::exception& e) {
+    std::cerr << "error: " << e.what() << '\n';
+}
+
+void resolve_symbol(const pdb::Repo& repo, const std::string& name) {
+    try {
+        const auto address = repo.resolve_symbol(name).get_online_address();
+        std::cout << pdb::format_address(address) << '\n';
+    } catch (const std::exception& e) {
+        dump_error(e);
+        std::cout << name << '\n';
     }
 }
 
-int main(int argc, char* argv[])
-{
-    try
-    {
+} // namespace
+
+int main(int argc, char* argv[]) {
+    try {
         Name2Addr settings{argv[0]};
 
-        try
-        {
+        try {
             settings.parse(argc, argv);
-        }
-        catch (const boost::program_options::error& e)
-        {
+        } catch (const boost::program_options::error& e) {
             settings.usage_error(e);
             return 1;
         }
 
-        if (settings.exit_with_usage)
-        {
+        if (settings.exit_with_usage) {
             settings.usage();
             return 0;
         }
@@ -96,9 +78,7 @@ int main(int argc, char* argv[])
 
         for (const auto& name : settings.names)
             resolve_symbol(repo, name);
-    }
-    catch (const std::exception& e)
-    {
+    } catch (const std::exception& e) {
         dump_error(e);
         return 1;
     }

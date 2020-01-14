@@ -14,46 +14,43 @@
 
 #include <string>
 
-namespace pdb
-{
-    class ModuleInfo
-    {
-    public:
-        typedef IMAGEHLP_MODULE64 Raw;
+namespace pdb {
 
-        ModuleInfo();
-        explicit ModuleInfo(const Raw& raw);
+class ModuleInfo {
+public:
+    typedef IMAGEHLP_MODULE64 Raw;
 
-        explicit operator Raw&() { return raw; }
-        explicit operator const Raw&() const { return raw; }
+    ModuleInfo();
+    explicit ModuleInfo(const Raw& raw);
 
-        Address get_offline_base() const { return raw.BaseOfImage; }
+    explicit operator Raw&() { return raw; }
+    explicit operator const Raw&() const { return raw; }
 
-        std::string get_name() const { return raw.ModuleName; }
+    Address get_offline_base() const { return raw.BaseOfImage; }
 
-    private:
-        static Raw create_raw();
+    std::string get_name() const { return raw.ModuleName; }
 
-        Raw raw;
-    };
+private:
+    static Raw create_raw();
 
-    class Module : public ModuleInfo
-    {
-    public:
-        Module(Address online_base, const ModuleInfo& info)
-            : ModuleInfo{info}
-            , online_base{online_base}
-        { }
+    Raw raw;
+};
 
-        Address get_online_base() const { return online_base; }
+class Module : public ModuleInfo {
+public:
+    Module(Address online_base, const ModuleInfo& info)
+        : ModuleInfo{info}, online_base{online_base} {}
 
-        Address translate_offline_address(Address offline) const;
-        Address translate_online_address(Address online) const;
+    Address get_online_base() const { return online_base; }
 
-    private:
-        std::string invalid_offline_address(Address offline) const;
-        std::string invalid_online_address(Address online) const;
+    Address translate_offline_address(Address offline) const;
+    Address translate_online_address(Address online) const;
 
-        const Address online_base;
-    };
-}
+private:
+    std::string invalid_offline_address(Address offline) const;
+    std::string invalid_online_address(Address online) const;
+
+    const Address online_base;
+};
+
+} // namespace pdb

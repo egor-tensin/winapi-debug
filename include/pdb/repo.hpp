@@ -16,42 +16,42 @@
 #include <string>
 #include <unordered_set>
 
-namespace pdb
-{
-    class Repo
-    {
-    public:
-        Repo() = default;
+namespace pdb {
 
-        Address add_pdb(Address online_base, const std::string& path);
+class Repo {
+public:
+    Repo() = default;
 
-        typedef std::function<void (const Symbol&)> OnSymbol;
-        void enum_symbols(const OnSymbol&) const;
-        void enum_symbols(Address offline_base, const OnSymbol&) const;
-        void enum_symbols(const Module&, const OnSymbol&) const;
+    Address add_pdb(Address online_base, const std::string& path);
 
-        Symbol resolve_symbol(Address) const;
-        Symbol resolve_symbol(const std::string&) const;
+    typedef std::function<void(const Symbol&)> OnSymbol;
+    void enum_symbols(const OnSymbol&) const;
+    void enum_symbols(Address offline_base, const OnSymbol&) const;
+    void enum_symbols(const Module&, const OnSymbol&) const;
 
-        LineInfo resolve_line(Address) const;
+    Symbol resolve_symbol(Address) const;
+    Symbol resolve_symbol(const std::string&) const;
 
-        const Module& module_with_online_base(Address) const;
-        const Module& module_with_offline_base(Address) const;
+    LineInfo resolve_line(Address) const;
 
-    private:
-        Symbol symbol_from_buffer(const SymbolInfo&) const;
-        static Symbol symbol_from_buffer(const Module&, const SymbolInfo&);
+    const Module& module_with_online_base(Address) const;
+    const Module& module_with_offline_base(Address) const;
 
-        const Module& module_from_online_address(Address) const;
-        const Module& module_from_offline_address(Address) const;
+private:
+    Symbol symbol_from_buffer(const SymbolInfo&) const;
+    static Symbol symbol_from_buffer(const Module&, const SymbolInfo&);
 
-        Address address_offline_to_online(Address) const;
-        Address address_online_to_offline(Address) const;
+    const Module& module_from_online_address(Address) const;
+    const Module& module_from_offline_address(Address) const;
 
-        const DbgHelp dbghelp;
+    Address address_offline_to_online(Address) const;
+    Address address_online_to_offline(Address) const;
 
-        std::unordered_set<file::ID> file_ids;
-        std::map<Address, Module> online_bases;
-        std::map<Address, const Module&> offline_bases;
-    };
-}
+    const DbgHelp dbghelp;
+
+    std::unordered_set<file::ID> file_ids;
+    std::map<Address, Module> online_bases;
+    std::map<Address, const Module&> offline_bases;
+};
+
+} // namespace pdb

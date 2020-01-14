@@ -14,33 +14,33 @@
 #include <functional>
 #include <string>
 
-namespace pdb
-{
-    class DbgHelp
-    {
-    public:
-        DbgHelp();
-        ~DbgHelp();
+namespace pdb {
 
-        void close();
+class DbgHelp {
+public:
+    DbgHelp();
+    ~DbgHelp();
 
-        ModuleInfo load_pdb(const std::string& path) const;
+    void close();
 
-        typedef std::function<void (const SymbolInfo&)> OnSymbol;
-        void enum_symbols(const ModuleInfo&, const OnSymbol&) const;
+    ModuleInfo load_pdb(const std::string& path) const;
 
-        SymbolInfo resolve_symbol(Address) const;
-        SymbolInfo resolve_symbol(const std::string&) const;
+    typedef std::function<void(const SymbolInfo&)> OnSymbol;
+    void enum_symbols(const ModuleInfo&, const OnSymbol&) const;
 
-        LineInfo resolve_line(Address) const;
+    SymbolInfo resolve_symbol(Address) const;
+    SymbolInfo resolve_symbol(const std::string&) const;
 
-    private:
-        ModuleInfo get_module_info(Address offline_base) const;
+    LineInfo resolve_line(Address) const;
 
-        const HANDLE id = GetCurrentProcess();
-        bool closed = false;
+private:
+    ModuleInfo get_module_info(Address offline_base) const;
 
-        DbgHelp(const DbgHelp&) = delete;
-        DbgHelp& operator=(const DbgHelp&) = delete;
-    };
-}
+    const HANDLE id = GetCurrentProcess();
+    bool closed = false;
+
+    DbgHelp(const DbgHelp&) = delete;
+    DbgHelp& operator=(const DbgHelp&) = delete;
+};
+
+} // namespace pdb

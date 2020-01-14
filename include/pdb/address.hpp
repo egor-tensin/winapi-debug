@@ -10,22 +10,21 @@
 #include <sstream>
 #include <string>
 
-namespace pdb
-{
-    typedef DWORD64 Address;
+namespace pdb {
 
-    inline std::string format_address(Address address)
-    {
-        std::ostringstream oss;
-        oss << std::hex << std::showbase << address;
-        return oss.str();
-    }
+typedef DWORD64 Address;
 
-    inline bool parse_address(Address& dest, const std::string& src)
-    {
-        std::istringstream iss{src};
-        iss >> std::hex;
-        char c;
-        return iss >> dest && !iss.get(c);
-    }
+inline std::string format_address(Address address) {
+    std::ostringstream oss;
+    oss << std::hex << std::showbase << address;
+    return oss.str();
 }
+
+inline bool parse_address(Address& dest, const std::string& src) {
+    std::istringstream iss{src};
+    iss >> std::hex;
+    char c;
+    return iss >> dest && !iss.get(c);
+}
+
+} // namespace pdb

@@ -10,33 +10,28 @@
 #include <string>
 #include <system_error>
 
-namespace pdb
-{
-    namespace error
-    {
-        class CategoryWindows : public std::error_category
-        {
-        public:
-            CategoryWindows() = default;
+namespace pdb {
+namespace error {
 
-            const char* name() const noexcept { return "Windows"; }
+class CategoryWindows : public std::error_category {
+public:
+    CategoryWindows() = default;
 
-            std::string message(int) const;
-        };
+    const char* name() const noexcept { return "Windows"; }
 
-        inline const CategoryWindows& category_windows()
-        {
-            static const CategoryWindows instance;
-            return instance;
-        }
+    std::string message(int) const;
+};
 
-        inline std::system_error windows(DWORD code)
-        {
-            static_assert(sizeof(DWORD) == sizeof(int), "Aren't DWORDs the same size as ints?");
-
-            return std::system_error{
-                static_cast<int>(code),
-                category_windows()};
-        }
-    }
+inline const CategoryWindows& category_windows() {
+    static const CategoryWindows instance;
+    return instance;
 }
+
+inline std::system_error windows(DWORD code) {
+    static_assert(sizeof(DWORD) == sizeof(int), "Aren't DWORDs the same size as ints?");
+
+    return std::system_error{static_cast<int>(code), category_windows()};
+}
+
+} // namespace error
+} // namespace pdb

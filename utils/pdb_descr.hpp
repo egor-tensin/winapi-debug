@@ -15,13 +15,11 @@
 #include <string>
 #include <vector>
 
-struct PDB
-{
+struct PDB {
     pdb::Address online_base;
     std::string path;
 
-    static PDB parse(std::string src)
-    {
+    static PDB parse(std::string src) {
         static constexpr auto sep = ',';
 
         const auto sep_pos = src.find(sep);
@@ -35,8 +33,7 @@ struct PDB
         return {online_base, src.substr(sep_pos + 1)};
     }
 
-    static pdb::Address parse_address(const std::string& src)
-    {
+    static pdb::Address parse_address(const std::string& src) {
         pdb::Address dest;
         if (!pdb::parse_address(dest, src))
             boost::throw_exception(boost::program_options::invalid_option_value{src});
@@ -44,32 +41,28 @@ struct PDB
     }
 };
 
-namespace boost
-{
-    namespace program_options
-    {
-        template <typename charT>
-        void validate(
-            boost::any& dest,
-            const std::vector<std::basic_string<charT>>& src_tokens,
-            PDB*,
-            int)
-        {
-            validators::check_first_occurrence(dest);
-            const auto& src_token = validators::get_single_string(src_tokens);
-            dest = any{PDB::parse(src_token)};
-        }
+namespace boost {
+namespace program_options {
 
-        template <typename charT>
-        void validate(
-            boost::any& dest,
-            const std::vector<std::basic_string<charT>>& src_tokens,
-            pdb::Address*,
-            int)
-        {
-            validators::check_first_occurrence(dest);
-            const auto& src_token = validators::get_single_string(src_tokens);
-            dest = any{PDB::parse_address(src_token)};
-        }
-    }
+template <typename charT>
+void validate(boost::any& dest,
+              const std::vector<std::basic_string<charT>>& src_tokens,
+              PDB*,
+              int) {
+    validators::check_first_occurrence(dest);
+    const auto& src_token = validators::get_single_string(src_tokens);
+    dest = any{PDB::parse(src_token)};
 }
+
+template <typename charT>
+void validate(boost::any& dest,
+              const std::vector<std::basic_string<charT>>& src_tokens,
+              pdb::Address*,
+              int) {
+    validators::check_first_occurrence(dest);
+    const auto& src_token = validators::get_single_string(src_tokens);
+    dest = any{PDB::parse_address(src_token)};
+}
+
+} // namespace program_options
+} // namespace boost

@@ -8,22 +8,20 @@
 #include <Windows.h>
 
 #include <cassert>
-
 #include <memory>
 
-namespace pdb
-{
-    struct CloseHandle
-    {
-        void operator()(HANDLE raw) const
-        {
-            if (raw == NULL || raw == INVALID_HANDLE_VALUE)
-                return;
-            const auto ret = ::CloseHandle(raw);
-            assert(ret);
-            UNREFERENCED_PARAMETER(ret);
-        }
-    };
+namespace pdb {
 
-    typedef std::unique_ptr<void, CloseHandle> Handle;
-}
+struct CloseHandle {
+    void operator()(HANDLE raw) const {
+        if (raw == NULL || raw == INVALID_HANDLE_VALUE)
+            return;
+        const auto ret = ::CloseHandle(raw);
+        assert(ret);
+        UNREFERENCED_PARAMETER(ret);
+    }
+};
+
+typedef std::unique_ptr<void, CloseHandle> Handle;
+
+} // namespace pdb
