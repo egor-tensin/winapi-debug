@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "workarounds.hpp"
+
 #include <Windows.h>
 
 #include <cassert>
@@ -18,7 +20,7 @@ struct CloseHandle {
             return;
         const auto ret = ::CloseHandle(raw);
         assert(ret);
-        UNREFERENCED_PARAMETER(ret);
+        PDB_UNUSED_PARAMETER(ret);
     }
 };
 
