@@ -5,7 +5,7 @@
 
 #include "pdb/all.hpp"
 
-#include <safeint.h>
+#include <SafeInt.hpp>
 
 #include <cstring>
 #include <sstream>
@@ -33,7 +33,7 @@ Address Module::translate_offline_address(Address offline) const {
         throw std::range_error{invalid_offline_address(offline)};
     const auto offset = offline - get_offline_base();
     auto online = offset;
-    if (!msl::utilities::SafeAdd(online, get_online_base(), online))
+    if (!SafeAdd(online, get_online_base(), online))
         throw std::range_error{invalid_offline_address(offline)};
     return online;
 }
@@ -43,7 +43,7 @@ Address Module::translate_online_address(Address online) const {
         throw std::range_error{invalid_online_address(online)};
     const auto offset = online - get_online_base();
     auto offline = offset;
-    if (!msl::utilities::SafeAdd(offline, get_offline_base(), offline))
+    if (!SafeAdd(offline, get_offline_base(), offline))
         throw std::range_error{invalid_online_address(offline)};
     return offline;
 }

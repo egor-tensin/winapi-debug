@@ -5,8 +5,9 @@
 
 #include "pdb/all.hpp"
 
+#include <SafeInt.hpp>
+
 #include <Windows.h>
-#include <safeint.h>
 #pragma warning(push, 0)
 #include <DbgHelp.h>
 #pragma warning(pop, 0)
@@ -39,7 +40,6 @@ Address next_offline_base = 0x10000000;
 
 Address gen_next_offline_base(std::size_t pdb_size) {
     const auto base = next_offline_base;
-    using msl::utilities::SafeAdd;
     if (!SafeAdd(next_offline_base, pdb_size, next_offline_base))
         throw std::runtime_error{
             "no more PDB files can be added, the internal address space is exhausted"};
@@ -75,7 +75,7 @@ void DbgHelp::close() {
 
 ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
     DWORD size = 0;
-    if (!msl::utilities::SafeCast(file::get_size(path), size))
+    if (!SafeCast(file::get_size(path), size))
         throw std::range_error{"PDB file is too large"};
 
     const auto offline_base =

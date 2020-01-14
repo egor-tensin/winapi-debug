@@ -14,8 +14,10 @@ IncludeCategories:
     Priority: 1
   - Regex: '^<boost/'
     Priority: 2
-  - Regex: '^<.*\.h>$'
+  - Regex: '^<SafeInt.hpp>$'
     Priority: 3
-  - Regex: '.*'
+  - Regex: '^<.*\.h>$'
     Priority: 4
+  - Regex: '.*'
+    Priority: 5
 ...

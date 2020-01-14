@@ -5,8 +5,9 @@
 
 #include "pdb/all.hpp"
 
+#include <SafeInt.hpp>
+
 #include <Windows.h>
-#include <safeint.h>
 
 #include <cstddef>
 #include <stdexcept>
@@ -34,7 +35,7 @@ std::size_t get_size(const std::string& path) {
 
     std::size_t result = 0;
 
-    if (!msl::utilities::SafeCast(size.QuadPart, result))
+    if (!SafeCast(size.QuadPart, result))
         throw std::runtime_error{"invalid file size"};
 
     return result;

@@ -8,8 +8,9 @@
 #include "address.hpp"
 #include "module.hpp"
 
+#include <SafeInt.hpp>
+
 #include <Windows.h>
-#include <safeint.h>
 #pragma warning(push, 0)
 #include <DbgHelp.h>
 #pragma warning(pop)
@@ -70,7 +71,6 @@ private:
     static constexpr std::size_t max_buffer_size = sizeof(Raw) + MAX_SYM_NAME - 1;
 
     static std::size_t calc_size(const Raw& raw) {
-        using namespace msl::utilities;
         try {
             return SafeInt<std::size_t>{raw.SizeOfStruct} + raw.NameLen - 1;
         } catch (const SafeIntException&) {
@@ -110,7 +110,7 @@ private:
     static unsigned long cast_line_number(DWORD raw) {
         unsigned long dest = 0;
 
-        if (!msl::utilities::SafeCast(raw, dest))
+        if (!SafeCast(raw, dest))
             throw std::runtime_error{"invalid line number"};
 
         return dest;
