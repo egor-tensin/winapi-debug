@@ -3,6 +3,7 @@ Language: Cpp
 BasedOnStyle: Chromium
 
 AccessModifierOffset: -4
+BinPackArguments: false
 ColumnLimit: 100
 IncludeBlocks: Regroup
 IndentWidth: 4
