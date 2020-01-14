@@ -1,3 +1,6 @@
 [submodule "cmake"]
 	path = cmake
 	url = https://github.com/egor-tensin/cmake-common.git
+[submodule "3rdparty/microsoft/SafeInt"]
+	path = 3rdparty/microsoft/SafeInt
+	url = https://github.com/dcleblanc/SafeInt.git
