@@ -40,11 +40,14 @@ public:
     pdb::Symbol::Type get_type() const { return static_cast<pdb::Symbol::Type>(tag); }
 
 private:
-    static const auto reserved_tag = static_cast<pdb::symbol::Tag>(pdb::Symbol::Type::RESERVED);
-    static const auto function_tag = static_cast<pdb::symbol::Tag>(pdb::Symbol::Type::Function);
+    static constexpr auto reserved_tag = static_cast<pdb::symbol::Tag>(pdb::Symbol::Type::RESERVED);
+    static constexpr auto function_tag = static_cast<pdb::symbol::Tag>(pdb::Symbol::Type::Function);
 
     pdb::symbol::Tag tag = reserved_tag;
 };
+
+constexpr pdb::symbol::Tag EnumSymbols::reserved_tag;
+constexpr pdb::symbol::Tag EnumSymbols::function_tag;
 
 } // namespace
 
