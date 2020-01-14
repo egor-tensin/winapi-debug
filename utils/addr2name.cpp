@@ -35,7 +35,7 @@ public:
     }
 
     const char* get_short_description() const override {
-        return "[-h|--help] [--pdb ADDR,PATH]... [--] [ADDR]...";
+        return "[-h|--help] [--pdb ADDR,PATH]... [-l|--lines] [--] [ADDR]...";
     }
 
     std::vector<PDB> pdbs;
