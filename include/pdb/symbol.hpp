@@ -10,10 +10,8 @@
 
 #include <SafeInt.hpp>
 
-#include <Windows.h>
-#pragma warning(push, 0)
 #include <DbgHelp.h>
-#pragma warning(pop)
+#include <Windows.h>
 
 #include <cstddef>
 #include <cstring>

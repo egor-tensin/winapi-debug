@@ -5,9 +5,7 @@
 
 #pragma once
 
-#pragma warning(push, 0)
 #include <boost/functional/hash.hpp>
-#pragma warning(pop)
 
 #include <Windows.h>
 

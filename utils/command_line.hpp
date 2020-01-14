@@ -5,10 +5,8 @@
 
 #pragma once
 
-#pragma warning(push, 0)
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
-#pragma warning(pop)
 
 #include <exception>
 #include <iostream>
