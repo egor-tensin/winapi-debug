@@ -15,6 +15,13 @@ target_include_directories(pdb_repo SYSTEM PUBLIC 3rdparty/microsoft/SafeInt)
 target_link_libraries(pdb_repo PUBLIC Boost::boost)
 target_link_libraries(pdb_repo PRIVATE DbgHelp)
 
+if(MINGW)
+    # FILE_ID_INFO and friends require at least 0x0602:
+    target_compile_definitions(pdb_repo PUBLIC
+        NTDDI_VERSION=NTDDI_WIN8
+        _WIN32_WINNT=_WIN32_WINNT_WIN8)
+endif()
+
 add_subdirectory(utils)
 
 install(FILES LICENSE.txt DESTINATION share)
