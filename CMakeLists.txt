@@ -27,6 +27,7 @@ if(MSVC_VERSION EQUAL 1900)
     target_compile_options(pdb_repo PUBLIC /wd4091)
 endif()
 
+add_subdirectory(test)
 add_subdirectory(utils)
 
 install(FILES LICENSE.txt DESTINATION share)
