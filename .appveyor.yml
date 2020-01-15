@@ -37,7 +37,8 @@ after_build:
   - appveyor.exe PushArtifact "%APPVEYOR_PROJECT_NAME%-%PLATFORM%-%CONFIGURATION%.zip"
 
 test_script:
-  - '"%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\lab_rat.pdb" --functions'
+  - '"%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\lab_rat.pdb" --functions --mask "lab_rat!*"'
+  - '"%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\lab_rat.pdb" --functions --mask "lab_rat*"'
 
 for:
 # Only build Release builds on master to speed things up:

@@ -29,7 +29,10 @@ public:
     void enum_modules(const OnModule&) const;
 
     typedef std::function<void(const SymbolInfo&)> OnSymbol;
+    static constexpr auto all_symbols = "*!*";
+    void enum_symbols(const ModuleInfo&, const std::string& mask, const OnSymbol&) const;
     void enum_symbols(const ModuleInfo&, const OnSymbol&) const;
+    void enum_symbols(const std::string& mask, const OnSymbol&) const;
     void enum_symbols(const OnSymbol&) const;
 
     SymbolInfo resolve_symbol(Address) const;

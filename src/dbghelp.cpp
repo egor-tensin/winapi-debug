@@ -73,6 +73,18 @@ BOOL CALLBACK enum_symbols_callback(SYMBOL_INFO* info, ULONG, VOID* raw_callback
     return TRUE;
 }
 
+void enum_symbols(HANDLE id,
+                  Address module_base,
+                  const std::string& mask,
+                  const DbgHelp::OnSymbol& callback) {
+    if (!SymEnumSymbols(id,
+                        module_base,
+                        mask.c_str(),
+                        &enum_symbols_callback,
+                        const_cast<DbgHelp::OnSymbol*>(&callback)))
+        throw error::windows(GetLastError());
+}
+
 } // namespace
 
 DbgHelp::DbgHelp() {
@@ -120,20 +132,22 @@ void DbgHelp::enum_modules(const OnModule& callback) const {
         throw error::windows(GetLastError());
 }
 
+void DbgHelp::enum_symbols(const ModuleInfo& module,
+                           const std::string& mask,
+                           const OnSymbol& callback) const {
+    pdb::enum_symbols(id, module.get_offline_base(), mask, callback);
+}
+
 void DbgHelp::enum_symbols(const ModuleInfo& module, const OnSymbol& callback) const {
-    if (!SymEnumSymbols(id,
-                        module.get_offline_base(),
-                        NULL,
-                        &enum_symbols_callback,
-                        const_cast<OnSymbol*>(&callback)))
-        throw error::windows(GetLastError());
+    enum_symbols(module, all_symbols, callback);
+}
+
+void DbgHelp::enum_symbols(const std::string& mask, const OnSymbol& callback) const {
+    pdb::enum_symbols(id, 0, mask, callback);
 }
 
 void DbgHelp::enum_symbols(const OnSymbol& callback) const {
-    static constexpr auto all_symbols = "*!*";
-    if (!SymEnumSymbols(
-            id, 0, all_symbols, &enum_symbols_callback, const_cast<OnSymbol*>(&callback)))
-        throw error::windows(GetLastError());
+    enum_symbols(all_symbols, callback);
 }
 
 SymbolInfo DbgHelp::resolve_symbol(Address offline) const {
