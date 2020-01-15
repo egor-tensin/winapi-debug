@@ -5,7 +5,6 @@
 
 #include "command_line.hpp"
 #include "pdb/all.hpp"
-#include "pdb_descr.hpp"
 
 #include <boost/program_options.hpp>
 
@@ -21,8 +20,9 @@ public:
     explicit EnumSymbols(const std::string& argv0) : SettingsParser{argv0} {
         namespace po = boost::program_options;
 
-        visible.add_options()(
-            "pdb", po::value<std::vector<PDB>>(&pdbs)->value_name("ADDR,PATH"), "load a PDB file");
+        visible.add_options()("pdb",
+                              po::value<std::vector<std::string>>(&pdbs)->value_name("PATH"),
+                              "load a PDB file");
         visible.add_options()(
             "functions",
             po::value<pdb::symbol::Tag>(&tag)->implicit_value(function_tag)->zero_tokens(),
@@ -30,10 +30,10 @@ public:
     }
 
     const char* get_short_description() const override {
-        return "[-h|--help] [--pdb ADDR,PATH]... [--functions]";
+        return "[-h|--help] [--pdb PATH]... [--functions]";
     }
 
-    std::vector<PDB> pdbs;
+    std::vector<std::string> pdbs;
 
     bool type_specified() const { return tag != reserved_tag; }
 
@@ -67,12 +67,12 @@ int main(int argc, char* argv[]) {
             return 0;
         }
 
-        pdb::Repo repo;
+        pdb::DbgHelp dbghelp;
 
         for (const auto& pdb : settings.pdbs) {
-            const auto id = repo.add_pdb(pdb.online_base, pdb.path);
+            const auto id = dbghelp.load_pdb(pdb);
 
-            repo.enum_symbols(id, [&](const pdb::Symbol& symbol) {
+            dbghelp.enum_symbols(id, [&](const pdb::SymbolInfo& symbol) {
                 if (!settings.type_specified() || settings.get_type() == symbol.get_type())
                     std::cout << symbol.get_name() << '\n';
             });
