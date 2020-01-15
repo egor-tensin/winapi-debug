@@ -6,6 +6,7 @@
 #pragma once
 
 #include "address.hpp"
+#include "call_stack.hpp"
 #include "dbghelp.hpp"
 #include "error.hpp"
 #include "handle.hpp"

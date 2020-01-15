@@ -23,10 +23,10 @@ void set_dbghelp_options() {
     SymSetOptions(SymGetOptions() | SYMOPT_DEBUG | SYMOPT_LOAD_LINES | SYMOPT_UNDNAME);
 }
 
-void initialize(HANDLE id) {
+void initialize(HANDLE id, bool invade_current_process) {
     set_dbghelp_options();
 
-    if (!SymInitialize(id, NULL, FALSE))
+    if (!SymInitialize(id, NULL, invade_current_process ? TRUE : FALSE))
         throw error::windows(GetLastError());
 }
 
@@ -87,8 +87,8 @@ void enum_symbols(HANDLE id,
 
 } // namespace
 
-DbgHelp::DbgHelp() {
-    initialize(id);
+DbgHelp::DbgHelp(bool invade_current_process) {
+    initialize(id, invade_current_process);
 }
 
 DbgHelp::~DbgHelp() {
@@ -130,6 +130,10 @@ void DbgHelp::enum_modules(const OnModule& callback) const {
     ModuleEnumerator enumerator{id, callback};
     if (!SymEnumerateModules64(id, &enum_modules_callback, &enumerator))
         throw error::windows(GetLastError());
+}
+
+ModuleInfo DbgHelp::resolve_module(Address offline) const {
+    return get_module_info(id, offline);
 }
 
 void DbgHelp::enum_symbols(const ModuleInfo& module,

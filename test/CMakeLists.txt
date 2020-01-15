@@ -1,4 +1,13 @@
-set(CC_STATIC_RUNTIME OFF)
+add_executable(call_stack call_stack.cpp)
+target_link_libraries(call_stack PRIVATE pdb_repo)
+
+install(TARGETS call_stack RUNTIME DESTINATION bin)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    install(FILES "$<TARGET_PDB_FILE:call_stack>" DESTINATION bin OPTIONAL)
+endif()
+
+set(CC_STATIC_RUNTIME OFF) # Reduce the number of symbols in this test utility
+
 add_executable(foobar foobar.cpp)
 
 install(TARGETS foobar RUNTIME DESTINATION bin)

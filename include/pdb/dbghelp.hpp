@@ -18,7 +18,7 @@ namespace pdb {
 
 class DbgHelp {
 public:
-    DbgHelp();
+    DbgHelp(bool invade_current_process = false);
     ~DbgHelp();
 
     void close();
@@ -27,6 +27,8 @@ public:
 
     typedef std::function<void(const ModuleInfo&)> OnModule;
     void enum_modules(const OnModule&) const;
+
+    ModuleInfo resolve_module(Address) const;
 
     typedef std::function<void(const SymbolInfo&)> OnSymbol;
     static constexpr auto all_symbols = "*!*";

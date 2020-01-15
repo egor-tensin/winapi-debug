@@ -41,6 +41,8 @@ test_script:
   - '"%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\foobar.pdb" --mask "foobar!foobar_ns*"'
   - '"%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\foobar.pdb" --functions --mask "foobar_ns*"'
 
+  - '"%install_dir%\bin\call_stack"'
+
 for:
 # Only build Release builds on master to speed things up:
 - branches:
