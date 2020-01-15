@@ -25,8 +25,12 @@ public:
 
     ModuleInfo load_pdb(const std::string& path) const;
 
+    typedef std::function<void(const ModuleInfo&)> OnModule;
+    void enum_modules(const OnModule&) const;
+
     typedef std::function<void(const SymbolInfo&)> OnSymbol;
     void enum_symbols(const ModuleInfo&, const OnSymbol&) const;
+    void enum_symbols(const OnSymbol&) const;
 
     SymbolInfo resolve_symbol(Address) const;
     SymbolInfo resolve_symbol(const std::string&) const;
@@ -34,8 +38,6 @@ public:
     LineInfo resolve_line(Address) const;
 
 private:
-    ModuleInfo get_module_info(Address offline_base) const;
-
     const HANDLE id = GetCurrentProcess();
     bool closed = false;
 

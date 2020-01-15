@@ -45,6 +45,27 @@ Address gen_next_offline_base(std::size_t pdb_size) {
     return base;
 }
 
+ModuleInfo get_module_info(HANDLE id, Address offline_base) {
+    ModuleInfo info;
+
+    if (!SymGetModuleInfo64(id, offline_base, &static_cast<ModuleInfo::Impl&>(info)))
+        throw error::windows(GetLastError());
+
+    return info;
+}
+
+struct ModuleEnumerator {
+    HANDLE id;
+    DbgHelp::OnModule callback;
+};
+
+BOOL CALLBACK enum_modules_callback(PCSTR, DWORD64 offline_base, PVOID raw_enumerator_ptr) {
+    const auto enumerator_ptr = reinterpret_cast<ModuleEnumerator*>(raw_enumerator_ptr);
+    const auto& enumerator = *enumerator_ptr;
+    enumerator.callback(get_module_info(enumerator.id, offline_base));
+    return TRUE;
+}
+
 BOOL CALLBACK enum_symbols_callback(SYMBOL_INFO* info, ULONG, VOID* raw_callback_ptr) {
     const auto callback_ptr = reinterpret_cast<DbgHelp::OnSymbol*>(raw_callback_ptr);
     const auto& callback = *callback_ptr;
@@ -90,16 +111,13 @@ ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
     if (!offline_base)
         throw error::windows(GetLastError());
 
-    return get_module_info(offline_base);
+    return get_module_info(id, offline_base);
 }
 
-ModuleInfo DbgHelp::get_module_info(Address offline_base) const {
-    ModuleInfo info;
-
-    if (!SymGetModuleInfo64(id, offline_base, &static_cast<ModuleInfo::Impl&>(info)))
+void DbgHelp::enum_modules(const OnModule& callback) const {
+    ModuleEnumerator enumerator{id, callback};
+    if (!SymEnumerateModules64(id, &enum_modules_callback, &enumerator))
         throw error::windows(GetLastError());
-
-    return info;
 }
 
 void DbgHelp::enum_symbols(const ModuleInfo& module, const OnSymbol& callback) const {
@@ -108,6 +126,13 @@ void DbgHelp::enum_symbols(const ModuleInfo& module, const OnSymbol& callback) c
                         NULL,
                         &enum_symbols_callback,
                         const_cast<OnSymbol*>(&callback)))
+        throw error::windows(GetLastError());
+}
+
+void DbgHelp::enum_symbols(const OnSymbol& callback) const {
+    static constexpr auto all_symbols = "*!*";
+    if (!SymEnumSymbols(
+            id, 0, all_symbols, &enum_symbols_callback, const_cast<OnSymbol*>(&callback)))
         throw error::windows(GetLastError());
 }
 
