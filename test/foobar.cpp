@@ -1,4 +1,4 @@
-namespace lab_rat {
+namespace foobar_ns {
 
 int exit_code = 1;
 
@@ -14,8 +14,8 @@ int foo() {
     return bar() * 2;
 }
 
-} // namespace lab_rat
+} // namespace foobar_ns
 
 int main() {
-    return lab_rat::foo() * 2;
+    return foobar_ns::foo() * 2;
 }
