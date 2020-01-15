@@ -40,18 +40,18 @@ public:
     SymbolInfo();
     explicit SymbolInfo(const Impl& impl);
 
-    explicit operator Impl&() { return impl; }
-    explicit operator const Impl&() const { return impl; }
+    explicit operator Impl&() { return get_impl(); }
+    explicit operator const Impl&() const { return get_impl(); }
 
     Address get_displacement() const { return displacement; }
     void set_displacement(Address new_value) { displacement = new_value; }
 
-    std::string get_name() const { return {impl.Name, impl.NameLen}; }
+    std::string get_name() const { return {get_impl().Name, get_impl().NameLen}; }
 
-    Address get_offline_base() const { return impl.ModBase; }
-    Address get_offline_address() const { return impl.Address; }
+    Address get_offline_base() const { return get_impl().ModBase; }
+    Address get_offline_address() const { return get_impl().Address; }
 
-    symbol::Tag get_tag() const { return impl.Tag; }
+    symbol::Tag get_tag() const { return get_impl().Tag; }
 
     enum class Type : symbol::Tag {
         Function = symbol::SYM_TAG_FUNCTION,
@@ -68,8 +68,8 @@ private:
     std::array<unsigned char, max_buffer_size> buffer;
     Address displacement = 0;
 
-protected:
-    Impl& impl;
+    const Impl& get_impl() const { return *reinterpret_cast<const Impl*>(buffer.data()); }
+    Impl& get_impl() { return *reinterpret_cast<Impl*>(buffer.data()); }
 };
 
 class Symbol : public SymbolInfo {

@@ -36,10 +36,10 @@ unsigned long cast_line_number(DWORD impl) {
 
 } // namespace
 
-SymbolInfo::SymbolInfo() : buffer{}, impl{*reinterpret_cast<Impl*>(buffer.data())} {
+SymbolInfo::SymbolInfo() {
     buffer.fill(0);
-    impl.SizeOfStruct = sizeof(Impl);
-    impl.MaxNameLen = MAX_SYM_NAME;
+    get_impl().SizeOfStruct = sizeof(Impl);
+    get_impl().MaxNameLen = MAX_SYM_NAME;
 }
 
 SymbolInfo::SymbolInfo(const Impl& impl) : SymbolInfo{} {
