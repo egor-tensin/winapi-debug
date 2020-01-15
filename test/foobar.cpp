@@ -2,15 +2,15 @@ namespace foobar_ns {
 
 int exit_code = 1;
 
-int baz() {
+int __declspec(noinline) baz() {
     return exit_code;
 }
 
-int bar() {
+int __declspec(noinline) bar() {
     return baz() * 2;
 }
 
-int foo() {
+int __declspec(noinline) foo() {
     return bar() * 2;
 }
 
