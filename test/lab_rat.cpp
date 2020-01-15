@@ -1,5 +1,7 @@
 #include <iostream>
 
+namespace lab_rat {
+
 void baz() {
     std::cout << "baz\n";
 }
@@ -14,7 +16,9 @@ void foo() {
     bar();
 }
 
+} // namespace lab_rat
+
 int main() {
-    foo();
+    lab_rat::foo();
     return 0;
 }
