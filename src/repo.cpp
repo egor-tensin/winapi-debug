@@ -119,8 +119,8 @@ void Repo::enum_symbols(Address offline_base, const OnSymbol& callback) const {
 }
 
 void Repo::enum_symbols(const Module& module, const OnSymbol& callback) const {
-    dbghelp.enum_symbols(module,
-                         [&](const SymbolInfo& raw) { callback(symbol_from_buffer(module, raw)); });
+    dbghelp.enum_symbols(
+        module, [&](const SymbolInfo& impl) { callback(symbol_from_buffer(module, impl)); });
 }
 
 Symbol Repo::resolve_symbol(Address online) const {
@@ -143,12 +143,12 @@ const Module& Repo::module_with_offline_base(Address base) const {
     return lookup_module(offline_bases, base);
 }
 
-Symbol Repo::symbol_from_buffer(const SymbolInfo& raw) const {
-    return symbol_from_buffer(module_with_offline_base(raw.get_offline_base()), raw);
+Symbol Repo::symbol_from_buffer(const SymbolInfo& impl) const {
+    return symbol_from_buffer(module_with_offline_base(impl.get_offline_base()), impl);
 }
 
-Symbol Repo::symbol_from_buffer(const Module& module, const SymbolInfo& raw) {
-    return {module.translate_offline_address(raw.get_offline_address()), raw};
+Symbol Repo::symbol_from_buffer(const Module& module, const SymbolInfo& impl) {
+    return {module.translate_offline_address(impl.get_offline_address()), impl};
 }
 
 Address Repo::address_online_to_offline(Address online) const {

@@ -36,37 +36,37 @@ static_assert(static_cast<Tag>(SymTagFunction) == SYM_TAG_FUNCTION,
 
 class SymbolInfo {
 public:
-    typedef SYMBOL_INFO Raw;
+    typedef SYMBOL_INFO Impl;
 
-    SymbolInfo() : raw{*reinterpret_cast<Raw*>(buffer)} {
-        raw.SizeOfStruct = sizeof(Raw);
-        raw.MaxNameLen = MAX_SYM_NAME;
+    SymbolInfo() : impl{*reinterpret_cast<Impl*>(buffer)} {
+        impl.SizeOfStruct = sizeof(Impl);
+        impl.MaxNameLen = MAX_SYM_NAME;
     }
 
-    explicit SymbolInfo(const Raw& raw) : SymbolInfo{} {
-        if (raw.SizeOfStruct != sizeof(raw))
+    explicit SymbolInfo(const Impl& impl) : SymbolInfo{} {
+        if (impl.SizeOfStruct != sizeof(impl))
             throw std::runtime_error{"invalid SYMBOL_INFO.SizeOfStruct"};
-        const auto raw_size = calc_size(raw);
+        const auto raw_size = calc_size(impl);
         if (raw_size > sizeof(buffer))
             throw std::runtime_error{"SYMBOL_INFO is too large"};
-        std::memcpy(buffer, &raw, raw_size);
+        std::memcpy(buffer, &impl, raw_size);
     }
 
-    explicit operator Raw&() { return raw; }
+    explicit operator Impl&() { return impl; }
 
-    explicit operator const Raw&() const { return raw; }
+    explicit operator const Impl&() const { return impl; }
 
     Address get_displacement() const { return displacement; }
 
     void set_displacement(Address new_value) { displacement = new_value; }
 
-    std::string get_name() const { return {raw.Name, raw.NameLen}; }
+    std::string get_name() const { return {impl.Name, impl.NameLen}; }
 
-    Address get_offline_base() const { return raw.ModBase; }
+    Address get_offline_base() const { return impl.ModBase; }
 
-    Address get_offline_address() const { return raw.Address; }
+    Address get_offline_address() const { return impl.Address; }
 
-    symbol::Tag get_tag() const { return raw.Tag; }
+    symbol::Tag get_tag() const { return impl.Tag; }
 
     enum class Type : symbol::Tag {
         Function = symbol::SYM_TAG_FUNCTION,
@@ -78,11 +78,11 @@ public:
     bool is_function() const { return get_type() == Type::Function; }
 
 private:
-    static constexpr std::size_t max_buffer_size = sizeof(Raw) + MAX_SYM_NAME - 1;
+    static constexpr std::size_t max_buffer_size = sizeof(Impl) + MAX_SYM_NAME - 1;
 
-    static std::size_t calc_size(const Raw& raw) {
+    static std::size_t calc_size(const Impl& impl) {
         try {
-            return SafeInt<std::size_t>{raw.SizeOfStruct} + raw.NameLen - 1;
+            return SafeInt<std::size_t>{impl.SizeOfStruct} + impl.NameLen - 1;
         } catch (const SafeIntException&) {
             throw std::runtime_error{"invalid SYMBOL_INFO size"};
         }
@@ -92,7 +92,7 @@ private:
     Address displacement = 0;
 
 protected:
-    Raw& raw;
+    Impl& impl;
 };
 
 class Symbol : public SymbolInfo {
@@ -108,19 +108,19 @@ private:
 
 class LineInfo {
 public:
-    typedef IMAGEHLP_LINE64 Raw;
+    typedef IMAGEHLP_LINE64 Impl;
 
-    explicit LineInfo(const Raw& raw)
-        : file_path{raw.FileName}, line_number{cast_line_number(raw.LineNumber)} {}
+    explicit LineInfo(const Impl& impl)
+        : file_path{impl.FileName}, line_number{cast_line_number(impl.LineNumber)} {}
 
     const std::string file_path;
     const unsigned long line_number;
 
 private:
-    static unsigned long cast_line_number(DWORD raw) {
+    static unsigned long cast_line_number(DWORD impl) {
         unsigned long dest = 0;
 
-        if (!SafeCast(raw, dest))
+        if (!SafeCast(impl, dest))
             throw std::runtime_error{"invalid line number"};
 
         return dest;

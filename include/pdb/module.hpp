@@ -16,22 +16,22 @@ namespace pdb {
 
 class ModuleInfo {
 public:
-    typedef IMAGEHLP_MODULE64 Raw;
+    typedef IMAGEHLP_MODULE64 Impl;
 
     ModuleInfo();
-    explicit ModuleInfo(const Raw& raw);
+    explicit ModuleInfo(const Impl& impl);
 
-    explicit operator Raw&() { return raw; }
-    explicit operator const Raw&() const { return raw; }
+    explicit operator Impl&() { return impl; }
+    explicit operator const Impl&() const { return impl; }
 
-    Address get_offline_base() const { return raw.BaseOfImage; }
+    Address get_offline_base() const { return impl.BaseOfImage; }
 
-    std::string get_name() const { return raw.ModuleName; }
+    std::string get_name() const { return impl.ModuleName; }
 
 private:
-    static Raw create_raw();
+    static Impl create_impl();
 
-    Raw raw;
+    Impl impl;
 };
 
 class Module : public ModuleInfo {

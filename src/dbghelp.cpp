@@ -96,7 +96,7 @@ ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
 ModuleInfo DbgHelp::get_module_info(Address offline_base) const {
     ModuleInfo info;
 
-    if (!SymGetModuleInfo64(id, offline_base, &static_cast<ModuleInfo::Raw&>(info)))
+    if (!SymGetModuleInfo64(id, offline_base, &static_cast<ModuleInfo::Impl&>(info)))
         throw error::windows(GetLastError());
 
     return info;
@@ -132,16 +132,16 @@ SymbolInfo DbgHelp::resolve_symbol(const std::string& name) const {
 }
 
 LineInfo DbgHelp::resolve_line(Address offline) const {
-    IMAGEHLP_LINE64 raw;
-    std::memset(&raw, 0, sizeof(raw));
-    raw.SizeOfStruct = sizeof(raw);
+    IMAGEHLP_LINE64 impl;
+    std::memset(&impl, 0, sizeof(impl));
+    impl.SizeOfStruct = sizeof(impl);
 
     DWORD displacement = 0;
 
-    if (!SymGetLineFromAddr64(id, offline, &displacement, &raw))
+    if (!SymGetLineFromAddr64(id, offline, &displacement, &impl))
         throw error::windows(GetLastError());
 
-    return LineInfo{raw};
+    return LineInfo{impl};
 }
 
 } // namespace pdb

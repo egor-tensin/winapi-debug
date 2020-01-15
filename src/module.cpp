@@ -14,18 +14,18 @@
 
 namespace pdb {
 
-ModuleInfo::ModuleInfo() : ModuleInfo{create_raw()} {}
+ModuleInfo::ModuleInfo() : ModuleInfo{create_impl()} {}
 
-ModuleInfo::ModuleInfo(const Raw& raw) : raw{raw} {
-    if (raw.SizeOfStruct != sizeof(raw))
+ModuleInfo::ModuleInfo(const Impl& impl) : impl{impl} {
+    if (impl.SizeOfStruct != sizeof(impl))
         throw std::runtime_error{"invalid IMAGEHLP_MODULE64.SizeOfStruct"};
 }
 
-ModuleInfo::Raw ModuleInfo::create_raw() {
-    Raw raw;
-    std::memset(&raw, 0, sizeof(raw));
-    raw.SizeOfStruct = sizeof(raw);
-    return raw;
+ModuleInfo::Impl ModuleInfo::create_impl() {
+    Impl impl;
+    std::memset(&impl, 0, sizeof(impl));
+    impl.SizeOfStruct = sizeof(impl);
+    return impl;
 }
 
 Address Module::translate_offline_address(Address offline) const {
