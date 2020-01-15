@@ -36,6 +36,9 @@ after_build:
   - 7z.exe a "%APPVEYOR_PROJECT_NAME%-%PLATFORM%-%CONFIGURATION%.zip" "%install_dir%"
   - appveyor.exe PushArtifact "%APPVEYOR_PROJECT_NAME%-%PLATFORM%-%CONFIGURATION%.zip"
 
+test_script:
+  - '"%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\lab_rat.pdb" --functions'
+
 for:
 # Only build Release builds on master to speed things up:
 - branches:
