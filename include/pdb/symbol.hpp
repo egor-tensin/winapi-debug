@@ -13,10 +13,9 @@
 #include <DbgHelp.h>
 #include <Windows.h>
 
+#include <array>
 #include <climits>
 #include <cstddef>
-#include <cstring>
-#include <stdexcept>
 #include <string>
 
 namespace pdb {
@@ -38,32 +37,18 @@ class SymbolInfo {
 public:
     typedef SYMBOL_INFO Impl;
 
-    SymbolInfo() : impl{*reinterpret_cast<Impl*>(buffer)} {
-        impl.SizeOfStruct = sizeof(Impl);
-        impl.MaxNameLen = MAX_SYM_NAME;
-    }
-
-    explicit SymbolInfo(const Impl& impl) : SymbolInfo{} {
-        if (impl.SizeOfStruct != sizeof(impl))
-            throw std::runtime_error{"invalid SYMBOL_INFO.SizeOfStruct"};
-        const auto raw_size = calc_size(impl);
-        if (raw_size > sizeof(buffer))
-            throw std::runtime_error{"SYMBOL_INFO is too large"};
-        std::memcpy(buffer, &impl, raw_size);
-    }
+    SymbolInfo();
+    explicit SymbolInfo(const Impl& impl);
 
     explicit operator Impl&() { return impl; }
-
     explicit operator const Impl&() const { return impl; }
 
     Address get_displacement() const { return displacement; }
-
     void set_displacement(Address new_value) { displacement = new_value; }
 
     std::string get_name() const { return {impl.Name, impl.NameLen}; }
 
     Address get_offline_base() const { return impl.ModBase; }
-
     Address get_offline_address() const { return impl.Address; }
 
     symbol::Tag get_tag() const { return impl.Tag; }
@@ -80,15 +65,7 @@ public:
 private:
     static constexpr std::size_t max_buffer_size = sizeof(Impl) + MAX_SYM_NAME - 1;
 
-    static std::size_t calc_size(const Impl& impl) {
-        try {
-            return SafeInt<std::size_t>{impl.SizeOfStruct} + impl.NameLen - 1;
-        } catch (const SafeIntException&) {
-            throw std::runtime_error{"invalid SYMBOL_INFO size"};
-        }
-    }
-
-    unsigned char buffer[max_buffer_size] = {0};
+    std::array<unsigned char, max_buffer_size> buffer;
     Address displacement = 0;
 
 protected:
@@ -110,21 +87,10 @@ class LineInfo {
 public:
     typedef IMAGEHLP_LINE64 Impl;
 
-    explicit LineInfo(const Impl& impl)
-        : file_path{impl.FileName}, line_number{cast_line_number(impl.LineNumber)} {}
+    explicit LineInfo(const Impl& impl);
 
     const std::string file_path;
     const unsigned long line_number;
-
-private:
-    static unsigned long cast_line_number(DWORD impl) {
-        unsigned long dest = 0;
-
-        if (!SafeCast(impl, dest))
-            throw std::runtime_error{"invalid line number"};
-
-        return dest;
-    }
 };
 
 } // namespace pdb
