@@ -1,3 +1,4 @@
+set(CC_STATIC_RUNTIME OFF)
 add_executable(lab_rat lab_rat.cpp)
 
 install(TARGETS lab_rat RUNTIME DESTINATION bin)

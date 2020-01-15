@@ -1,24 +1,21 @@
-#include <iostream>
-
 namespace lab_rat {
 
-void baz() {
-    std::cout << "baz\n";
+int exit_code = 1;
+
+int baz() {
+    return exit_code;
 }
 
-void bar() {
-    std::cout << "bar\n";
-    baz();
+int bar() {
+    return baz() * 2;
 }
 
-void foo() {
-    std::cout << "foo\n";
-    bar();
+int foo() {
+    return bar() * 2;
 }
 
 } // namespace lab_rat
 
 int main() {
-    lab_rat::foo();
-    return 0;
+    return lab_rat::foo() * 2;
 }
