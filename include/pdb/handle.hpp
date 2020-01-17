@@ -7,7 +7,7 @@
 
 #include "workarounds.hpp"
 
-#include <Windows.h>
+#include <windows.h>
 
 #include <cassert>
 #include <memory>

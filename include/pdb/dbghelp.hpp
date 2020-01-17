@@ -9,7 +9,7 @@
 #include "module.hpp"
 #include "symbol.hpp"
 
-#include <Windows.h>
+#include <windows.h>
 
 #include <functional>
 #include <string>

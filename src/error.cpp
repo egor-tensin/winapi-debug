@@ -5,7 +5,7 @@
 
 #include "pdb/all.hpp"
 
-#include <Windows.h>
+#include <windows.h>
 
 #include <string>
 

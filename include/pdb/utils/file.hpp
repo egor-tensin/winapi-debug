@@ -7,7 +7,7 @@
 
 #include <boost/functional/hash.hpp>
 
-#include <Windows.h>
+#include <windows.h>
 
 #include <cstddef>
 #include <cstring>

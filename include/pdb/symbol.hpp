@@ -10,8 +10,8 @@
 
 #include <SafeInt.hpp>
 
-#include <DbgHelp.h>
-#include <Windows.h>
+#include <dbghelp.h>
+#include <windows.h>
 
 #include <array>
 #include <climits>
