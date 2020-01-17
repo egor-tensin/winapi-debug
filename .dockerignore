@@ -1,0 +1,7 @@
+**/.git
+**/.gitattributes
+**/.gitignore
+
+.dockerignore
+**/Dockerfile
+**/docker-compose.yml

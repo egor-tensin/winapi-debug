@@ -1,0 +1,47 @@
+language: minimal
+os: linux
+dist: bionic
+
+services:
+  - docker
+
+env:
+  global:
+    travis_boost_version: 1.65.0
+  jobs:
+    - configuration=Debug   platform=x86
+    - configuration=Release platform=x86
+    - configuration=Debug   platform=x64
+    - configuration=Release platform=x64
+
+script:
+  # MinGW-w64 7.0 or higher is required, which is only available on Focal.
+  # I tried building it manually, but failed miserably, which is why I opted
+  # for a Docker build.
+  - cd .travis
+  - >-
+    docker-compose build
+    --build-arg travis_boost_version="$travis_boost_version"
+    --build-arg platform="$platform"
+    --build-arg configuration="$configuration"
+    mingw_build
+
+jobs:
+  fast_finish: true
+
+  include:
+    - name: Run clang-format
+      if: branch = master
+      addons:
+        apt:
+          update: true
+          packages:
+            - clang-format-9
+          sources:
+            - sourceline: 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+      # Clear before_script:
+      before_script:
+        - true
+      script:
+        - ./cmake/tools/clang-format.py --clang-format clang-format-9
