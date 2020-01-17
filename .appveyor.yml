@@ -15,7 +15,7 @@ platform:
 
 configuration:
   - Debug
-  - Release
+  - RelWithDebInfo
 
 matrix:
   fast_finish: true
@@ -37,9 +37,9 @@ after_build:
   - appveyor.exe PushArtifact "%APPVEYOR_PROJECT_NAME%-%PLATFORM%-%CONFIGURATION%.zip"
 
 test_script:
-  - if exist "%install_dir%\bin\foobar.pdb" "%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\foobar.pdb"
-  - if exist "%install_dir%\bin\foobar.pdb" "%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\foobar.pdb" --mask "foobar!foobar_ns*"
-  - if exist "%install_dir%\bin\foobar.pdb" "%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\foobar.pdb" --functions --mask "foobar_ns*"
+  - '"%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\foobar.pdb"'
+  - '"%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\foobar.pdb" --mask "foobar!foobar_ns*"'
+  - '"%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\foobar.pdb" --functions --mask "foobar_ns*"'
 
   - '"%install_dir%\bin\call_stack"'
 
