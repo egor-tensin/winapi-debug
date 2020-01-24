@@ -26,14 +26,12 @@ WORKDIR "$TRAVIS_BUILD_DIR"
 RUN ./cmake/boost/build/ci/travis.py \
         --link static \
         -- \
-        target-os=windows \
         --user-config="$TRAVIS_BUILD_DIR/cmake/boost/toolchains/mingw-w64-$platform.jam" \
         --with-filesystem \
         --with-program_options && \
     ./cmake/cmake/build/ci/travis.py \
         --install "$HOME/install" \
         -- \
-        -D CMAKE_SYSTEM_NAME=Windows \
         -D "CMAKE_TOOLCHAIN_FILE=$TRAVIS_BUILD_DIR/cmake/cmake/toolchains/mingw-w64-$platform.cmake" \
         -D "BOOST_ROOT=$HOME/boost_1_65_0" \
         -D "BOOST_LIBRARYDIR=$HOME/boost_1_65_0/stage/$platform/$configuration/lib"
