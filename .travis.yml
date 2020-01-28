@@ -1,4 +1,4 @@
-language: minimal
+language: shell
 os: linux
 dist: bionic
 
@@ -14,13 +14,12 @@ env:
     - configuration=Debug   platform=x64
     - configuration=Release platform=x64
 
-script:
-  # MinGW-w64 7.0 or higher is required, which is only available on Focal.
-  # I tried building it manually, but failed miserably, which is why I opted
-  # for a Docker build.
-  - cd .travis
-  - >-
-    docker-compose build
+# MinGW-w64 7.0 or higher is required, which is only available on Focal.
+# I tried building it manually, but failed miserably, which is why I opted for
+# a Docker build.
+script: >-
+    docker-compose -f .travis/docker-compose.yml
+    build
     --build-arg travis_boost_version="$travis_boost_version"
     --build-arg platform="$platform"
     --build-arg configuration="$configuration"
@@ -40,8 +39,4 @@ jobs:
           sources:
             - sourceline: 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'
               key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
-      # Clear before_script:
-      before_script:
-        - true
-      script:
-        - ./cmake/tools/clang-format.py --clang-format clang-format-9
+      script: ./cmake/tools/clang-format.py --clang-format clang-format-9
