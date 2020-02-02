@@ -35,8 +35,8 @@ RUN ./cmake/boost/build/ci/travis.py \
         --install /opt/pdb-repo \
         -- \
         -D "CMAKE_TOOLCHAIN_FILE=$TRAVIS_BUILD_DIR/cmake/cmake/toolchains/mingw-w64-$platform.cmake" \
-        -D "BOOST_ROOT=$HOME/boost_1_65_0" \
-        -D "BOOST_LIBRARYDIR=$HOME/boost_1_65_0/stage/$platform/$configuration/lib"
+        -D "BOOST_ROOT=$HOME/boost" \
+        -D "BOOST_LIBRARYDIR=$HOME/boost/stage/$platform/$configuration/lib"
 
 FROM base
 
