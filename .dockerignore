@@ -1,7 +1,11 @@
-**/.git
-**/.gitattributes
-**/.gitignore
+*
 
-.dockerignore
-**/Dockerfile
-**/docker-compose.yml
+# Only things actually used during the build process:
+!/3rdparty/**
+!/CMakeLists.txt
+!/LICENSE.txt
+!/cmake/**
+!/include/**
+!/src/**
+!/test/**
+!/utils/**
