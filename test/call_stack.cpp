@@ -6,7 +6,7 @@
 namespace test {
 
 void call_stack() {
-    pdb::DbgHelp dbghelp{true};
+    const auto dbghelp = pdb::DbgHelp::current_process();
     const auto call_stack = pdb::CallStack::capture();
     for (std::size_t i = 0; i < call_stack.length; ++i)
         std::cout << pdb::format_address(call_stack.frames[i]) << ' '

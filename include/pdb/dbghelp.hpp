@@ -18,10 +18,14 @@ namespace pdb {
 
 class DbgHelp {
 public:
-    DbgHelp(bool invade_current_process = false);
-    ~DbgHelp();
+    static DbgHelp current_process() { return DbgHelp{true}; }
+    static DbgHelp post_mortem() { return DbgHelp{false}; }
 
-    void close();
+    void swap(DbgHelp& other) noexcept;
+
+    DbgHelp(DbgHelp&& other) noexcept;
+    DbgHelp& operator=(DbgHelp) noexcept;
+    ~DbgHelp();
 
     ModuleInfo load_pdb(const std::string& path) const;
 
@@ -43,11 +47,26 @@ public:
     LineInfo resolve_line(Address) const;
 
 private:
-    const HANDLE id = GetCurrentProcess();
-    bool closed = false;
+    explicit DbgHelp(bool invade_current_process);
+
+    void close();
+
+    HANDLE id = GetCurrentProcess();
 
     DbgHelp(const DbgHelp&) = delete;
-    DbgHelp& operator=(const DbgHelp&) = delete;
 };
 
+inline void swap(DbgHelp& a, DbgHelp& b) noexcept {
+    a.swap(b);
+}
+
 } // namespace pdb
+
+namespace std {
+
+template <>
+inline void swap(pdb::DbgHelp& a, pdb::DbgHelp& b) noexcept {
+    a.swap(b);
+}
+
+} // namespace std

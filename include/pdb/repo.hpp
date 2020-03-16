@@ -47,7 +47,7 @@ private:
     Address address_offline_to_online(Address) const;
     Address address_online_to_offline(Address) const;
 
-    const DbgHelp dbghelp;
+    const DbgHelp dbghelp{DbgHelp::post_mortem()};
 
     std::unordered_set<file::ID> file_ids;
     std::map<Address, Module> online_bases;

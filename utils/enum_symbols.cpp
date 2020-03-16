@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
             return 0;
         }
 
-        pdb::DbgHelp dbghelp;
+        const auto dbghelp = pdb::DbgHelp::post_mortem();
 
         for (const auto& pdb : settings.pdbs) {
             const auto id = dbghelp.load_pdb(pdb);

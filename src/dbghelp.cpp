@@ -91,6 +91,20 @@ DbgHelp::DbgHelp(bool invade_current_process) {
     initialize(id, invade_current_process);
 }
 
+void DbgHelp::swap(DbgHelp& other) noexcept {
+    using std::swap;
+    swap(id, other.id);
+}
+
+DbgHelp::DbgHelp(DbgHelp&& other) noexcept {
+    swap(other);
+}
+
+DbgHelp& DbgHelp::operator=(DbgHelp other) noexcept {
+    swap(other);
+    return *this;
+}
+
 DbgHelp::~DbgHelp() {
     try {
         close();
@@ -99,10 +113,7 @@ DbgHelp::~DbgHelp() {
 }
 
 void DbgHelp::close() {
-    if (!closed) {
-        clean_up(id);
-        closed = true;
-    }
+    clean_up(id);
 }
 
 ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
