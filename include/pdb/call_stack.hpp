@@ -14,6 +14,8 @@
 
 #include <array>
 #include <cstddef>
+#include <functional>
+#include <ostream>
 #include <string>
 
 namespace pdb {
@@ -31,6 +33,13 @@ public:
 
     static CallStack capture();
 
+    using AddressCallback = std::function<bool(Address)>;
+    bool for_each_address(const AddressCallback& callback) const;
+
+    static std::string pretty_print_address(const DbgHelp& dbghelp, Address addr);
+
+    void dump(std::ostream& os, const DbgHelp&) const;
+
     const std::array<Address, max_length> frames;
     const std::size_t length;
 
@@ -38,9 +47,4 @@ private:
     CallStack() = default;
 };
 
-namespace call_stack {
-
-std::string pretty_print_address(const DbgHelp& dbghelp, Address addr);
-
-} // namespace call_stack
 } // namespace pdb

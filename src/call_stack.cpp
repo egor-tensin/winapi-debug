@@ -11,13 +11,14 @@
 
 #include <algorithm>
 #include <array>
+#include <cstddef>
+#include <ostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <system_error>
 
 namespace pdb {
-namespace call_stack {
 namespace {
 
 template <typename T>
@@ -80,12 +81,6 @@ std::string resolve_and_format(const DbgHelp& dbghelp, Address addr) {
 
 } // namespace
 
-std::string pretty_print_address(const DbgHelp& dbghelp, Address addr) {
-    return resolve_and_format(dbghelp, addr);
-}
-
-} // namespace call_stack
-
 CallStack CallStack::capture() {
     std::array<void*, max_length> frames_impl{nullptr};
     const auto length =
@@ -96,6 +91,26 @@ CallStack CallStack::capture() {
         return reinterpret_cast<Address>(addr);
     });
     return {frames, length};
+}
+
+bool CallStack::for_each_address(const AddressCallback& callback) const {
+    for (std::size_t i = 0; i < length; ++i) {
+        if (!callback(frames[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+std::string CallStack::pretty_print_address(const DbgHelp& dbghelp, Address addr) {
+    return resolve_and_format(dbghelp, addr);
+}
+
+void CallStack::dump(std::ostream& os, const DbgHelp& dbghelp) const {
+    for_each_address([&](Address addr) {
+        os << format_address(addr) << ' ' << pretty_print_address(dbghelp, addr) << '\n';
+        return true;
+    });
 }
 
 } // namespace pdb

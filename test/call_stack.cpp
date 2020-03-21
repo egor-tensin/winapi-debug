@@ -8,9 +8,7 @@ namespace test {
 void call_stack() {
     const auto dbghelp = pdb::DbgHelp::current_process();
     const auto call_stack = pdb::CallStack::capture();
-    for (std::size_t i = 0; i < call_stack.length; ++i)
-        std::cout << pdb::format_address(call_stack.frames[i]) << ' '
-                  << pdb::call_stack::pretty_print_address(dbghelp, call_stack.frames[i]) << '\n';
+    call_stack.dump(std::cout, dbghelp);
 }
 
 void __declspec(noinline) baz() {
