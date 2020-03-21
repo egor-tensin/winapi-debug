@@ -22,7 +22,8 @@ ARG configuration=Debug
 # We're on Travis, that's right.
 ENV TRAVIS=1
 ENV TRAVIS_BUILD_DIR=/usr/src
-COPY [".", "$TRAVIS_BUILD_DIR"]
+
+COPY ["cmake", "$TRAVIS_BUILD_DIR/cmake"]
 WORKDIR "$TRAVIS_BUILD_DIR"
 
 RUN ./cmake/boost/build/ci/travis.py \
@@ -30,8 +31,11 @@ RUN ./cmake/boost/build/ci/travis.py \
         -- \
         --user-config="$TRAVIS_BUILD_DIR/cmake/boost/toolchains/mingw-w64-$platform.jam" \
         --with-filesystem \
-        --with-program_options && \
-    ./cmake/cmake/build/ci/travis.py \
+        --with-program_options
+
+COPY [".", "$TRAVIS_BUILD_DIR"]
+
+RUN ./cmake/cmake/build/ci/travis.py \
         --install /opt/pdb-repo \
         -- \
         -D "CMAKE_TOOLCHAIN_FILE=$TRAVIS_BUILD_DIR/cmake/cmake/toolchains/mingw-w64-$platform.cmake" \
