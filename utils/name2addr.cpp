@@ -7,6 +7,7 @@
 #include "pdb/all.hpp"
 #include "pdb_descr.hpp"
 
+#include <boost/nowide/iostream.hpp>
 #include <boost/program_options.hpp>
 
 #include <exception>
@@ -18,7 +19,7 @@ namespace {
 
 class Name2Addr : public SettingsParser {
 public:
-    explicit Name2Addr(const std::string& argv0) : SettingsParser{argv0} {
+    explicit Name2Addr(int argc, char** argv) : SettingsParser{argc, argv} {
         namespace po = boost::program_options;
 
         visible.add_options()(
@@ -38,16 +39,16 @@ public:
 };
 
 void dump_error(const std::exception& e) {
-    std::cerr << "error: " << e.what() << '\n';
+    boost::nowide::cerr << "error: " << e.what() << '\n';
 }
 
 void resolve_symbol(const pdb::Repo& repo, const std::string& name) {
     try {
         const auto address = repo.resolve_symbol(name).get_online_address();
-        std::cout << pdb::format_address(address) << '\n';
+        boost::nowide::cout << pdb::format_address(address) << '\n';
     } catch (const std::exception& e) {
         dump_error(e);
-        std::cout << name << '\n';
+        boost::nowide::cout << name << '\n';
     }
 }
 
@@ -55,7 +56,7 @@ void resolve_symbol(const pdb::Repo& repo, const std::string& name) {
 
 int main(int argc, char* argv[]) {
     try {
-        Name2Addr settings{argv[0]};
+        Name2Addr settings{argc, argv};
 
         try {
             settings.parse(argc, argv);

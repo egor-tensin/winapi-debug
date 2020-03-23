@@ -6,6 +6,9 @@
 #pragma once
 
 #include <boost/filesystem.hpp>
+#include <boost/nowide/args.hpp>
+#include <boost/nowide/filesystem.hpp>
+#include <boost/nowide/iostream.hpp>
 #include <boost/program_options.hpp>
 
 #include <exception>
@@ -13,9 +16,23 @@
 #include <ostream>
 #include <string>
 
+class Args {
+public:
+    Args(int argc, char** argv) : argc{argc}, argv{argv}, impl{this->argc, this->argv} {
+        boost::nowide::nowide_filesystem();
+    }
+
+    int argc;
+    char** argv;
+
+private:
+    const boost::nowide::args impl;
+};
+
 class SettingsParser {
 public:
-    explicit SettingsParser(const std::string& argv0) : prog_name{extract_filename(argv0)} {
+    explicit SettingsParser(int argc, char** argv)
+        : args{argc, argv}, prog_name{extract_filename(args.argv[0])} {
         visible.add_options()("help,h", "show this message and exit");
     }
 
@@ -40,11 +57,11 @@ public:
 
     bool exit_with_usage = false;
 
-    void usage() const { std::cout << *this; }
+    void usage() const { boost::nowide::cout << *this; }
 
     void usage_error(const std::exception& e) const {
-        std::cerr << "usage error: " << e.what() << '\n';
-        std::cerr << *this;
+        boost::nowide::cerr << "usage error: " << e.what() << '\n';
+        boost::nowide::cerr << *this;
     }
 
 protected:
@@ -53,10 +70,11 @@ protected:
     boost::program_options::positional_options_description positional;
 
 private:
-    static std::string extract_filename(const std::string& path) {
+    static std::string extract_filename(char* path) {
         return boost::filesystem::path{path}.filename().string();
     }
 
+    const Args args;
     const std::string prog_name;
 
     friend std::ostream& operator<<(std::ostream& os, const SettingsParser& parser) {

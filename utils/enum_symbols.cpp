@@ -6,6 +6,7 @@
 #include "command_line.hpp"
 #include "pdb/all.hpp"
 
+#include <boost/nowide/iostream.hpp>
 #include <boost/program_options.hpp>
 
 #include <exception>
@@ -17,7 +18,7 @@ namespace {
 
 class EnumSymbols : public SettingsParser {
 public:
-    explicit EnumSymbols(const std::string& argv0) : SettingsParser{argv0} {
+    explicit EnumSymbols(int argc, char** argv) : SettingsParser{argc, argv} {
         namespace po = boost::program_options;
 
         visible.add_options()("pdb",
@@ -58,7 +59,7 @@ constexpr pdb::symbol::Tag EnumSymbols::function_tag;
 
 int main(int argc, char* argv[]) {
     try {
-        EnumSymbols settings{argv[0]};
+        EnumSymbols settings{argc, argv};
 
         try {
             settings.parse(argc, argv);
@@ -79,11 +80,11 @@ int main(int argc, char* argv[]) {
 
             dbghelp.enum_symbols(id, settings.get_mask(), [&](const pdb::SymbolInfo& symbol) {
                 if (!settings.type_specified() || settings.get_type() == symbol.get_type())
-                    std::cout << symbol.get_name() << '\n';
+                    boost::nowide::cout << symbol.get_name() << '\n';
             });
         }
     } catch (const std::exception& e) {
-        std::cerr << "error: " << e.what() << '\n';
+        boost::nowide::cerr << "error: " << e.what() << '\n';
         return 1;
     }
     return 0;

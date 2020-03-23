@@ -8,8 +8,6 @@
 #include "address.hpp"
 #include "module.hpp"
 
-#include <SafeInt.hpp>
-
 #include <dbghelp.h>
 #include <windows.h>
 
@@ -35,7 +33,7 @@ static_assert(static_cast<Tag>(SymTagFunction) == SYM_TAG_FUNCTION,
 
 class SymbolInfo {
 public:
-    typedef SYMBOL_INFO Impl;
+    typedef SYMBOL_INFOW Impl;
 
     SymbolInfo();
     explicit SymbolInfo(const Impl& impl);
@@ -46,7 +44,7 @@ public:
     Address get_displacement() const { return displacement; }
     void set_displacement(Address new_value) { displacement = new_value; }
 
-    std::string get_name() const { return {get_impl().Name, get_impl().NameLen}; }
+    std::string get_name() const;
 
     Address get_offline_base() const { return get_impl().ModBase; }
     Address get_offline_address() const { return get_impl().Address; }
@@ -85,7 +83,7 @@ private:
 
 class LineInfo {
 public:
-    typedef IMAGEHLP_LINE64 Impl;
+    typedef IMAGEHLP_LINEW64 Impl;
 
     explicit LineInfo(const Impl& impl);
 

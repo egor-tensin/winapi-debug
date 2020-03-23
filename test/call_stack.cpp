@@ -1,28 +1,29 @@
 #include "pdb/all.hpp"
 
+#include <boost/nowide/iostream.hpp>
+
 #include <exception>
-#include <iostream>
 
 namespace test {
 
 void call_stack() {
     const auto dbghelp = pdb::DbgHelp::current_process();
     const auto call_stack = pdb::CallStack::capture();
-    call_stack.dump(std::cout, dbghelp);
+    call_stack.dump(boost::nowide::cout, dbghelp);
 }
 
 void __declspec(noinline) baz() {
-    std::cout << "baz\n";
+    boost::nowide::cout << "baz\n";
     call_stack();
 }
 
 void __declspec(noinline) bar() {
-    std::cout << "bar\n";
+    boost::nowide::cout << "bar\n";
     baz();
 }
 
 void __declspec(noinline) foo() {
-    std::cout << "foo\n";
+    boost::nowide::cout << "foo\n";
     bar();
 }
 
@@ -32,7 +33,7 @@ int main() {
     try {
         test::foo();
     } catch (const std::exception& e) {
-        std::cerr << e.what() << '\n';
+        boost::nowide::cerr << e.what() << '\n';
         return 1;
     }
     return 0;

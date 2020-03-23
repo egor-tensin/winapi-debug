@@ -16,7 +16,7 @@ namespace pdb {
 
 class ModuleInfo {
 public:
-    typedef IMAGEHLP_MODULE64 Impl;
+    typedef IMAGEHLP_MODULEW64 Impl;
 
     ModuleInfo();
     explicit ModuleInfo(const Impl& impl);
@@ -26,7 +26,7 @@ public:
 
     Address get_offline_base() const { return impl.BaseOfImage; }
 
-    std::string get_name() const { return impl.ModuleName; }
+    std::string get_name() const;
 
 private:
     static Impl create_impl();

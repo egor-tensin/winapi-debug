@@ -5,6 +5,8 @@
 
 #include "pdb/all.hpp"
 
+#include <boost/nowide/convert.hpp>
+
 #include <SafeInt.hpp>
 
 #include <dbghelp.h>
@@ -13,6 +15,7 @@
 #include <cstddef>
 #include <cstring>
 #include <stdexcept>
+#include <string>
 
 namespace pdb {
 namespace {
@@ -51,7 +54,12 @@ SymbolInfo::SymbolInfo(const Impl& impl) : SymbolInfo{} {
     std::memcpy(buffer.data(), &impl, impl_size);
 }
 
+std::string SymbolInfo::get_name() const {
+    return boost::nowide::narrow(std::wstring{get_impl().Name, get_impl().NameLen});
+}
+
 LineInfo::LineInfo(const Impl& impl)
-    : file_path{impl.FileName}, line_number{cast_line_number(impl.LineNumber)} {}
+    : file_path{boost::nowide::narrow(impl.FileName)},
+      line_number{cast_line_number(impl.LineNumber)} {}
 
 } // namespace pdb

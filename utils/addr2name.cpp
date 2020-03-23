@@ -7,6 +7,7 @@
 #include "pdb/all.hpp"
 #include "pdb_descr.hpp"
 
+#include <boost/nowide/iostream.hpp>
 #include <boost/program_options.hpp>
 
 #include <exception>
@@ -19,7 +20,7 @@ namespace {
 
 class Addr2Name : public SettingsParser {
 public:
-    explicit Addr2Name(const std::string& argv0) : SettingsParser{argv0} {
+    explicit Addr2Name(int argc, char** argv) : SettingsParser{argc, argv} {
         namespace po = boost::program_options;
 
         visible.add_options()(
@@ -57,7 +58,7 @@ std::string format_line_info(const pdb::LineInfo& line_info) {
 }
 
 void dump_error(const std::exception& e) {
-    std::cerr << "error: " << e.what() << '\n';
+    boost::nowide::cerr << "error: " << e.what() << '\n';
 }
 
 void resolve_symbol(const pdb::Repo& repo, pdb::Address address, bool lines = false) {
@@ -77,10 +78,10 @@ void resolve_symbol(const pdb::Repo& repo, pdb::Address address, bool lines = fa
             }
         }
 
-        std::cout << msg.str() << '\n';
+        boost::nowide::cout << msg.str() << '\n';
     } catch (const std::exception& e) {
         dump_error(e);
-        std::cout << pdb::format_address(address) << '\n';
+        boost::nowide::cout << pdb::format_address(address) << '\n';
     }
 }
 
@@ -88,7 +89,7 @@ void resolve_symbol(const pdb::Repo& repo, pdb::Address address, bool lines = fa
 
 int main(int argc, char* argv[]) {
     try {
-        Addr2Name settings{argv[0]};
+        Addr2Name settings{argc, argv};
 
         try {
             settings.parse(argc, argv);

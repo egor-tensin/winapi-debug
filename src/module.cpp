@@ -5,6 +5,8 @@
 
 #include "pdb/all.hpp"
 
+#include <boost/nowide/convert.hpp>
+
 #include <SafeInt.hpp>
 
 #include <cstring>
@@ -26,6 +28,10 @@ ModuleInfo::Impl ModuleInfo::create_impl() {
     std::memset(&impl, 0, sizeof(impl));
     impl.SizeOfStruct = sizeof(impl);
     return impl;
+}
+
+std::string ModuleInfo::get_name() const {
+    return boost::nowide::narrow(impl.ModuleName);
 }
 
 Address Module::translate_offline_address(Address offline) const {

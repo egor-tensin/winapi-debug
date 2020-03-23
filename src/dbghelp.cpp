@@ -5,6 +5,8 @@
 
 #include "pdb/all.hpp"
 
+#include <boost/nowide/convert.hpp>
+
 #include <SafeInt.hpp>
 
 #include <dbghelp.h>
@@ -48,7 +50,7 @@ Address gen_next_offline_base(std::size_t pdb_size) {
 ModuleInfo get_module_info(HANDLE id, Address offline_base) {
     ModuleInfo info;
 
-    if (!SymGetModuleInfo64(id, offline_base, &static_cast<ModuleInfo::Impl&>(info)))
+    if (!SymGetModuleInfoW64(id, offline_base, &static_cast<ModuleInfo::Impl&>(info)))
         throw error::windows(GetLastError());
 
     return info;
@@ -59,14 +61,14 @@ struct ModuleEnumerator {
     DbgHelp::OnModule callback;
 };
 
-BOOL CALLBACK enum_modules_callback(PCSTR, DWORD64 offline_base, PVOID raw_enumerator_ptr) {
+BOOL CALLBACK enum_modules_callback(PCWSTR, DWORD64 offline_base, PVOID raw_enumerator_ptr) {
     const auto enumerator_ptr = reinterpret_cast<ModuleEnumerator*>(raw_enumerator_ptr);
     const auto& enumerator = *enumerator_ptr;
     enumerator.callback(get_module_info(enumerator.id, offline_base));
     return TRUE;
 }
 
-BOOL CALLBACK enum_symbols_callback(SYMBOL_INFO* info, ULONG, VOID* raw_callback_ptr) {
+BOOL CALLBACK enum_symbols_callback(SYMBOL_INFOW* info, ULONG, VOID* raw_callback_ptr) {
     const auto callback_ptr = reinterpret_cast<DbgHelp::OnSymbol*>(raw_callback_ptr);
     const auto& callback = *callback_ptr;
     callback(SymbolInfo{*info});
@@ -77,11 +79,11 @@ void enum_symbols(HANDLE id,
                   Address module_base,
                   const std::string& mask,
                   const DbgHelp::OnSymbol& callback) {
-    if (!SymEnumSymbols(id,
-                        module_base,
-                        mask.c_str(),
-                        &enum_symbols_callback,
-                        const_cast<DbgHelp::OnSymbol*>(&callback)))
+    if (!SymEnumSymbolsW(id,
+                         module_base,
+                         boost::nowide::widen(mask).c_str(),
+                         &enum_symbols_callback,
+                         const_cast<DbgHelp::OnSymbol*>(&callback)))
         throw error::windows(GetLastError());
 }
 
@@ -128,6 +130,7 @@ ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
     _path.assign(path.cbegin(), path.cend());
     _path.emplace_back('\0');
 
+    // TODO: switch to the W version?
     const auto offline_base =
         SymLoadModule64(id, NULL, _path.data(), NULL, gen_next_offline_base(size), size);
 
@@ -139,7 +142,7 @@ ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
 
 void DbgHelp::enum_modules(const OnModule& callback) const {
     ModuleEnumerator enumerator{id, callback};
-    if (!SymEnumerateModules64(id, &enum_modules_callback, &enumerator))
+    if (!SymEnumerateModulesW64(id, &enum_modules_callback, &enumerator))
         throw error::windows(GetLastError());
 }
 
@@ -169,7 +172,7 @@ SymbolInfo DbgHelp::resolve_symbol(Address offline) const {
     Address displacement = 0;
     SymbolInfo symbol;
 
-    if (!SymFromAddr(id, offline, &displacement, &static_cast<SYMBOL_INFO&>(symbol)))
+    if (!SymFromAddrW(id, offline, &displacement, &static_cast<SYMBOL_INFOW&>(symbol)))
         throw error::windows(GetLastError());
 
     symbol.set_displacement(displacement);
@@ -179,20 +182,20 @@ SymbolInfo DbgHelp::resolve_symbol(Address offline) const {
 SymbolInfo DbgHelp::resolve_symbol(const std::string& name) const {
     SymbolInfo symbol;
 
-    if (!SymFromName(id, name.c_str(), &static_cast<SYMBOL_INFO&>(symbol)))
+    if (!SymFromNameW(id, boost::nowide::widen(name).c_str(), &static_cast<SYMBOL_INFOW&>(symbol)))
         throw error::windows(GetLastError());
 
     return symbol;
 }
 
 LineInfo DbgHelp::resolve_line(Address offline) const {
-    IMAGEHLP_LINE64 impl;
+    IMAGEHLP_LINEW64 impl;
     std::memset(&impl, 0, sizeof(impl));
     impl.SizeOfStruct = sizeof(impl);
 
     DWORD displacement = 0;
 
-    if (!SymGetLineFromAddr64(id, offline, &displacement, &impl))
+    if (!SymGetLineFromAddrW64(id, offline, &displacement, &impl))
         throw error::windows(GetLastError());
 
     return LineInfo{impl};

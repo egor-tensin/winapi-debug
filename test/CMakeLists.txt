@@ -1,5 +1,6 @@
 add_executable(call_stack call_stack.cpp)
 target_link_libraries(call_stack PRIVATE pdb_repo)
+target_link_libraries(call_stack PRIVATE Boost::nowide)
 
 install(TARGETS call_stack RUNTIME DESTINATION bin)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
