@@ -11,6 +11,7 @@
 #include "error.hpp"
 #include "handle.hpp"
 #include "module.hpp"
+#include "process.hpp"
 #include "repo.hpp"
 #include "symbol.hpp"
 #include "utils/file.hpp"
