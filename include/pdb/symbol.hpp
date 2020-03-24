@@ -15,6 +15,7 @@
 #include <climits>
 #include <cstddef>
 #include <string>
+#include <type_traits>
 
 namespace pdb {
 namespace symbol {
@@ -61,7 +62,9 @@ public:
     bool is_function() const { return get_type() == Type::Function; }
 
 private:
-    static constexpr std::size_t max_buffer_size = sizeof(Impl) + MAX_SYM_NAME - 1;
+    static constexpr std::size_t char_size = sizeof(std::remove_extent<decltype(Impl::Name)>::type);
+    static_assert(char_size == sizeof(wchar_t), "Aren't we using the wide WinAPI?");
+    static constexpr std::size_t max_buffer_size = sizeof(Impl) + (MAX_SYM_NAME - 1) * char_size;
 
     std::array<unsigned char, max_buffer_size> buffer;
     Address displacement = 0;

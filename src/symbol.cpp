@@ -16,13 +16,15 @@
 #include <cstring>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 
 namespace pdb {
 namespace {
 
 std::size_t calc_size(const SymbolInfo::Impl& impl) {
     try {
-        return SafeInt<std::size_t>{impl.SizeOfStruct} + impl.NameLen - 1;
+        static constexpr auto char_size = sizeof(std::remove_extent<decltype(impl.Name)>::type);
+        return SafeInt<std::size_t>{impl.SizeOfStruct} + (impl.NameLen - 1) * char_size;
     } catch (const SafeIntException&) {
         throw std::runtime_error{"invalid SYMBOL_INFO size"};
     }
