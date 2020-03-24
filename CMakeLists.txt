@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.5) # for Boost::* imported targets
 
 project(pdb_repo CXX)
 
+include(cmake/cmake/common.cmake)
+
 find_package(Boost REQUIRED)
 add_subdirectory(3rdparty/boost/nowide)
-
-include(cmake/cmake/common.cmake)
 
 file(GLOB_RECURSE pdb_repo_include "include/*.hpp")
 file(GLOB_RECURSE pdb_repo_src "src/*.cpp")
