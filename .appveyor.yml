@@ -36,11 +36,8 @@ after_build:
   - appveyor.exe PushArtifact "%APPVEYOR_PROJECT_NAME%-%PLATFORM%-%CONFIGURATION%.zip"
 
 test_script:
-  - '"%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\symbols.pdb"'
-  - '"%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\symbols.pdb" --mask "foobar!foobar_ns*"'
-  - '"%install_dir%\bin\enum_symbols" --pdb "%install_dir%\bin\symbols.pdb" --functions --mask "foobar_ns*"'
-
-  - '"%install_dir%\bin\call_stack"'
+  - '"%install_dir%\bin\test\unit_tests" --log_level=all'
+  - '"%install_dir%\bin\test\call_stack"'
 
 for:
 # Only build Release builds on master to speed things up:

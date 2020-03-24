@@ -12,12 +12,14 @@ SpacesBeforeTrailingComments: 1
 IncludeCategories:
   - Regex: '^".*'
     Priority: 1
-  - Regex: '^<boost/'
+  - Regex: '^<pdb/'
     Priority: 2
-  - Regex: '^<SafeInt.hpp>$'
+  - Regex: '^<boost/'
     Priority: 3
-  - Regex: '^<.*\.h>$'
+  - Regex: '^<SafeInt.hpp>$'
     Priority: 4
-  - Regex: '.*'
+  - Regex: '^<.*\.h>$'
     Priority: 5
+  - Regex: '.*'
+    Priority: 6
 ...

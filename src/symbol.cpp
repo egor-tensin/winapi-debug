@@ -57,7 +57,9 @@ SymbolInfo::SymbolInfo(const Impl& impl) : SymbolInfo{} {
 }
 
 std::string SymbolInfo::get_name() const {
-    return boost::nowide::narrow(std::wstring{get_impl().Name, get_impl().NameLen});
+    // SymFromAddrW, contrary to SymFromAddrA, seems to include the terminating
+    // null character in NameLen.
+    return boost::nowide::narrow(get_impl().Name);
 }
 
 LineInfo::LineInfo(const Impl& impl)

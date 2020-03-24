@@ -31,7 +31,8 @@ RUN ./cmake/boost/build/ci/travis.py \
         -- \
         --user-config="$TRAVIS_BUILD_DIR/cmake/boost/toolchains/mingw-w64-$platform.jam" \
         --with-filesystem \
-        --with-program_options
+        --with-program_options \
+        --with-test
 
 COPY [".", "$TRAVIS_BUILD_DIR"]
 
