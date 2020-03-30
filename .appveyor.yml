@@ -25,11 +25,11 @@ install:
 
 build_script:
   - '"%python_exe%" cmake\tools\clang-format.py'
+  - cd cmake
   - >-
-    "%python_exe%" cmake\cmake\build\ci\appveyor.py
+    "%python_exe%" -m project.ci.appveyor.cmake
     --install "%install_dir%"
-    --
-    -D "BOOST_ROOT=%appveyor_boost_root%"
+    --boost "%appveyor_boost_root%"
 
 after_build:
   - 7z.exe a "%APPVEYOR_PROJECT_NAME%-%PLATFORM%-%CONFIGURATION%.zip" "%install_dir%"

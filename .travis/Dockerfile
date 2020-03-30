@@ -15,33 +15,30 @@ RUN apt-get update -yq && \
         make            \
         mingw-w64
 
-ARG travis_boost_version=1.65.0
+ARG boost_version=1.65.0
 ARG platform=x86
 ARG configuration=Debug
 
 # We're on Travis, that's right.
-ENV TRAVIS=1
 ENV TRAVIS_BUILD_DIR=/usr/src
 
 COPY ["cmake", "$TRAVIS_BUILD_DIR/cmake"]
 WORKDIR "$TRAVIS_BUILD_DIR"
 
-RUN ./cmake/boost/build/ci/travis.py \
-        --link static \
+RUN cd cmake && \
+    python3 -m project.ci.travis.boost \
+        --mingw \
         -- \
-        --user-config="$TRAVIS_BUILD_DIR/cmake/boost/toolchains/mingw-w64-$platform.jam" \
         --with-filesystem \
         --with-program_options \
         --with-test
 
 COPY [".", "$TRAVIS_BUILD_DIR"]
 
-RUN ./cmake/cmake/build/ci/travis.py \
+RUN cd cmake && \
+    python3 -m project.ci.travis.cmake \
         --install /opt/pdb-repo \
-        -- \
-        -D "CMAKE_TOOLCHAIN_FILE=$TRAVIS_BUILD_DIR/cmake/cmake/toolchains/mingw-w64-$platform.cmake" \
-        -D "BOOST_ROOT=$HOME/boost" \
-        -D "BOOST_LIBRARYDIR=$HOME/boost/stage/$platform/$configuration/lib"
+        --mingw
 
 FROM base
 

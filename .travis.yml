@@ -7,7 +7,7 @@ services:
 
 env:
   global:
-    travis_boost_version: 1.65.0
+    boost_version: 1.65.0
   jobs:
     - configuration=Debug   platform=x86
     - configuration=Release platform=x86
@@ -20,7 +20,7 @@ env:
 script: >-
     docker-compose -f .travis/docker-compose.yml
     build
-    --build-arg travis_boost_version="$travis_boost_version"
+    --build-arg boost_version="$boost_version"
     --build-arg platform="$platform"
     --build-arg configuration="$configuration"
     mingw_build
