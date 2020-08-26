@@ -1,6 +1,0 @@
-version: '3'
-services:
-  mingw_build:
-    build:
-      context: ..
-      dockerfile: .travis/Dockerfile
