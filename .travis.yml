@@ -33,15 +33,20 @@ script: >-
 jobs:
   fast_finish: true
 
+  # Clear irrelevant matrix build settings:
+  _clear: &clear
+    language: shell
+    addons: {apt: {packages: []}}
+    before_script: []
+    script: []
+
   include:
-    - name: Run clang-format
+    - <<: *clear
+      name: Run clang-format
       if: branch = master
       addons:
         apt:
           update: true
           packages:
             - clang-format-9
-          sources:
-            - sourceline: 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'
-              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
       script: ./cmake/tools/clang-format.py --clang-format clang-format-9
