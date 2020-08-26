@@ -1,9 +1,10 @@
-language: shell
-os: linux
-dist: bionic
+# Linux builds are only to make sure the project can be built w/ MinGW-w64 &
+# GCC.
 
-services:
-  - docker
+language: cpp
+os: linux
+# MinGW-w64 7.0 or higher is required, hence the latest distribution.
+dist: focal
 
 env:
   global:
@@ -14,16 +15,20 @@ env:
     - configuration=Debug   platform=x64
     - configuration=Release platform=x64
 
-# MinGW-w64 7.0 or higher is required, which is only available on Focal.
-# I tried building it manually, but failed miserably, which is why I opted for
-# a Docker build.
+before_script:
+  - cd cmake
+  - >-
+    python3 -m project.ci.travis.boost
+    --mingw
+    --
+    --with-filesystem
+    --with-program_options
+    --with-test
+
 script: >-
-    docker-compose -f .travis/docker-compose.yml
-    build
-    --build-arg boost_version="$boost_version"
-    --build-arg platform="$platform"
-    --build-arg configuration="$configuration"
-    mingw_build
+    python3 -m project.ci.travis.cmake
+    --install "$HOME/install"
+    --mingw
 
 jobs:
   fast_finish: true
