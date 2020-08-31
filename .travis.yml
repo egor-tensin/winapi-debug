@@ -46,7 +46,6 @@ jobs:
       if: branch = master
       addons:
         apt:
-          update: true
           packages:
             - clang-format-9
       script: ./cmake/tools/clang-format.py --clang-format clang-format-9
