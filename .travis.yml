@@ -10,10 +10,11 @@ env:
   global:
     boost_version: 1.65.0
   jobs:
+    # Building only Debug is fine, it's not going anywhere anyway:
     - configuration=Debug   platform=x86
-    - configuration=Release platform=x86
     - configuration=Debug   platform=x64
-    - configuration=Release platform=x64
+    #- configuration=Release platform=x86
+    #- configuration=Release platform=x64
 
 before_script:
   - cd cmake
@@ -33,9 +34,8 @@ script: >-
 jobs:
   fast_finish: true
 
-  # Clear irrelevant matrix build settings:
   _clear: &clear
-    language: shell
+    language: minimal
     addons: {apt: {packages: []}}
     before_script: []
     script: []
