@@ -1,8 +1,7 @@
-#include "pdb/all.hpp"
-
-#include <boost/nowide/convert.hpp>
+#include <pdb/all.hpp>
 
 #include <SafeInt.hpp>
+#include <boost/nowide/convert.hpp>
 
 #include <windows.h>
 

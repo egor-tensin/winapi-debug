@@ -10,18 +10,14 @@ IndentWidth: 4
 SpacesBeforeTrailingComments: 1
 
 IncludeCategories:
-  - Regex: '^".*'
+  - Regex: '^".+'
     Priority: 1
-  - Regex: '^<test_lib.*'
+  - Regex: '^<test_lib\.|^<pdb\/'
     Priority: 2
-  - Regex: '^<pdb/'
+  - Regex: '^<boost\/|^<SafeInt\.'
     Priority: 3
-  - Regex: '^<boost/'
-    Priority: 4
-  - Regex: '^<SafeInt.hpp>$'
-    Priority: 5
   - Regex: '^<.*\.h>$'
-    Priority: 6
+    Priority: 4
   - Regex: '.*'
-    Priority: 7
+    Priority: 5
 ...

@@ -3,7 +3,7 @@
 // For details, see https://github.com/egor-tensin/pdb-repo.
 // Distributed under the MIT License.
 
-#include "pdb/all.hpp"
+#include <pdb/all.hpp>
 
 #include <SafeInt.hpp>
 

@@ -1,9 +1,8 @@
-#include "dbghelp.hpp"
-#include "utils.hpp"
-
-#include <test_lib.hpp>
+#include "fixtures.hpp"
+#include "paths.hpp"
 
 #include <pdb/all.hpp>
+#include <test_lib.hpp>
 
 #include <boost/test/unit_test.hpp>
 

@@ -3,11 +3,10 @@
 // For details, see https://github.com/egor-tensin/pdb-repo.
 // Distributed under the MIT License.
 
-#include "pdb/all.hpp"
-
-#include <boost/nowide/convert.hpp>
+#include <pdb/all.hpp>
 
 #include <SafeInt.hpp>
+#include <boost/nowide/convert.hpp>
 
 #include <dbghelp.h>
 #include <windows.h>
