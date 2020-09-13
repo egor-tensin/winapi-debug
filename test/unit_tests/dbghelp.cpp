@@ -36,10 +36,10 @@ Set<T> join(Set<T>&& xs, Set<T>&& ys) {
 
 class DbgHelpWithSymbols : public DbgHelp {
 public:
-    DbgHelpWithSymbols() { load_symbols_pdb(); }
+    DbgHelpWithSymbols() { load_test_lib_pdb(); }
 
     static const std::string& get_namespace() {
-        static const std::string name{"foobar_ns"};
+        static const std::string name{"test"};
         return name;
     }
 
@@ -47,7 +47,7 @@ public:
 
     static SymbolList expected_functions() { return make_qualified({"foo", "bar", "baz"}); }
 
-    static SymbolList expected_variables() { return make_qualified({"exit_code"}); }
+    static SymbolList expected_variables() { return make_qualified({"var"}); }
 
     static SymbolList expected_symbols() {
         return join(expected_functions(), expected_variables());
@@ -62,14 +62,14 @@ private:
         return qualified;
     }
 
-    void load_symbols_pdb() {
-        const auto pdb_path = get_symbols_pdb_path().string();
+    void load_test_lib_pdb() {
+        const auto pdb_path = get_test_lib_pdb_path().string();
         BOOST_TEST_MESSAGE("Loading PDB: " << pdb_path);
         dbghelp.load_pdb(pdb_path);
     }
 
-    static boost::filesystem::path get_symbols_pdb_path() {
-        return Paths::get().exe_dir / "symbols.pdb";
+    static boost::filesystem::path get_test_lib_pdb_path() {
+        return Paths::get().exe_dir / "test_lib.pdb";
     }
 };
 
