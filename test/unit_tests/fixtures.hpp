@@ -39,7 +39,7 @@ public:
     DbgHelpWithSymbols() { load_test_lib_pdb(); }
 
     static const std::string& get_namespace() {
-        static const std::string name{"test"};
+        static const std::string name{"test_ns"};
         return name;
     }
 

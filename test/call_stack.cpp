@@ -6,7 +6,7 @@
 
 int main() {
     try {
-        test::print_call_stack();
+        test_ns::print_call_stack();
     } catch (const std::exception& e) {
         boost::nowide::cerr << e.what() << '\n';
         return 1;

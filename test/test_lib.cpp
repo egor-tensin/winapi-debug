@@ -9,7 +9,7 @@
 #pragma optimize("", off)
 #endif
 
-namespace test {
+namespace test_ns {
 namespace {
 
 void do_print_call_stack() {
@@ -41,4 +41,4 @@ void print_call_stack() {
     foo(&do_print_call_stack);
 }
 
-} // namespace test
+} // namespace test_ns

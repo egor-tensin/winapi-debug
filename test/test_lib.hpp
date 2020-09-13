@@ -4,7 +4,7 @@
 
 #include "test_lib_api.hpp"
 
-namespace test {
+namespace test_ns {
 
 typedef void (*F)();
 
@@ -16,4 +16,4 @@ TEST_LIB_API void baz(F);
 
 TEST_LIB_API void print_call_stack();
 
-} // namespace test
+} // namespace test_ns

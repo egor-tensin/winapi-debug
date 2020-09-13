@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(enum_symbols) {
 
 BOOST_AUTO_TEST_CASE(call_stack) {
     try {
-        test::foo(&throw_call_stack);
+        test_ns::foo(&throw_call_stack);
     } catch (const pdb::CallStack& call_stack) {
         BOOST_TEST(true, "Caught the call stack");
         return;
