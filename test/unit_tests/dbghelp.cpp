@@ -5,6 +5,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
+#include <algorithm>
 #include <iterator>
 #include <string>
 #include <unordered_set>
@@ -43,7 +44,7 @@ public:
         return name;
     }
 
-    typedef std::unordered_set<std::string> SymbolList;
+    typedef Set<std::string> SymbolList;
 
     static SymbolList expected_functions() { return make_qualified({"foo", "bar", "baz"}); }
 
@@ -75,21 +76,30 @@ private:
 
 } // namespace
 
-BOOST_AUTO_TEST_SUITE(dbghelp_tests)
-BOOST_FIXTURE_TEST_SUITE(enum_symbols_tests, DbgHelpWithSymbols)
+BOOST_FIXTURE_TEST_SUITE(dbghelp_tests, DbgHelpWithSymbols)
 
-BOOST_AUTO_TEST_CASE(basic) {
+BOOST_AUTO_TEST_CASE(enum_symbols) {
     // Symbols can be enumerated, and all the expected symbols are there.
-    auto all_symbols = expected_symbols();
-    const auto callback = [&all_symbols](const pdb::SymbolInfo& symbol) {
-        const auto name = symbol.get_name();
-        all_symbols.erase(name);
-    };
-    dbghelp.enum_symbols(callback);
-    for (const auto& missing : all_symbols) {
-        BOOST_TEST(false, "Symbol wasn't enumerated: " << missing);
+
+    // First, enumerate all the symbols:
+    std::vector<std::string> all_symbols;
+    {
+        const auto callback = [&all_symbols](const pdb::SymbolInfo& symbol) {
+            all_symbols.emplace_back(symbol.get_name());
+        };
+        dbghelp.enum_symbols(callback);
+    }
+
+    // Next, check that all the expected symbols are there:
+    {
+        const auto expected = expected_symbols();
+        const auto check = [&all_symbols](const std::string& name) {
+            return std::find(all_symbols.cbegin(), all_symbols.cend(), name) != all_symbols.cend();
+        };
+        for (const auto& name : expected) {
+            BOOST_TEST(check(name), "Symbol wasn't enumerated: " << name);
+        }
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE_END()
