@@ -1,5 +1,6 @@
 #include "pdb/all.hpp"
 
+#include <boost/config.hpp>
 #include <boost/nowide/iostream.hpp>
 
 #include <exception>
@@ -12,17 +13,17 @@ void call_stack() {
     call_stack.dump(boost::nowide::cout, dbghelp);
 }
 
-void __declspec(noinline) baz() {
+BOOST_NOINLINE void baz() {
     boost::nowide::cout << "baz\n";
     call_stack();
 }
 
-void __declspec(noinline) bar() {
+BOOST_NOINLINE void bar() {
     boost::nowide::cout << "bar\n";
     baz();
 }
 
-void __declspec(noinline) foo() {
+BOOST_NOINLINE void foo() {
     boost::nowide::cout << "foo\n";
     bar();
 }
