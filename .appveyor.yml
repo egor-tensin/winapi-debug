@@ -37,6 +37,13 @@ after_build:
 
 test_script:
   - '"%install_dir%\bin\test\unit_tests.exe" --log_level=all'
+
+  - '"%install_dir%\bin\enum_symbols.exe" --pdb "%install_dir%\bin\test\test_lib.pdb" --mask "test::*"'
+  - ps: '$(& "$env:install_dir\bin\enum_symbols.exe" --pdb "$env:install_dir\bin\test\test_lib.pdb" | Select-String -Pattern "test::baz" -SimpleMatch -Quiet) -or $(throw "test::baz not enumerated among the symbols")'
+  - ps: '$(& "$env:install_dir\bin\enum_symbols.exe" --pdb "$env:install_dir\bin\test\test_lib.pdb" | Select-String -Pattern "test::bar" -SimpleMatch -Quiet) -or $(throw "test::bar not enumerated among the symbols")'
+  - ps: '$(& "$env:install_dir\bin\enum_symbols.exe" --pdb "$env:install_dir\bin\test\test_lib.pdb" | Select-String -Pattern "test::foo" -SimpleMatch -Quiet) -or $(throw "test::foo not enumerated among the symbols")'
+  - ps: '$(& "$env:install_dir\bin\enum_symbols.exe" --pdb "$env:install_dir\bin\test\test_lib.pdb" | Select-String -Pattern "test::var" -SimpleMatch -Quiet) -or $(throw "test::var not enumerated among the symbols")'
+
   - '"%install_dir%\bin\test\call_stack.exe"'
   - ps: '$(& "$env:install_dir\bin\test\call_stack.exe" | Select-String -Pattern "[test_lib!test::baz" -SimpleMatch -Quiet) -or $(throw "test::baz not found in the call stack")'
   - ps: '$(& "$env:install_dir\bin\test\call_stack.exe" | Select-String -Pattern "[test_lib!test::bar" -SimpleMatch -Quiet) -or $(throw "test::bar not found in the call stack")'
