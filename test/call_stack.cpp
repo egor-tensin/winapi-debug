@@ -13,18 +13,19 @@ void call_stack() {
     call_stack.dump(boost::nowide::cout, dbghelp);
 }
 
+// Some tricks to prevent the functions from being inlined follow...
 BOOST_NOINLINE void baz() {
-    boost::nowide::cout << "baz\n";
+    boost::nowide::cout << "baz " << &baz << '\n';
     call_stack();
 }
 
 BOOST_NOINLINE void bar() {
-    boost::nowide::cout << "bar\n";
+    boost::nowide::cout << "bar " << &bar << '\n';
     baz();
 }
 
 BOOST_NOINLINE void foo() {
-    boost::nowide::cout << "foo\n";
+    boost::nowide::cout << "foo " << &foo << '\n';
     bar();
 }
 
