@@ -7,6 +7,8 @@
 
 namespace test {
 
+typedef void (*F)();
+
 void call_stack() {
     const auto dbghelp = pdb::DbgHelp::current_process();
     const auto call_stack = pdb::CallStack::capture();
@@ -14,26 +16,30 @@ void call_stack() {
 }
 
 // Some tricks to prevent the functions from being inlined follow...
-BOOST_NOINLINE void baz() {
+void baz() {
     boost::nowide::cout << "baz " << &baz << '\n';
-    call_stack();
+    F f = &call_stack;
+    f();
 }
 
-BOOST_NOINLINE void bar() {
+void bar() {
     boost::nowide::cout << "bar " << &bar << '\n';
-    baz();
+    F f = &baz;
+    f();
 }
 
-BOOST_NOINLINE void foo() {
+void foo() {
     boost::nowide::cout << "foo " << &foo << '\n';
-    bar();
+    F f = &bar;
+    f();
 }
 
 } // namespace test
 
 int main() {
     try {
-        test::foo();
+        test::F f = &test::foo;
+        f();
     } catch (const std::exception& e) {
         boost::nowide::cerr << e.what() << '\n';
         return 1;
