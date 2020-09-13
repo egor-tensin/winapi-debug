@@ -36,8 +36,11 @@ after_build:
   - appveyor.exe PushArtifact "%APPVEYOR_PROJECT_NAME%-%PLATFORM%-%CONFIGURATION%.zip"
 
 test_script:
-  - '"%install_dir%\bin\test\unit_tests" --log_level=all'
-  - '"%install_dir%\bin\test\call_stack"'
+  - '"%install_dir%\bin\test\unit_tests.exe" --log_level=all'
+  - '"%install_dir%\bin\test\call_stack.exe"'
+  - ps: '$(& "$env:install_dir\bin\test\call_stack.exe" | Select-String -Pattern "[call_stack!test::baz" -SimpleMatch -Quiet) -or $(throw "test::baz not found in the call stack")'
+  - ps: '$(& "$env:install_dir\bin\test\call_stack.exe" | Select-String -Pattern "[call_stack!test::bar" -SimpleMatch -Quiet) -or $(throw "test::bar not found in the call stack")'
+  - ps: '$(& "$env:install_dir\bin\test\call_stack.exe" | Select-String -Pattern "[call_stack!test::foo" -SimpleMatch -Quiet) -or $(throw "test::foo not found in the call stack")'
 
 for:
 # Only build Release builds on master to speed things up:
