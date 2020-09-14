@@ -20,6 +20,10 @@ inline std::string format_address(Address address) {
     return oss.str();
 }
 
+inline std::string format_address(void* address) {
+    return format_address(reinterpret_cast<Address>(address));
+}
+
 inline bool parse_address(Address& dest, const std::string& src) {
     std::istringstream iss{src};
     iss >> std::hex;

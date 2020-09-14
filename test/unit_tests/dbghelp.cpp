@@ -1,8 +1,6 @@
 #include "fixtures.hpp"
-#include "paths.hpp"
 
 #include <pdb/all.hpp>
-#include <test_lib.hpp>
 
 #include <boost/test/unit_test.hpp>
 
@@ -10,15 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace {
-
-void throw_call_stack() {
-    throw pdb::CallStack::capture();
-}
-
-} // namespace
-
-BOOST_FIXTURE_TEST_SUITE(dbghelp_tests, DbgHelpWithSymbols)
+BOOST_FIXTURE_TEST_SUITE(enum_symbols_tests, PostMortem)
 
 BOOST_AUTO_TEST_CASE(enum_symbols) {
     // Symbols can be enumerated, and all the expected symbols are there.
@@ -42,16 +32,6 @@ BOOST_AUTO_TEST_CASE(enum_symbols) {
             BOOST_TEST(check(name), "Symbol wasn't enumerated: " << name);
         }
     }
-}
-
-BOOST_AUTO_TEST_CASE(call_stack) {
-    try {
-        test_ns::foo(&throw_call_stack);
-    } catch (const pdb::CallStack& call_stack) {
-        BOOST_TEST(true, "Caught the call stack");
-        return;
-    }
-    BOOST_TEST(false, "Didn't catch the call stack");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

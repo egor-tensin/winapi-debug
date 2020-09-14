@@ -43,6 +43,11 @@ public:
     const std::array<Address, max_length> frames;
     const std::size_t length;
 
+    const Address* begin() const { return frames.data(); }
+    const Address* cbegin() const { return begin(); }
+    const Address* end() const { return begin() + length; }
+    const Address* cend() const { return end(); }
+
 private:
     CallStack() = default;
 };

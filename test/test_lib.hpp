@@ -15,5 +15,6 @@ TEST_LIB_API void bar(F);
 TEST_LIB_API void baz(F);
 
 TEST_LIB_API void print_call_stack();
+TEST_LIB_API void throw_call_stack();
 
 } // namespace test_ns
