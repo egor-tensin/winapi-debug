@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(enum_symbols) {
             return std::find(all_symbols.cbegin(), all_symbols.cend(), name) != all_symbols.cend();
         };
         for (const auto& name : expected) {
-            BOOST_TEST(check(name), "Symbol wasn't enumerated: " << name);
+            BOOST_TEST(check(name), "Symbol found: " << name);
         }
     }
 }
