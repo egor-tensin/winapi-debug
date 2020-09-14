@@ -2,6 +2,27 @@ cmake_minimum_required(VERSION 3.5) # for Boost::* imported targets
 
 project(pdb_repo CXX)
 
+if(MSVC)
+    # This is an ugly hack to make the tests work.
+    # With incremental linking, the &func address does not point to the
+    # function code, but to a jmp instruction to the real code (or it's the
+    # other way around, I don't know).
+    # This is apparently caused by incremental linking, e.g.
+    # https://stackoverflow.com/questions/2485336/address-of-function-is-not-actual-code-address
+    string(REPLACE "/INCREMENTAL" "/INCREMENTAL:NO"
+        CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO
+        "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO}")
+    string(REPLACE "/INCREMENTAL" "/INCREMENTAL:NO"
+        CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO
+        "${CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO}")
+    string(REPLACE "/INCREMENTAL" "/INCREMENTAL:NO"
+        CMAKE_EXE_LINKER_FLAGS_DEBUG
+        "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
+    string(REPLACE "/INCREMENTAL" "/INCREMENTAL:NO"
+        CMAKE_SHARED_LINKER_FLAGS_DEBUG
+        "${CMAKE_SHARED_LINKER_FLAGS_DEBUG}")
+endif()
+
 include(cmake/common.cmake)
 
 find_package(Boost REQUIRED)
