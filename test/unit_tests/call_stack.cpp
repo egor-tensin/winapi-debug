@@ -3,6 +3,7 @@
 #include <pdb/all.hpp>
 #include <test_lib.hpp>
 
+#include <boost/optional.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <algorithm>
@@ -30,15 +31,21 @@ BOOST_AUTO_TEST_CASE(call_stack) {
         }
 
         // Second, resolve the symbols:
-        std::vector<pdb::SymbolInfo> symbols;
+        std::vector<boost::optional<pdb::SymbolInfo>> symbols;
         symbols.reserve(call_stack.length);
 
         BOOST_TEST_MESSAGE("Resolved symbols:");
         for (const auto& addr : call_stack) {
-            symbols.emplace_back(dbghelp.resolve_symbol(addr));
-            const auto& symbol = symbols.back();
-            BOOST_TEST_MESSAGE('\t' << pdb::format_address(symbol.get_offline_address()) << ' '
-                                    << symbol.get_name());
+            try {
+                auto symbol = dbghelp.resolve_symbol(addr);
+                BOOST_TEST_MESSAGE('\t' << pdb::format_address(symbol.get_offline_address()) << ' '
+                                        << symbol.get_name());
+                symbols.emplace_back(std::move(symbol));
+            } catch (const std::system_error& e) {
+                symbols.emplace_back(boost::none);
+                BOOST_TEST_MESSAGE('\t' << pdb::format_address(addr)
+                                        << " Couldn't resolve symbol: " << e.what());
+            }
         }
 
         {
@@ -47,7 +54,7 @@ BOOST_AUTO_TEST_CASE(call_stack) {
 
             const auto check = [&](pdb::Address addr) {
                 for (const auto& symbol : symbols)
-                    if (symbol.get_offline_address() == addr)
+                    if (symbol && symbol->get_offline_address() == addr)
                         return true;
                 return false;
             };
