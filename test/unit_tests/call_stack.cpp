@@ -11,9 +11,8 @@
 #include <boost/optional.hpp>
 #include <boost/test/unit_test.hpp>
 
-#include <algorithm>
-#include <sstream>
 #include <string>
+#include <system_error>
 #include <vector>
 
 BOOST_FIXTURE_TEST_SUITE(call_stack_tests, CurrentProcess)
