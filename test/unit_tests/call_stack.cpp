@@ -1,3 +1,8 @@
+// Copyright (c) 2020 Egor Tensin <Egor.Tensin@gmail.com>
+// This file is part of the "PDB repository" project.
+// For details, see https://github.com/egor-tensin/pdb-repo.
+// Distributed under the MIT License.
+
 #include "fixtures.hpp"
 
 #include <pdb/all.hpp>
@@ -17,7 +22,7 @@ BOOST_AUTO_TEST_CASE(call_stack) {
     try {
         test_ns::throw_call_stack();
     } catch (const pdb::CallStack& call_stack) {
-        // First, check that the call stack have been caught.
+        // First, check that the call stack has been caught.
         BOOST_TEST(true, "Caught the call stack");
 
         // Debug output:
@@ -49,7 +54,7 @@ BOOST_AUTO_TEST_CASE(call_stack) {
         }
 
         {
-            // Third, check that the expected function frames are in the call stack.
+            // Third, check that the expected function addresses are in the call stack.
             const auto expected = expected_function_addresses();
 
             const auto check = [&](pdb::Address addr) {
