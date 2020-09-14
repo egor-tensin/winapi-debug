@@ -49,7 +49,9 @@ public:
     typedef Set<pdb::Address> AddressList;
 
     static AddressList expected_function_addresses() {
-        return cast({&test_ns::foo, &test_ns::bar, &test_ns::baz});
+        return cast({reinterpret_cast<void*>(&test_ns::foo),
+                     reinterpret_cast<void*>(&test_ns::bar),
+                     reinterpret_cast<void*>(&test_ns::baz)});
     }
 
     static SymbolList expected_functions() { return make_qualified({"foo", "bar", "baz"}); }

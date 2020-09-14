@@ -32,17 +32,17 @@ void do_throw_call_stack() {
 volatile int var = 42;
 
 void baz(F f) {
-    boost::nowide::cout << "baz " << pdb::format_address(&baz) << '\n';
+    boost::nowide::cout << "baz " << pdb::format_address(reinterpret_cast<void*>(&baz)) << '\n';
     f();
 }
 
 void bar(F f) {
-    boost::nowide::cout << "bar " << pdb::format_address(&bar) << '\n';
+    boost::nowide::cout << "bar " << pdb::format_address(reinterpret_cast<void*>(&bar)) << '\n';
     baz(f);
 }
 
 void foo(F f) {
-    boost::nowide::cout << "foo " << pdb::format_address(&foo) << '\n';
+    boost::nowide::cout << "foo " << pdb::format_address(reinterpret_cast<void*>(&foo)) << '\n';
     bar(f);
 }
 
