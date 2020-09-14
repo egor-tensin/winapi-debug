@@ -51,7 +51,7 @@ private:
 
     void close();
 
-    HANDLE id = GetCurrentProcess();
+    HANDLE id = NULL;
 
     DbgHelp(const DbgHelp&) = delete;
 };

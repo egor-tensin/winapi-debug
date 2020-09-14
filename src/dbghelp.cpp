@@ -88,7 +88,7 @@ void enum_symbols(HANDLE id,
 
 } // namespace
 
-DbgHelp::DbgHelp(bool invade_current_process) {
+DbgHelp::DbgHelp(bool invade_current_process) : id{GetCurrentProcess()} {
     initialize(id, invade_current_process);
 }
 
@@ -114,7 +114,8 @@ DbgHelp::~DbgHelp() {
 }
 
 void DbgHelp::close() {
-    clean_up(id);
+    if (id != NULL)
+        clean_up(id);
 }
 
 ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
