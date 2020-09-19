@@ -6,6 +6,7 @@
 #include <pdb/all.hpp>
 
 #include <SafeInt.hpp>
+#include <boost/nowide/convert.hpp>
 
 #include <windows.h>
 
@@ -17,7 +18,7 @@ namespace pdb {
 namespace file {
 
 std::size_t get_size(const std::string& path) {
-    const Handle handle{CreateFileA(path.c_str(),
+    const Handle handle{CreateFileW(boost::nowide::widen(path).c_str(),
                                     FILE_READ_ATTRIBUTES,
                                     FILE_SHARE_READ,
                                     NULL,
@@ -42,7 +43,7 @@ std::size_t get_size(const std::string& path) {
 }
 
 ID query_id(const std::string& path) {
-    const Handle handle{CreateFileA(path.c_str(),
+    const Handle handle{CreateFileW(boost::nowide::widen(path).c_str(),
                                     FILE_READ_ATTRIBUTES,
                                     FILE_SHARE_READ | FILE_SHARE_WRITE,
                                     NULL,
