@@ -27,12 +27,12 @@ std::size_t get_size(const std::string& path) {
                                     NULL)};
 
     if (handle.get() == INVALID_HANDLE_VALUE)
-        throw error::windows(GetLastError());
+        throw error::windows(GetLastError(), "CreateFileW");
 
     LARGE_INTEGER size;
 
     if (!GetFileSizeEx(handle.get(), &size))
-        throw error::windows(GetLastError());
+        throw error::windows(GetLastError(), "GetFileSizeEx");
 
     std::size_t result = 0;
 
@@ -52,12 +52,12 @@ ID query_id(const std::string& path) {
                                     NULL)};
 
     if (handle.get() == INVALID_HANDLE_VALUE)
-        throw error::windows(GetLastError());
+        throw error::windows(GetLastError(), "CreateFileW");
 
     FILE_ID_INFO id;
 
     if (!GetFileInformationByHandleEx(handle.get(), FileIdInfo, &id, sizeof(id)))
-        throw error::windows(GetLastError());
+        throw error::windows(GetLastError(), "GetFileInformationByHandleEx");
 
     return {id};
 }

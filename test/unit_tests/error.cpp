@@ -14,8 +14,10 @@
 BOOST_AUTO_TEST_SUITE(error_tests)
 
 BOOST_AUTO_TEST_CASE(file_not_found) {
-    const std::string actual{pdb::error::windows(ERROR_FILE_NOT_FOUND).what()};
-    BOOST_TEST(actual == "The system cannot find the file specified.");
+    const std::string actual{pdb::error::windows(ERROR_FILE_NOT_FOUND, "CreateFileW").what()};
+    BOOST_TEST(actual ==
+               "Function CreateFileW failed with error code 2: The system cannot find the file "
+               "specified.");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

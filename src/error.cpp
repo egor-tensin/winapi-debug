@@ -9,7 +9,9 @@
 
 #include <windows.h>
 
+#include <sstream>
 #include <string>
+#include <system_error>
 
 namespace pdb {
 namespace error {
@@ -22,9 +24,13 @@ std::wstring trim_trailing_newline(const std::wstring& s) {
     return s.substr(0, last_pos + 1);
 }
 
-} // namespace
+std::string build_what(DWORD code, const char* function) {
+    std::ostringstream what;
+    what << "Function " << function << " failed with error code " << code;
+    return what.str();
+}
 
-std::string CategoryWindows::message(int code) const {
+std::string format_message(int code) {
     wchar_t* buf;
 
     const auto len = FormatMessageW(
@@ -44,6 +50,18 @@ std::string CategoryWindows::message(int code) const {
     std::wstring msg{buf, len};
     LocalFree(buf);
     return boost::nowide::narrow(trim_trailing_newline(msg));
+}
+
+} // namespace
+
+std::string CategoryWindows::message(int code) const {
+    return format_message(code);
+}
+
+std::system_error windows(DWORD code, const char* function) {
+    static_assert(sizeof(DWORD) == sizeof(int), "Aren't DWORDs the same size as ints?");
+    return std::system_error{
+        static_cast<int>(code), category_windows(), build_what(code, function)};
 }
 
 } // namespace error

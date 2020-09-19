@@ -27,11 +27,7 @@ inline const CategoryWindows& category_windows() {
     return instance;
 }
 
-inline std::system_error windows(DWORD code) {
-    static_assert(sizeof(DWORD) == sizeof(int), "Aren't DWORDs the same size as ints?");
-
-    return std::system_error{static_cast<int>(code), category_windows()};
-}
+std::system_error windows(DWORD code, const char* function);
 
 } // namespace error
 } // namespace pdb
