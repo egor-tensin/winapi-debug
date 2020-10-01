@@ -114,6 +114,10 @@ Process::Process(Handle&& handle) : Process{::GetProcessId(handle.get()), std::m
 Process::Process(ID id, Handle&& handle) : id{id}, handle{std::move(handle)} {}
 
 std::string Process::get_executable_path() const {
+    return get_executable_path(handle);
+}
+
+std::string Process::get_executable_path(const Handle& handle) {
     if (handle.get() == ::GetCurrentProcess()) {
         return pdb::get_current_executable_path();
     } else {

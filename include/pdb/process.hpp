@@ -25,6 +25,7 @@ public:
     const Handle& get_handle() const { return handle; }
 
     std::string get_executable_path() const;
+    static std::string get_executable_path(const Handle&);
 
 private:
     explicit Process(Handle&&);
