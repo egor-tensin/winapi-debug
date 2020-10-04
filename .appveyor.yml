@@ -20,6 +20,11 @@ configuration:
 matrix:
   fast_finish: true
 
+  # On Win32, only build Debug to speed things up:
+  exclude:
+    - platform: Win32
+      configuration: RelWithDebInfo
+
 install:
   - git submodule update --init --recursive
 
@@ -50,7 +55,7 @@ test_script:
   - ps: '$(& "$env:install_dir\bin\test\call_stack.exe" | Select-String -Pattern "[test_lib!test_ns::foo" -SimpleMatch -Quiet) -or $(throw "test_ns::foo not found in the call stack")'
 
 for:
-# Only build Release builds on master to speed things up:
+# Build Release on master only to speed things up:
 - branches:
     except:
       - master
