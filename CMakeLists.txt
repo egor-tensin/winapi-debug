@@ -39,6 +39,7 @@ target_link_libraries(pdb_repo PRIVATE dbghelp)
 
 if(MINGW)
     # FILE_ID_INFO and friends require at least 0x0602:
+    message("MINGW")
     target_compile_definitions(pdb_repo PUBLIC
         NTDDI_VERSION=NTDDI_WIN8
         _WIN32_WINNT=_WIN32_WINNT_WIN8)

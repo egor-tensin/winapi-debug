@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # Weekly, at 5:30 AM on Sunday (somewhat randomly chosen).
+    - cron: '30 5 * * 0'
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-18.04
+    name: Linting
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Run clang-format
+        run: ./cmake/tools/clang-format.py --clang-format clang-format-9
+
+  build:
+    strategy:
+      matrix:
+        # MinGW builds are done on Linux, since it's more up-to-date there, and
+        # it's much faster.
+        os: [ubuntu-20.04, windows-2016, windows-2019]
+        platform: [x64, x86]
+        configuration: [Debug, Release]
+        include:
+          # Prettier run names.
+          - {os: windows-2016, toolset: msvc, name: VS 2017}
+          - {os: windows-2019, toolset: msvc, name: VS 2019}
+          - {os: ubuntu-20.04, toolset: mingw, name: MinGW}
+    runs-on: '${{ matrix.os }}'
+    name: 'Build: ${{ matrix.name }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
+    env:
+      platform: '${{ matrix.platform }}'
+      configuration: '${{ matrix.configuration }}'
+      boost_version: 1.65.0
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Set up MinGW
+        uses: egor-tensin/setup-mingw@v2
+        with:
+          platform: '${{ matrix.platform }}'
+        if: matrix.toolset == 'mingw'
+      - name: Boost (MinGW)
+        run: |
+          cd cmake
+          python -m project.ci.github.boost --toolset '${{ matrix.toolset }}' -- --with-filesystem --with-program_options --with-test
+          echo 'BOOST_DIR=${{ runner.workspace }}\boost' >> $env:GITHUB_ENV
+        if: matrix.toolset == 'mingw'
+      - name: Boost (MSVC)
+        run: |
+          echo "BOOST_DIR=${env:BOOST_ROOT_1_72_0}" >> $env:GITHUB_ENV
+        if: matrix.toolset == 'msvc'
+      - name: Build
+        run: |
+          cd cmake
+          python -m project.ci.github.cmake --toolset '${{ matrix.toolset }}' --boost $env:BOOST_DIR --install
+      - name: Upload the binaries
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'pdb-repo-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.configuration }}'
+          path: '${{ runner.workspace }}/install/'
