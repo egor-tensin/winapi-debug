@@ -28,7 +28,7 @@ jobs:
         # it's much faster.
         os: [ubuntu-20.04, windows-2016, windows-2019]
         platform: [x64, x86]
-        configuration: [Debug, Release]
+        configuration: [Debug, RelWithDebInfo]
         include:
           # Prettier run names.
           - {os: windows-2016, toolset: msvc, name: VS 2017}
@@ -76,3 +76,25 @@ jobs:
         with:
           name: 'pdb-repo-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.configuration }}'
           path: '${{ runner.workspace }}/install/'
+      - name: Run unit tests
+        run: ../install/bin/test/unit_tests --log_level=all
+        if: runner.os == 'Windows'
+      - name: Run enum_symbols tests
+        run: ../install/bin/enum_symbols --pdb ../install/bin/test/test_lib.pdb --mask 'test_ns:*'
+        if: runner.os == 'Windows'
+      - name: Check enum_symbols output
+        run: |
+          $(../install/bin/enum_symbols --pdb ../install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::baz' -SimpleMatch -Quiet) -or $(throw 'test_ns::baz not enumerated among the symbols')
+          $(../install/bin/enum_symbols --pdb ../install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::bar' -SimpleMatch -Quiet) -or $(throw 'test_ns::bar not enumerated among the symbols')
+          $(../install/bin/enum_symbols --pdb ../install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::foo' -SimpleMatch -Quiet) -or $(throw 'test_ns::foo not enumerated among the symbols')
+          $(../install/bin/enum_symbols --pdb ../install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::var' -SimpleMatch -Quiet) -or $(throw 'test_ns::var not enumerated among the symbols')
+        if: runner.os == 'Windows'
+      - name: Run call_stack
+        run: ../install/bin/test/call_stack
+        if: runner.os == 'Windows'
+      - name: Check call_stack output
+        run: |
+          $(../install/bin/test/call_stack | Select-String -Pattern '[test_lib!test_ns::baz' -SimpleMatch -Quiet) -or $(throw 'test_ns::baz not found in the call stack')
+          $(../install/bin/test/call_stack | Select-String -Pattern '[test_lib!test_ns::bar' -SimpleMatch -Quiet) -or $(throw 'test_ns::bar not found in the call stack')
+          $(../install/bin/test/call_stack | Select-String -Pattern '[test_lib!test_ns::foo' -SimpleMatch -Quiet) -or $(throw 'test_ns::foo not found in the call stack')
+        if: runner.os == 'Windows'
