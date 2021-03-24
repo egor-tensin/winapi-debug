@@ -18,4 +18,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     install(FILES "$<TARGET_PDB_FILE:call_stack>" DESTINATION bin/test OPTIONAL)
 endif()
 
+add_test(NAME call_stack COMMAND call_stack)
+
 add_subdirectory(unit_tests)

@@ -70,25 +70,8 @@ jobs:
         with:
           name: 'pdb-repo-${{ matrix.os }}-${{ matrix.toolset }}-${{ matrix.platform }}-${{ matrix.configuration }}'
           path: '${{ runner.workspace }}/build/install/'
-      - name: Run unit tests
-        run: ../build/install/bin/test/unit_tests --log_level=all
-        if: runner.os == 'Windows'
-      - name: Run enum_symbols tests
-        run: ../build/install/bin/enum_symbols --pdb ../build/install/bin/test/test_lib.pdb --mask 'test_ns:*'
-        if: runner.os == 'Windows'
-      - name: Check enum_symbols output
+      - name: Test
         run: |
-          $(../build/install/bin/enum_symbols --pdb ../build/install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::baz' -SimpleMatch -Quiet) -or $(throw 'test_ns::baz not enumerated among the symbols')
-          $(../build/install/bin/enum_symbols --pdb ../build/install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::bar' -SimpleMatch -Quiet) -or $(throw 'test_ns::bar not enumerated among the symbols')
-          $(../build/install/bin/enum_symbols --pdb ../build/install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::foo' -SimpleMatch -Quiet) -or $(throw 'test_ns::foo not enumerated among the symbols')
-          $(../build/install/bin/enum_symbols --pdb ../build/install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::var' -SimpleMatch -Quiet) -or $(throw 'test_ns::var not enumerated among the symbols')
-        if: runner.os == 'Windows'
-      - name: Run call_stack
-        run: ../build/install/bin/test/call_stack
-        if: runner.os == 'Windows'
-      - name: Check call_stack output
-        run: |
-          $(../build/install/bin/test/call_stack | Select-String -Pattern '[test_lib!test_ns::baz' -SimpleMatch -Quiet) -or $(throw 'test_ns::baz not found in the call stack')
-          $(../build/install/bin/test/call_stack | Select-String -Pattern '[test_lib!test_ns::bar' -SimpleMatch -Quiet) -or $(throw 'test_ns::bar not found in the call stack')
-          $(../build/install/bin/test/call_stack | Select-String -Pattern '[test_lib!test_ns::foo' -SimpleMatch -Quiet) -or $(throw 'test_ns::foo not found in the call stack')
+          cd ../build/cmake
+          ctest -C '${{ env.CONFIGURATION }}' --verbose
         if: runner.os == 'Windows'

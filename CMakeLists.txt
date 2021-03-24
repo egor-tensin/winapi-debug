@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.5) # for Boost::* imported targets
 
 project(pdb_repo CXX)
 
+enable_testing()
+
 if(MSVC)
     # This is an ugly hack to make the tests work.
     # With incremental linking, the &func address does not point to the

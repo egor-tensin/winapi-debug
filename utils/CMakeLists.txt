@@ -13,3 +13,7 @@ endfunction()
 add_util(enum_symbols enum_symbols.cpp command_line.hpp pdb_descr.hpp)
 add_util(name2addr name2addr.cpp)
 add_util(addr2name addr2name.cpp command_line.hpp pdb_descr.hpp)
+
+if(MSVC)
+    add_test(NAME enum_symbols COMMAND enum_symbols --pdb "$<TARGET_PDB_FILE:test_lib>" --mask "test_ns:*")
+endif()
