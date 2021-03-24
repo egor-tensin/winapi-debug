@@ -36,10 +36,10 @@ jobs:
     runs-on: '${{ matrix.os }}'
     name: 'Build: ${{ matrix.os }} / ${{ matrix.toolset }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
     env:
-      toolset: '${{ matrix.toolset }}'
-      platform: '${{ matrix.platform }}'
-      configuration: '${{ matrix.configuration }}'
-      boost_version: 1.65.0
+      TOOLSET: '${{ matrix.toolset }}'
+      PLATFORM: '${{ matrix.platform }}'
+      CONFIGURATION: '${{ matrix.configuration }}'
+      BOOST_VERSION: 1.65.0
     defaults:
       run:
         shell: pwsh
@@ -57,39 +57,38 @@ jobs:
         with:
           platform: '${{ matrix.platform }}'
         if: matrix.toolset == 'mingw'
-      - name: Boost (MinGW)
+      - name: Build Boost
         run: |
           cd cmake
-          python -m project.ci.github.boost -- --with-filesystem --with-program_options --with-test
-        if: matrix.toolset == 'mingw'
+          python -m project.ci.boost -- --with-filesystem --with-program_options --with-test
       - name: Build
         run: |
           cd cmake
-          python -m project.ci.github.cmake --install
-      - name: Upload the binaries
+          python -m project.ci.cmake --install
+      - name: Upload binaries
         uses: actions/upload-artifact@v2
         with:
           name: 'pdb-repo-${{ matrix.os }}-${{ matrix.toolset }}-${{ matrix.platform }}-${{ matrix.configuration }}'
-          path: '${{ runner.workspace }}/install/'
+          path: '${{ runner.workspace }}/build/install/'
       - name: Run unit tests
-        run: ../install/bin/test/unit_tests --log_level=all
+        run: ../build/install/bin/test/unit_tests --log_level=all
         if: runner.os == 'Windows'
       - name: Run enum_symbols tests
-        run: ../install/bin/enum_symbols --pdb ../install/bin/test/test_lib.pdb --mask 'test_ns:*'
+        run: ../build/install/bin/enum_symbols --pdb ../build/install/bin/test/test_lib.pdb --mask 'test_ns:*'
         if: runner.os == 'Windows'
       - name: Check enum_symbols output
         run: |
-          $(../install/bin/enum_symbols --pdb ../install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::baz' -SimpleMatch -Quiet) -or $(throw 'test_ns::baz not enumerated among the symbols')
-          $(../install/bin/enum_symbols --pdb ../install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::bar' -SimpleMatch -Quiet) -or $(throw 'test_ns::bar not enumerated among the symbols')
-          $(../install/bin/enum_symbols --pdb ../install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::foo' -SimpleMatch -Quiet) -or $(throw 'test_ns::foo not enumerated among the symbols')
-          $(../install/bin/enum_symbols --pdb ../install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::var' -SimpleMatch -Quiet) -or $(throw 'test_ns::var not enumerated among the symbols')
+          $(../build/install/bin/enum_symbols --pdb ../build/install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::baz' -SimpleMatch -Quiet) -or $(throw 'test_ns::baz not enumerated among the symbols')
+          $(../build/install/bin/enum_symbols --pdb ../build/install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::bar' -SimpleMatch -Quiet) -or $(throw 'test_ns::bar not enumerated among the symbols')
+          $(../build/install/bin/enum_symbols --pdb ../build/install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::foo' -SimpleMatch -Quiet) -or $(throw 'test_ns::foo not enumerated among the symbols')
+          $(../build/install/bin/enum_symbols --pdb ../build/install/bin/test/test_lib.pdb | Select-String -Pattern 'test_ns::var' -SimpleMatch -Quiet) -or $(throw 'test_ns::var not enumerated among the symbols')
         if: runner.os == 'Windows'
       - name: Run call_stack
-        run: ../install/bin/test/call_stack
+        run: ../build/install/bin/test/call_stack
         if: runner.os == 'Windows'
       - name: Check call_stack output
         run: |
-          $(../install/bin/test/call_stack | Select-String -Pattern '[test_lib!test_ns::baz' -SimpleMatch -Quiet) -or $(throw 'test_ns::baz not found in the call stack')
-          $(../install/bin/test/call_stack | Select-String -Pattern '[test_lib!test_ns::bar' -SimpleMatch -Quiet) -or $(throw 'test_ns::bar not found in the call stack')
-          $(../install/bin/test/call_stack | Select-String -Pattern '[test_lib!test_ns::foo' -SimpleMatch -Quiet) -or $(throw 'test_ns::foo not found in the call stack')
+          $(../build/install/bin/test/call_stack | Select-String -Pattern '[test_lib!test_ns::baz' -SimpleMatch -Quiet) -or $(throw 'test_ns::baz not found in the call stack')
+          $(../build/install/bin/test/call_stack | Select-String -Pattern '[test_lib!test_ns::bar' -SimpleMatch -Quiet) -or $(throw 'test_ns::bar not found in the call stack')
+          $(../build/install/bin/test/call_stack | Select-String -Pattern '[test_lib!test_ns::foo' -SimpleMatch -Quiet) -or $(throw 'test_ns::foo not found in the call stack')
         if: runner.os == 'Windows'
