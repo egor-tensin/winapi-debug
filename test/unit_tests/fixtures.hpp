@@ -115,7 +115,12 @@ private:
     }
 
     static boost::filesystem::path get_module_pdb_path() {
-        return Paths::get().exe_dir / (get_module_name() + ".pdb");
+        // That's pretty ad-hoc, but seems to work; based on
+        // https://www.boost.org/doc/libs/1_70_0/libs/test/doc/html/boost_test/runtime_config/custom_command_line_arguments.html
+        BOOST_TEST_REQUIRE(boost::unit_test::framework::master_test_suite().argc == 3);
+        BOOST_TEST_REQUIRE(boost::unit_test::framework::master_test_suite().argv[1] ==
+                           "--test_lib_pdb");
+        return boost::unit_test::framework::master_test_suite().argv[2];
     }
 };
 
