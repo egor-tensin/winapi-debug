@@ -10,7 +10,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     name: Linting
     if: github.ref == 'refs/heads/master'
     steps:
@@ -19,7 +19,7 @@ jobs:
         with:
           submodules: recursive
       - name: Run clang-format
-        run: ./cmake/tools/clang-format.py --clang-format clang-format-9
+        run: ./cmake/tools/clang-format.py --clang-format clang-format-10
 
   build:
     strategy:
