@@ -58,20 +58,14 @@ jobs:
           platform: '${{ matrix.platform }}'
         if: matrix.toolset == 'mingw'
       - name: Build Boost
-        run: |
-          cd cmake
-          python -m project.ci.boost -- --with-filesystem --with-program_options --with-test
+        run: make deps
       - name: Build
-        run: |
-          cd cmake
-          python -m project.ci.cmake --install
+        run: make install
       - name: Upload binaries
         uses: actions/upload-artifact@v2
         with:
           name: 'pdb-repo-${{ matrix.os }}-${{ matrix.toolset }}-${{ matrix.platform }}-${{ matrix.configuration }}'
           path: '${{ runner.workspace }}/build/install/'
       - name: Test
-        run: |
-          cd ../build/cmake
-          ctest -C '${{ env.CONFIGURATION }}' --verbose
+        run: make test
         if: runner.os == 'Windows'

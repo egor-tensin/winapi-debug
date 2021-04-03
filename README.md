@@ -14,26 +14,17 @@ vice versa, etc.
 Building
 --------
 
-Create the build files using CMake and build the project using Visual Studio.
+Build using CMake.
+Depends on Boost.{Filesystem,Program_options,Test}.
+The project is Windows-only, so building with either MSVC or MinGW-w64 is
+required.
 
-* **Prerequisites.**
-Depends on Boost.{Filesystem,Program_options}.
-* **Customization.**
-The runtime libraries are linked statically by default.
-Therefore, the Boost libraries must also link them statically.
-You can link the runtime dynamically by passing `-D CC_STATIC_RUNTIME=OFF` to
-`cmake`.
-* **Example.**
-Using Visual Studio 2015 (targeting x64), build & install the release version
-to C:\pdb-repo:
+There's a Makefile with useful shortcuts to build the project in the .build/
+directory along with the dependencies (defaults to building with MinGW-w64):
 
-      > cmake -G "Visual Studio 14 2015" -A x64 ^
-          -D BOOST_ROOT=C:\path\to\boost_1_61_0 ^
-          C:\path\to\pdb-repo
-      ...
-
-      > cmake --build . --config Release --target install -- /m
-      ...
+    make deps
+    make build
+    make test
 
 License
 -------
