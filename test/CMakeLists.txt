@@ -12,6 +12,13 @@ target_link_libraries(call_stack PRIVATE Boost::nowide)
 install(TARGETS call_stack RUNTIME DESTINATION bin/test)
 install_pdbs(TARGETS call_stack DESTINATION bin/test)
 
-add_test(NAME call_stack COMMAND call_stack)
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+
+add_test(NAME call_stack COMMAND Python3::Interpreter
+    "${CMAKE_CURRENT_SOURCE_DIR}/../cmake/tools/ctest-driver.py"
+    run
+    --pass-regex test_ns::baz test_ns::bar test_ns::foo
+    --
+    "$<TARGET_FILE:call_stack>")
 
 add_subdirectory(unit_tests)
