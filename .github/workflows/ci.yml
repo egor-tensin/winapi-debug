@@ -66,6 +66,7 @@ jobs:
         with:
           name: 'pdb-repo-${{ matrix.os }}-${{ matrix.toolset }}-${{ matrix.platform }}-${{ matrix.configuration }}'
           path: '${{ runner.workspace }}/build/install/'
+          if-no-files-found: error
       - name: Test
         run: make test
         if: runner.os == 'Windows'
