@@ -1,7 +1,7 @@
 PDB repository
 ==============
 
-[![CI](https://github.com/egor-tensin/pdb-repo/workflows/CI/badge.svg)](https://github.com/egor-tensin/pdb-repo/actions?query=workflow%3ACI)
+[![CI](https://github.com/egor-tensin/pdb-repo/actions/workflows/ci.yml/badge.svg)](https://github.com/egor-tensin/pdb-repo/actions/workflows/ci.yml)
 
 Want to conduct a post-mortem analysis, but all you've got is a bunch of PDB
 files and a call stack?
