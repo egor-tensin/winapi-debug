@@ -19,7 +19,7 @@ jobs:
         with:
           submodules: recursive
       - name: Run clang-format
-        run: ./cmake/tools/clang-format.py --clang-format clang-format-10
+        run: ./cmake/tools/project-clang-format.py --clang-format clang-format-10
 
   build:
     strategy:
