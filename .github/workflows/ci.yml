@@ -55,8 +55,6 @@ jobs:
           key: 'boost_${{ env.BOOST_VERSION }}'
       - name: Set up Python
         uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
       - name: Set up MinGW
         uses: egor-tensin/setup-mingw@v2
         with:
