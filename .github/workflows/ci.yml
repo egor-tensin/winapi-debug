@@ -24,17 +24,18 @@ jobs:
   build:
     strategy:
       matrix:
-        # MinGW builds are done on Linux, since it's more up-to-date there, and
-        # it's much faster.
-        os: [ubuntu-20.04, windows-2016, windows-2019]
+        toolset: [mingw, vs2015, vs2017, vs]
         platform: [x64, x86]
         configuration: [Debug, RelWithDebInfo]
         include:
-          - {os: windows-2016, toolset: msvc}
-          - {os: windows-2019, toolset: msvc}
-          - {os: ubuntu-20.04, toolset: mingw}
+          # MinGW builds are done on Linux, since it's more up-to-date there,
+          # and it's much faster.
+          - {toolset: mingw, os: ubuntu-20.04}
+          - {toolset: vs2015, os: windows-2016}
+          - {toolset: vs2017, os: windows-2016}
+          - {toolset: vs, os: windows-2019}
     runs-on: '${{ matrix.os }}'
-    name: 'Build: ${{ matrix.os }} / ${{ matrix.toolset }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
+    name: 'Build: ${{ matrix.toolset }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
     defaults:
       run:
         shell: pwsh
@@ -67,7 +68,7 @@ jobs:
       - name: Upload binaries
         uses: actions/upload-artifact@v2
         with:
-          name: 'pdb-repo-${{ matrix.os }}-${{ matrix.toolset }}-${{ matrix.platform }}-${{ matrix.configuration }}'
+          name: 'pdb-repo-${{ matrix.toolset }}-${{ matrix.platform }}-${{ matrix.configuration }}'
           path: '${{ runner.workspace }}/build/install/'
           if-no-files-found: error
       - name: Test
