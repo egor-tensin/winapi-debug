@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Egor Tensin <Egor.Tensin@gmail.com>
-// This file is part of the "PDB repository" project.
-// For details, see https://github.com/egor-tensin/pdb-repo.
+// This file is part of the "winapi-debug" project.
+// For details, see https://github.com/egor-tensin/winapi-debug.
 // Distributed under the MIT License.
 
 #include <pdb/all.hpp>

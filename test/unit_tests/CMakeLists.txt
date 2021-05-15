@@ -1,7 +1,7 @@
 find_package(Boost REQUIRED COMPONENTS filesystem unit_test_framework)
 
 add_executable(unit_tests main.cpp call_stack.cpp dbghelp.cpp error.cpp)
-target_link_libraries(unit_tests PRIVATE pdb_repo test_lib)
+target_link_libraries(unit_tests PRIVATE test_lib winapi_debug)
 target_link_libraries(unit_tests PRIVATE
     Boost::disable_autolinking
     Boost::filesystem

@@ -1,5 +1,5 @@
 add_library(test_lib SHARED test_lib.cpp)
-target_link_libraries(test_lib PRIVATE pdb_repo)
+target_link_libraries(test_lib PRIVATE winapi_debug)
 target_include_directories(test_lib PUBLIC .)
 target_compile_definitions(test_lib PRIVATE TEST_LIB_EXPORTS)
 install(TARGETS test_lib RUNTIME DESTINATION bin/test)

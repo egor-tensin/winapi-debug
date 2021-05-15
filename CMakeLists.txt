@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5) # for Boost::* imported targets
 
-project(pdb_repo CXX)
+project(winapi_debug CXX)
 enable_testing()
 
 if(MSVC)
@@ -29,28 +29,28 @@ include(cmake/common.cmake)
 find_package(Boost REQUIRED)
 add_subdirectory(3rdparty/winapi/utf8)
 
-file(GLOB_RECURSE pdb_repo_include "include/*.hpp")
-file(GLOB_RECURSE pdb_repo_src "src/*.cpp")
-add_library(pdb_repo ${pdb_repo_include} ${pdb_repo_src})
-target_compile_definitions(pdb_repo PUBLIC _NO_CVCONST_H)
-target_include_directories(pdb_repo PUBLIC include/)
-target_link_libraries(pdb_repo PRIVATE winapi_utf8)
-target_link_libraries(pdb_repo
+file(GLOB_RECURSE winapi_debug_include "include/*.hpp")
+file(GLOB_RECURSE winapi_debug_src "src/*.cpp")
+add_library(winapi_debug ${winapi_debug_include} ${winapi_debug_src})
+target_compile_definitions(winapi_debug PUBLIC _NO_CVCONST_H)
+target_include_directories(winapi_debug PUBLIC include/)
+target_link_libraries(winapi_debug PRIVATE winapi_utf8)
+target_link_libraries(winapi_debug
     PUBLIC Boost::boost
     PRIVATE Boost::disable_autolinking)
-target_link_libraries(pdb_repo PRIVATE dbghelp)
+target_link_libraries(winapi_debug PRIVATE dbghelp)
 
 if(MINGW)
     # FILE_ID_INFO and friends require at least 0x0602:
     message("MINGW")
-    target_compile_definitions(pdb_repo PUBLIC
+    target_compile_definitions(winapi_debug PUBLIC
         NTDDI_VERSION=NTDDI_WIN8
         _WIN32_WINNT=_WIN32_WINNT_WIN8)
 endif()
 
 if(MSVC_VERSION EQUAL 1900)
     # DbgHelp warnings on Visual Studio 2015:
-    target_compile_options(pdb_repo PUBLIC /wd4091)
+    target_compile_options(winapi_debug PUBLIC /wd4091)
 endif()
 
 add_subdirectory(test)

@@ -68,7 +68,7 @@ jobs:
       - name: Upload binaries
         uses: actions/upload-artifact@v2
         with:
-          name: 'pdb-repo-${{ matrix.toolset }}-${{ matrix.platform }}-${{ matrix.configuration }}'
+          name: 'winapi-debug-${{ matrix.toolset }}-${{ matrix.platform }}-${{ matrix.configuration }}'
           path: '${{ runner.workspace }}/build/install/'
           if-no-files-found: error
       - name: Test

@@ -2,7 +2,7 @@ find_package(Boost REQUIRED COMPONENTS filesystem program_options)
 
 function(add_util name src)
     add_executable("${name}" ${src})
-    target_link_libraries("${name}" PRIVATE pdb_repo)
+    target_link_libraries("${name}" PRIVATE winapi_debug)
     target_link_libraries("${name}" PRIVATE Boost::disable_autolinking Boost::filesystem Boost::program_options)
     install(TARGETS "${name}" RUNTIME DESTINATION bin)
     install_pdbs(TARGETS "${name}" DESTINATION bin)
