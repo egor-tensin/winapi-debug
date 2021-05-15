@@ -5,11 +5,11 @@
 
 #include <pdb/all.hpp>
 
-#include <SafeInt.hpp>
 #include <boost/nowide/convert.hpp>
 
 #include <windows.h>
 
+#include <limits>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -41,9 +41,10 @@ public:
         if (size < min_size) {
             size = min_size;
         } else {
-            if (!SafeMultiply(size, 2, size)) {
+            // Check if we can still multiply by two.
+            if (std::numeric_limits<decltype(size)>::max() - size < size)
                 throw std::range_error{"couldn't allocate buffer sufficient for a file path"};
-            }
+            size *= 2;
         }
         data.resize(size);
     }

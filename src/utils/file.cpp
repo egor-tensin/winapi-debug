@@ -5,12 +5,12 @@
 
 #include <pdb/all.hpp>
 
-#include <SafeInt.hpp>
 #include <boost/nowide/convert.hpp>
 
 #include <windows.h>
 
 #include <cstddef>
+#include <cstdint>
 #include <stdexcept>
 #include <string>
 
@@ -34,12 +34,9 @@ std::size_t get_size(const std::string& path) {
     if (!GetFileSizeEx(handle.get(), &size))
         throw error::windows(GetLastError(), "GetFileSizeEx");
 
-    std::size_t result = 0;
-
-    if (!SafeCast(size.QuadPart, result))
+    if (size.QuadPart < 0 || size.QuadPart > SIZE_MAX)
         throw std::runtime_error{"invalid file size"};
-
-    return result;
+    return static_cast<std::size_t>(size.QuadPart);
 }
 
 ID query_id(const std::string& path) {

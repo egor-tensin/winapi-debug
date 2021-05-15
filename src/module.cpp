@@ -5,10 +5,10 @@
 
 #include <pdb/all.hpp>
 
-#include <SafeInt.hpp>
 #include <boost/nowide/convert.hpp>
 
 #include <cstring>
+#include <limits>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -38,8 +38,11 @@ Address Module::translate_offline_address(Address offline) const {
         throw std::range_error{invalid_offline_address(offline)};
     const auto offset = offline - get_offline_base();
     auto online = offset;
-    if (!SafeAdd(online, get_online_base(), online))
+    // Check that it fits the address space.
+    const auto max_addr = std::numeric_limits<decltype(online)>::max();
+    if (online > max_addr - get_online_base())
         throw std::range_error{invalid_offline_address(offline)};
+    online += get_online_base();
     return online;
 }
 
@@ -48,8 +51,11 @@ Address Module::translate_online_address(Address online) const {
         throw std::range_error{invalid_online_address(online)};
     const auto offset = online - get_online_base();
     auto offline = offset;
-    if (!SafeAdd(offline, get_offline_base(), offline))
+    // Check that it fits the address space.
+    const auto max_addr = std::numeric_limits<decltype(offline)>::max();
+    if (offline > max_addr - get_offline_base())
         throw std::range_error{invalid_online_address(offline)};
+    offline += get_offline_base();
     return offline;
 }
 

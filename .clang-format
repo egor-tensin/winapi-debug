@@ -14,7 +14,7 @@ IncludeCategories:
     Priority: 1
   - Regex: '^<test_lib\.|^<pdb\/'
     Priority: 2
-  - Regex: '^<boost\/|^<SafeInt\.'
+  - Regex: '^<boost\/'
     Priority: 3
   - Regex: '^<.*\.h>$'
     Priority: 4

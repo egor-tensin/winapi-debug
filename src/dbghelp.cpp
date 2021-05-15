@@ -5,7 +5,6 @@
 
 #include <pdb/all.hpp>
 
-#include <SafeInt.hpp>
 #include <boost/nowide/convert.hpp>
 
 #include <dbghelp.h>
@@ -13,6 +12,7 @@
 
 #include <cstddef>
 #include <cstring>
+#include <limits>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -40,9 +40,13 @@ Address next_offline_base = 0x10000000;
 
 Address gen_next_offline_base(std::size_t pdb_size) {
     const auto base = next_offline_base;
-    if (!SafeAdd(next_offline_base, pdb_size, next_offline_base))
+
+    const auto max_addr = std::numeric_limits<decltype(next_offline_base)>::max();
+    if (max_addr - next_offline_base < pdb_size)
         throw std::runtime_error{
             "no more PDB files can be added, the internal address space is exhausted"};
+    next_offline_base += pdb_size;
+
     return base;
 }
 
@@ -121,8 +125,12 @@ void DbgHelp::close() {
 ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
     DWORD size = 0;
 
-    if (!SafeCast(file::get_size(path), size))
-        throw std::range_error{"PDB file is too large"};
+    {
+        const auto raw_size = file::get_size(path);
+        if (raw_size > std::numeric_limits<decltype(size)>::max())
+            throw std::range_error{"PDB file is too large"};
+        size = static_cast<decltype(size)>(raw_size);
+    }
 
     // MinGW-w64 (as of version 7.0) requires PSTR as the third argument.
     std::vector<char> _path;

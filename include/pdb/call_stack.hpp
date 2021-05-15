@@ -8,8 +8,6 @@
 #include "address.hpp"
 #include "dbghelp.hpp"
 
-#include <SafeInt.hpp>
-
 #include <windows.h>
 
 #include <array>

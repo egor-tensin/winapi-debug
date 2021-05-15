@@ -5,7 +5,6 @@
 
 #include <pdb/all.hpp>
 
-#include <SafeInt.hpp>
 #include <boost/nowide/convert.hpp>
 
 #include <dbghelp.h>
@@ -13,6 +12,7 @@
 
 #include <cstddef>
 #include <cstring>
+#include <limits>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
@@ -21,21 +21,17 @@ namespace pdb {
 namespace {
 
 std::size_t calc_size(const SymbolInfo::Impl& impl) {
-    try {
-        static constexpr auto char_size = sizeof(std::remove_extent<decltype(impl.Name)>::type);
-        return SafeInt<std::size_t>{impl.SizeOfStruct} + (impl.NameLen - 1) * char_size;
-    } catch (const SafeIntException&) {
-        throw std::runtime_error{"invalid SYMBOL_INFO size"};
-    }
+    static constexpr auto char_size = sizeof(std::remove_extent<decltype(impl.Name)>::type);
+    return impl.SizeOfStruct + (impl.NameLen - 1) * char_size;
 }
 
 unsigned long cast_line_number(DWORD impl) {
     unsigned long dest = 0;
 
-    if (!SafeCast(impl, dest))
+    if (impl > std::numeric_limits<decltype(dest)>::max())
         throw std::runtime_error{"invalid line number"};
 
-    return dest;
+    return static_cast<decltype(dest)>(dest);
 }
 
 } // namespace

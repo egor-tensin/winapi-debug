@@ -5,8 +5,6 @@
 
 #include <pdb/all.hpp>
 
-#include <SafeInt.hpp>
-
 #include <windows.h>
 
 #include <algorithm>
@@ -41,8 +39,9 @@ std::string offset_from(const std::string& thing, Address offset) {
 
 std::string offset_from_module(const ModuleInfo& module, Address addr) {
     Address offset = 0;
-    if (!SafeSubtract(addr, module.get_offline_base(), offset))
+    if (addr < module.get_offline_base())
         throw std::range_error{"invalid address in module"};
+    offset = addr - module.get_offline_base();
     return offset_from(module.get_name(), offset);
 }
 
