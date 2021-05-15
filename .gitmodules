@@ -1,6 +1,6 @@
 [submodule "cmake"]
 	path = cmake
 	url = https://github.com/egor-tensin/cmake-common.git
-[submodule "3rdparty/winapi/utf8"]
-	path = 3rdparty/winapi/utf8
-	url = https://github.com/egor-tensin/winapi-utf8.git
+[submodule "3rdparty/winapi/common"]
+	path = 3rdparty/winapi/common
+	url = https://github.com/egor-tensin/winapi-common.git

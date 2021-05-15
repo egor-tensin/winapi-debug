@@ -5,6 +5,7 @@
 
 #include <pdb/all.hpp>
 
+#include <winapi/error.hpp>
 #include <winapi/utf8.hpp>
 
 #include <dbghelp.h>
@@ -28,12 +29,12 @@ void initialize(HANDLE id, bool invade_current_process) {
     set_dbghelp_options();
 
     if (!SymInitialize(id, NULL, invade_current_process ? TRUE : FALSE))
-        throw error::windows(GetLastError(), "SymInitialize");
+        throw winapi::error::windows(GetLastError(), "SymInitialize");
 }
 
 void clean_up(HANDLE id) {
     if (!SymCleanup(id))
-        throw error::windows(GetLastError(), "SymCleanup");
+        throw winapi::error::windows(GetLastError(), "SymCleanup");
 }
 
 Address next_offline_base = 0x10000000;
@@ -54,7 +55,7 @@ ModuleInfo get_module_info(HANDLE id, Address offline_base) {
     ModuleInfo info;
 
     if (!SymGetModuleInfoW64(id, offline_base, &static_cast<ModuleInfo::Impl&>(info)))
-        throw error::windows(GetLastError(), "SymGetModuleInfoW64");
+        throw winapi::error::windows(GetLastError(), "SymGetModuleInfoW64");
 
     return info;
 }
@@ -87,7 +88,7 @@ void enum_symbols(HANDLE id,
                          winapi::widen(mask).c_str(),
                          &enum_symbols_callback,
                          const_cast<DbgHelp::OnSymbol*>(&callback)))
-        throw error::windows(GetLastError(), "SymEnumSymbolsW");
+        throw winapi::error::windows(GetLastError(), "SymEnumSymbolsW");
 }
 
 } // namespace
@@ -143,7 +144,7 @@ ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
         SymLoadModule64(id, NULL, _path.data(), NULL, gen_next_offline_base(size), size);
 
     if (!offline_base)
-        throw error::windows(GetLastError(), "SymLoadModule64");
+        throw winapi::error::windows(GetLastError(), "SymLoadModule64");
 
     return get_module_info(id, offline_base);
 }
@@ -151,7 +152,7 @@ ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
 void DbgHelp::enum_modules(const OnModule& callback) const {
     ModuleEnumerator enumerator{id, callback};
     if (!SymEnumerateModulesW64(id, &enum_modules_callback, &enumerator))
-        throw error::windows(GetLastError(), "SymEnumerateModulesW64");
+        throw winapi::error::windows(GetLastError(), "SymEnumerateModulesW64");
 }
 
 ModuleInfo DbgHelp::resolve_module(Address offline) const {
@@ -181,7 +182,7 @@ SymbolInfo DbgHelp::resolve_symbol(Address offline) const {
     SymbolInfo symbol;
 
     if (!SymFromAddrW(id, offline, &displacement, &static_cast<SYMBOL_INFOW&>(symbol)))
-        throw error::windows(GetLastError(), "SymFromAddrW");
+        throw winapi::error::windows(GetLastError(), "SymFromAddrW");
 
     symbol.set_displacement(displacement);
     return symbol;
@@ -191,7 +192,7 @@ SymbolInfo DbgHelp::resolve_symbol(const std::string& name) const {
     SymbolInfo symbol;
 
     if (!SymFromNameW(id, winapi::widen(name).c_str(), &static_cast<SYMBOL_INFOW&>(symbol)))
-        throw error::windows(GetLastError(), "SymFromNameW");
+        throw winapi::error::windows(GetLastError(), "SymFromNameW");
 
     return symbol;
 }
@@ -204,7 +205,7 @@ LineInfo DbgHelp::resolve_line(Address offline) const {
     DWORD displacement = 0;
 
     if (!SymGetLineFromAddrW64(id, offline, &displacement, &impl))
-        throw error::windows(GetLastError(), "SymGetLineFromAddrW64");
+        throw winapi::error::windows(GetLastError(), "SymGetLineFromAddrW64");
 
     return LineInfo{impl};
 }

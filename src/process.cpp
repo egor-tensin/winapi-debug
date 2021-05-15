@@ -5,6 +5,7 @@
 
 #include <pdb/all.hpp>
 
+#include <winapi/error.hpp>
 #include <winapi/utf8.hpp>
 
 #include <windows.h>
@@ -24,7 +25,7 @@ constexpr DWORD permissions = PROCESS_QUERY_INFORMATION | PROCESS_VM_READ;
 Handle open_process(DWORD id) {
     Handle process{OpenProcess(permissions, FALSE, id)};
     if (!process) {
-        throw error::windows(GetLastError(), "OpenProcess");
+        throw winapi::error::windows(GetLastError(), "OpenProcess");
     }
     return process;
 }
@@ -62,7 +63,7 @@ std::string get_current_executable_path(PathBuffer& buffer) {
     const auto ec = ::GetModuleFileNameW(NULL, buffer.get_data(), buffer.get_size());
 
     if (ec == 0) {
-        throw error::windows(GetLastError(), "GetModuleFileNameW");
+        throw winapi::error::windows(GetLastError(), "GetModuleFileNameW");
     }
 
     if (ec == buffer.get_size() && GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
@@ -92,7 +93,7 @@ std::string get_executable_path(const Handle& process, PathBuffer& buffer) {
         return get_executable_path(process, buffer);
     }
 
-    throw error::windows(GetLastError(), "QueryFullProcessImageNameW");
+    throw winapi::error::windows(GetLastError(), "QueryFullProcessImageNameW");
 }
 
 std::string get_executable_path(const Handle& process) {

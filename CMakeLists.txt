@@ -27,14 +27,14 @@ endif()
 include(cmake/common.cmake)
 
 find_package(Boost REQUIRED)
-add_subdirectory(3rdparty/winapi/utf8)
+add_subdirectory(3rdparty/winapi/common)
 
 file(GLOB_RECURSE winapi_debug_include "include/*.hpp")
 file(GLOB_RECURSE winapi_debug_src "src/*.cpp")
 add_library(winapi_debug ${winapi_debug_include} ${winapi_debug_src})
 target_compile_definitions(winapi_debug PUBLIC _NO_CVCONST_H)
 target_include_directories(winapi_debug PUBLIC include/)
-target_link_libraries(winapi_debug PRIVATE winapi_utf8)
+target_link_libraries(winapi_debug PRIVATE winapi_common winapi_utf8)
 target_link_libraries(winapi_debug
     PUBLIC Boost::boost
     PRIVATE Boost::disable_autolinking)
