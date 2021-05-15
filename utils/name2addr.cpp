@@ -7,7 +7,6 @@
 #include "pdb/all.hpp"
 #include "pdb_descr.hpp"
 
-#include <boost/nowide/iostream.hpp>
 #include <boost/program_options.hpp>
 
 #include <exception>
@@ -39,16 +38,16 @@ public:
 };
 
 void dump_error(const std::exception& e) {
-    boost::nowide::cerr << "error: " << e.what() << '\n';
+    std::cerr << "error: " << e.what() << '\n';
 }
 
 void resolve_symbol(const pdb::Repo& repo, const std::string& name) {
     try {
         const auto address = repo.resolve_symbol(name).get_online_address();
-        boost::nowide::cout << pdb::format_address(address) << '\n';
+        std::cout << pdb::format_address(address) << '\n';
     } catch (const std::exception& e) {
         dump_error(e);
-        boost::nowide::cout << name << '\n';
+        std::cout << name << '\n';
     }
 }
 

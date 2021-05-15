@@ -5,7 +5,7 @@
 
 #include <pdb/all.hpp>
 
-#include <boost/nowide/convert.hpp>
+#include <winapi/utf8.hpp>
 
 #include <dbghelp.h>
 #include <windows.h>
@@ -84,7 +84,7 @@ void enum_symbols(HANDLE id,
                   const DbgHelp::OnSymbol& callback) {
     if (!SymEnumSymbolsW(id,
                          module_base,
-                         boost::nowide::widen(mask).c_str(),
+                         winapi::widen(mask).c_str(),
                          &enum_symbols_callback,
                          const_cast<DbgHelp::OnSymbol*>(&callback)))
         throw error::windows(GetLastError(), "SymEnumSymbolsW");
@@ -190,7 +190,7 @@ SymbolInfo DbgHelp::resolve_symbol(Address offline) const {
 SymbolInfo DbgHelp::resolve_symbol(const std::string& name) const {
     SymbolInfo symbol;
 
-    if (!SymFromNameW(id, boost::nowide::widen(name).c_str(), &static_cast<SYMBOL_INFOW&>(symbol)))
+    if (!SymFromNameW(id, winapi::widen(name).c_str(), &static_cast<SYMBOL_INFOW&>(symbol)))
         throw error::windows(GetLastError(), "SymFromNameW");
 
     return symbol;

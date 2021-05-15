@@ -6,7 +6,6 @@
 #include "command_line.hpp"
 #include "pdb/all.hpp"
 
-#include <boost/nowide/iostream.hpp>
 #include <boost/program_options.hpp>
 
 #include <exception>
@@ -80,11 +79,11 @@ int main(int argc, char* argv[]) {
 
             dbghelp.enum_symbols(id, settings.get_mask(), [&](const pdb::SymbolInfo& symbol) {
                 if (!settings.type_specified() || settings.get_type() == symbol.get_type())
-                    boost::nowide::cout << symbol.get_name() << '\n';
+                    std::cout << symbol.get_name() << '\n';
             });
         }
     } catch (const std::exception& e) {
-        boost::nowide::cerr << "error: " << e.what() << '\n';
+        std::cerr << "error: " << e.what() << '\n';
         return 1;
     }
     return 0;

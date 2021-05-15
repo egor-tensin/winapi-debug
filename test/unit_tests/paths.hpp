@@ -6,22 +6,15 @@
 #pragma once
 
 #include <boost/filesystem.hpp>
-#include <boost/nowide/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
 using path = boost::filesystem::path;
-
-class FixFilesystem {
-public:
-    FixFilesystem() { boost::nowide::nowide_filesystem(); }
-};
 
 class Paths {
 public:
     typedef boost::filesystem::path path;
 
     static Paths& get() {
-        static FixFilesystem fix_filesystem;
         static Paths instance;
         return instance;
     }

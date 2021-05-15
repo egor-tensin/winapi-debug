@@ -5,7 +5,6 @@ target_link_libraries(unit_tests PRIVATE pdb_repo test_lib)
 target_link_libraries(unit_tests PRIVATE
     Boost::disable_autolinking
     Boost::filesystem
-    Boost::nowide
     Boost::unit_test_framework)
 install(TARGETS unit_tests RUNTIME DESTINATION bin/test)
 install_pdbs(TARGETS unit_tests DESTINATION bin/test)

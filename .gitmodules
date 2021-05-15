@@ -1,6 +1,6 @@
 [submodule "cmake"]
 	path = cmake
 	url = https://github.com/egor-tensin/cmake-common.git
-[submodule "3rdparty/boost/nowide"]
-	path = 3rdparty/boost/nowide
-	url = https://github.com/boostorg/nowide.git
+[submodule "3rdparty/winapi/utf8"]
+	path = 3rdparty/winapi/utf8
+	url = https://github.com/egor-tensin/winapi-utf8.git

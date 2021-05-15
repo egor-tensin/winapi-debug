@@ -27,17 +27,17 @@ endif()
 include(cmake/common.cmake)
 
 find_package(Boost REQUIRED)
-add_subdirectory(3rdparty/boost/nowide)
+add_subdirectory(3rdparty/winapi/utf8)
 
 file(GLOB_RECURSE pdb_repo_include "include/*.hpp")
 file(GLOB_RECURSE pdb_repo_src "src/*.cpp")
 add_library(pdb_repo ${pdb_repo_include} ${pdb_repo_src})
 target_compile_definitions(pdb_repo PUBLIC _NO_CVCONST_H)
 target_include_directories(pdb_repo PUBLIC include/)
-target_include_directories(pdb_repo SYSTEM PUBLIC 3rdparty/microsoft/SafeInt)
+target_link_libraries(pdb_repo PRIVATE winapi_utf8)
 target_link_libraries(pdb_repo
     PUBLIC Boost::boost
-    PRIVATE Boost::disable_autolinking Boost::nowide)
+    PRIVATE Boost::disable_autolinking)
 target_link_libraries(pdb_repo PRIVATE dbghelp)
 
 if(MINGW)

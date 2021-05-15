@@ -5,7 +5,7 @@
 
 #include <pdb/all.hpp>
 
-#include <boost/nowide/convert.hpp>
+#include <winapi/utf8.hpp>
 
 #include <windows.h>
 
@@ -70,7 +70,7 @@ std::string get_current_executable_path(PathBuffer& buffer) {
         return get_current_executable_path(buffer);
     }
 
-    return boost::nowide::narrow(buffer.get_data());
+    return winapi::narrow(buffer.get_data());
 }
 
 std::string get_current_executable_path() {
@@ -84,7 +84,7 @@ std::string get_executable_path(const Handle& process, PathBuffer& buffer) {
     const auto ec = ::QueryFullProcessImageNameW(process.get(), 0, buffer.get_data(), &size);
 
     if (ec != 0) {
-        return boost::nowide::narrow(buffer.get_data());
+        return winapi::narrow(buffer.get_data());
     }
 
     if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {

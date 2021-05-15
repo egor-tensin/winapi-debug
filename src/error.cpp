@@ -5,7 +5,7 @@
 
 #include <pdb/all.hpp>
 
-#include <boost/nowide/convert.hpp>
+#include <winapi/utf8.hpp>
 
 #include <windows.h>
 
@@ -49,7 +49,7 @@ std::string format_message(int code) {
 
     std::wstring msg{buf, len};
     LocalFree(buf);
-    return boost::nowide::narrow(trim_trailing_newline(msg));
+    return winapi::narrow(trim_trailing_newline(msg));
 }
 
 } // namespace

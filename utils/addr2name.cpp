@@ -7,7 +7,6 @@
 #include "pdb/all.hpp"
 #include "pdb_descr.hpp"
 
-#include <boost/nowide/iostream.hpp>
 #include <boost/program_options.hpp>
 
 #include <exception>
@@ -58,7 +57,7 @@ std::string format_line_info(const pdb::LineInfo& line_info) {
 }
 
 void dump_error(const std::exception& e) {
-    boost::nowide::cerr << "error: " << e.what() << '\n';
+    std::cerr << "error: " << e.what() << '\n';
 }
 
 void resolve_symbol(const pdb::Repo& repo, pdb::Address address, bool lines = false) {
@@ -78,10 +77,10 @@ void resolve_symbol(const pdb::Repo& repo, pdb::Address address, bool lines = fa
             }
         }
 
-        boost::nowide::cout << msg.str() << '\n';
+        std::cout << msg.str() << '\n';
     } catch (const std::exception& e) {
         dump_error(e);
-        boost::nowide::cout << pdb::format_address(address) << '\n';
+        std::cout << pdb::format_address(address) << '\n';
     }
 }
 

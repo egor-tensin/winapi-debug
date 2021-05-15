@@ -5,7 +5,7 @@
 
 #include <pdb/all.hpp>
 
-#include <boost/nowide/convert.hpp>
+#include <winapi/utf8.hpp>
 
 #include <dbghelp.h>
 #include <windows.h>
@@ -54,11 +54,10 @@ SymbolInfo::SymbolInfo(const Impl& impl) : SymbolInfo{} {
 std::string SymbolInfo::get_name() const {
     // SymFromAddrW, contrary to SymFromAddrA, seems to include the terminating
     // null character in NameLen.
-    return boost::nowide::narrow(get_impl().Name);
+    return winapi::narrow(get_impl().Name);
 }
 
 LineInfo::LineInfo(const Impl& impl)
-    : file_path{boost::nowide::narrow(impl.FileName)},
-      line_number{cast_line_number(impl.LineNumber)} {}
+    : file_path{winapi::narrow(impl.FileName)}, line_number{cast_line_number(impl.LineNumber)} {}
 
 } // namespace pdb

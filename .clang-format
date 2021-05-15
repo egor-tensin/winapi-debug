@@ -14,10 +14,12 @@ IncludeCategories:
     Priority: 1
   - Regex: '^<test_lib\.|^<pdb\/'
     Priority: 2
-  - Regex: '^<boost\/'
+  - Regex: '^<winapi\/'
     Priority: 3
-  - Regex: '^<.*\.h>$'
+  - Regex: '^<boost\/'
     Priority: 4
-  - Regex: '.*'
+  - Regex: '^<.*\.h>$'
     Priority: 5
+  - Regex: '.*'
+    Priority: 6
 ...
