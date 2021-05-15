@@ -9,7 +9,8 @@
 #include "dbghelp.hpp"
 #include "module.hpp"
 #include "symbol.hpp"
-#include "utils/file.hpp"
+
+#include <winapi/file.hpp>
 
 #include <functional>
 #include <map>
@@ -49,7 +50,7 @@ private:
 
     const DbgHelp dbghelp{DbgHelp::post_mortem()};
 
-    std::unordered_set<file::ID> file_ids;
+    std::unordered_set<winapi::File::ID> file_ids;
     std::map<Address, Module> online_bases;
     std::map<Address, const Module&> offline_bases;
 };

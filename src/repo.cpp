@@ -5,6 +5,8 @@
 
 #include <pdb/all.hpp>
 
+#include <winapi/file.hpp>
+
 #include <map>
 #include <sstream>
 #include <stdexcept>
@@ -89,7 +91,7 @@ Address Repo::add_pdb(Address online_base, const std::string& path) {
     if (online_bases.find(online_base) != online_bases.cend())
         throw std::runtime_error{pdb_already_loaded(online_base, path)};
 
-    auto file_id = file::query_id(path);
+    auto file_id = winapi::File::open_read_attributes(path).query_id();
     if (file_ids.find(file_id) != file_ids.cend())
         throw std::runtime_error{pdb_already_loaded(path)};
 

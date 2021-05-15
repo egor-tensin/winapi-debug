@@ -6,6 +6,7 @@
 #include <pdb/all.hpp>
 
 #include <winapi/error.hpp>
+#include <winapi/file.hpp>
 #include <winapi/utf8.hpp>
 
 #include <dbghelp.h>
@@ -127,7 +128,7 @@ ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
     DWORD size = 0;
 
     {
-        const auto raw_size = file::get_size(path);
+        const auto raw_size = winapi::File::open_read_attributes(path).get_size();
         if (raw_size > std::numeric_limits<decltype(size)>::max())
             throw std::range_error{"PDB file is too large"};
         size = static_cast<decltype(size)>(raw_size);
