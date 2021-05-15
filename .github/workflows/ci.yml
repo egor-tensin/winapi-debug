@@ -24,16 +24,17 @@ jobs:
   build:
     strategy:
       matrix:
-        toolset: [mingw, vs2015, vs2017, vs]
+        toolset: [mingw, vs2015, vs2017, vs2019]
         platform: [x64, x86]
         configuration: [Debug, RelWithDebInfo]
         include:
+          - boost-version: 1.65.0
           # MinGW builds are done on Linux, since it's more up-to-date there,
           # and it's much faster.
-          - {toolset: mingw, os: ubuntu-20.04}
+          - {toolset: mingw,  os: ubuntu-20.04}
           - {toolset: vs2015, os: windows-2016}
           - {toolset: vs2017, os: windows-2016}
-          - {toolset: vs, os: windows-2019}
+          - {toolset: vs2019, os: windows-2019, boost-version: 1.72.0}
     runs-on: '${{ matrix.os }}'
     name: 'Build: ${{ matrix.toolset }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
     defaults:
@@ -43,7 +44,7 @@ jobs:
       TOOLSET: '${{ matrix.toolset }}'
       PLATFORM: '${{ matrix.platform }}'
       CONFIGURATION: '${{ matrix.configuration }}'
-      BOOST_VERSION: 1.65.0
+      BOOST_VERSION: '${{ matrix.boost-version }}'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
