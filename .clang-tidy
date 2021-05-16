@@ -1,0 +1,4 @@
+---
+Checks:          'clang-diagnostic-*,clang-analyzer-*,bugprone-*,cppcoreguidelines-,modernize-*,-modernize-use-trailing-return-type,-modernize-use-nullptr,performance-*'
+...
+

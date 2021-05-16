@@ -82,3 +82,12 @@ install: build
 .PHONY: test
 test:
 	cd -- '$(call escape,$(cmake_dir))' && ctest -C '$(call escape,$(CONFIGURATION))' --verbose
+
+clang-tidy := run-clang-tidy
+ifeq (1,$(shell test -e /usr/share/clang/run-clang-tidy.py && echo 1))
+clang-tidy := /usr/share/clang/run-clang-tidy.py
+endif
+
+.PHONY: check
+check:
+	$(clang-tidy) -p '$(call escape,$(cmake_dir))' -quiet
