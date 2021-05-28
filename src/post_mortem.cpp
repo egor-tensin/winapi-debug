@@ -86,7 +86,7 @@ const Module& guess_module(const std::map<Address, Value>& modules, Address pivo
 
 } // namespace
 
-Address Repo::add_pdb(Address online_base, const std::string& path) {
+Address PostMortem::add_pdb(Address online_base, const std::string& path) {
     if (online_bases.find(online_base) != online_bases.cend())
         throw std::runtime_error{pdb_already_loaded(online_base, path)};
 
@@ -107,64 +107,64 @@ Address Repo::add_pdb(Address online_base, const std::string& path) {
     return offline_base;
 }
 
-void Repo::enum_symbols(const OnSymbol& callback) const {
+void PostMortem::enum_symbols(const OnSymbol& callback) const {
     for (const auto& it : offline_bases)
         enum_symbols(it.second, callback);
 }
 
-void Repo::enum_symbols(Address offline_base, const OnSymbol& callback) const {
+void PostMortem::enum_symbols(Address offline_base, const OnSymbol& callback) const {
     const auto it = offline_bases.find(offline_base);
     if (it == offline_bases.cend())
         throw std::runtime_error{"unknown module"};
     enum_symbols(it->second, callback);
 }
 
-void Repo::enum_symbols(const Module& module, const OnSymbol& callback) const {
+void PostMortem::enum_symbols(const Module& module, const OnSymbol& callback) const {
     dbghelp.enum_symbols(
         module, [&](const SymbolInfo& impl) { callback(symbol_from_buffer(module, impl)); });
 }
 
-Symbol Repo::resolve_symbol(Address online) const {
+Symbol PostMortem::resolve_symbol(Address online) const {
     return symbol_from_buffer(dbghelp.resolve_symbol(address_online_to_offline(online)));
 }
 
-Symbol Repo::resolve_symbol(const std::string& name) const {
+Symbol PostMortem::resolve_symbol(const std::string& name) const {
     return symbol_from_buffer(dbghelp.resolve_symbol(name));
 }
 
-LineInfo Repo::resolve_line(Address online) const {
+LineInfo PostMortem::resolve_line(Address online) const {
     return dbghelp.resolve_line(address_online_to_offline(online));
 }
 
-const Module& Repo::module_with_online_base(Address base) const {
+const Module& PostMortem::module_with_online_base(Address base) const {
     return lookup_module(online_bases, base);
 }
 
-const Module& Repo::module_with_offline_base(Address base) const {
+const Module& PostMortem::module_with_offline_base(Address base) const {
     return lookup_module(offline_bases, base);
 }
 
-Symbol Repo::symbol_from_buffer(const SymbolInfo& impl) const {
+Symbol PostMortem::symbol_from_buffer(const SymbolInfo& impl) const {
     return symbol_from_buffer(module_with_offline_base(impl.get_offline_base()), impl);
 }
 
-Symbol Repo::symbol_from_buffer(const Module& module, const SymbolInfo& impl) {
+Symbol PostMortem::symbol_from_buffer(const Module& module, const SymbolInfo& impl) {
     return {module.translate_offline_address(impl.get_offline_address()), impl};
 }
 
-Address Repo::address_online_to_offline(Address online) const {
+Address PostMortem::address_online_to_offline(Address online) const {
     return module_from_online_address(online).translate_online_address(online);
 }
 
-Address Repo::address_offline_to_online(Address offline) const {
+Address PostMortem::address_offline_to_online(Address offline) const {
     return module_from_offline_address(offline).translate_offline_address(offline);
 }
 
-const Module& Repo::module_from_online_address(Address online) const {
+const Module& PostMortem::module_from_online_address(Address online) const {
     return guess_module(online_bases, online);
 }
 
-const Module& Repo::module_from_offline_address(Address offline) const {
+const Module& PostMortem::module_from_offline_address(Address offline) const {
     return guess_module(offline_bases, offline);
 }
 

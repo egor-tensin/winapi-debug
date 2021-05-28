@@ -62,17 +62,19 @@ void dump_error(const std::exception& e) {
     std::cerr << "error: " << e.what() << '\n';
 }
 
-void resolve_symbol(const winapi::Repo& repo, winapi::Address address, bool lines = false) {
+void resolve_symbol(const winapi::PostMortem& analysis,
+                    winapi::Address address,
+                    bool lines = false) {
     try {
-        const auto symbol = repo.resolve_symbol(address);
-        const auto& module = repo.module_with_offline_base(symbol.get_offline_base());
+        const auto symbol = analysis.resolve_symbol(address);
+        const auto& module = analysis.module_with_offline_base(symbol.get_offline_base());
 
         std::ostringstream msg;
         msg << format_symbol(module, symbol);
 
         if (lines) {
             try {
-                const auto line_info = repo.resolve_line(address);
+                const auto line_info = analysis.resolve_line(address);
                 msg << ' ' << format_line_info(line_info);
             } catch (const std::exception& e) {
                 dump_error(e);
@@ -104,13 +106,13 @@ int main(int argc, char* argv[]) {
             return 0;
         }
 
-        winapi::Repo repo;
+        winapi::PostMortem analysis;
 
         for (const auto& pdb : settings.pdbs)
-            repo.add_pdb(pdb.online_base, pdb.path);
+            analysis.add_pdb(pdb.online_base, pdb.path);
 
         for (const auto& address : settings.addresses)
-            resolve_symbol(repo, address, settings.lines);
+            resolve_symbol(analysis, address, settings.lines);
     } catch (const std::exception& e) {
         dump_error(e);
         return 1;

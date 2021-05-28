@@ -19,9 +19,9 @@
 
 namespace winapi {
 
-class Repo {
+class PostMortem {
 public:
-    Repo() = default;
+    PostMortem() = default;
 
     Address add_pdb(Address online_base, const std::string& path);
 

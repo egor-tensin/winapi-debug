@@ -9,5 +9,5 @@
 #include "debug/call_stack.hpp"
 #include "debug/dbghelp.hpp"
 #include "debug/module.hpp"
-#include "debug/repo.hpp"
+#include "debug/post_mortem.hpp"
 #include "debug/symbol.hpp"

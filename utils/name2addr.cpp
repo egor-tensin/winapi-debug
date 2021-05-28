@@ -42,9 +42,9 @@ void dump_error(const std::exception& e) {
     std::cerr << "error: " << e.what() << '\n';
 }
 
-void resolve_symbol(const winapi::Repo& repo, const std::string& name) {
+void resolve_symbol(const winapi::PostMortem& analysis, const std::string& name) {
     try {
-        const auto address = repo.resolve_symbol(name).get_online_address();
+        const auto address = analysis.resolve_symbol(name).get_online_address();
         std::cout << winapi::format_address(address) << '\n';
     } catch (const std::exception& e) {
         dump_error(e);
@@ -70,13 +70,13 @@ int main(int argc, char* argv[]) {
             return 0;
         }
 
-        winapi::Repo repo;
+        winapi::PostMortem analysis;
 
         for (const auto& pdb : settings.pdbs)
-            repo.add_pdb(pdb.online_base, pdb.path);
+            analysis.add_pdb(pdb.online_base, pdb.path);
 
         for (const auto& name : settings.names)
-            resolve_symbol(repo, name);
+            resolve_symbol(analysis, name);
     } catch (const std::exception& e) {
         dump_error(e);
         return 1;
