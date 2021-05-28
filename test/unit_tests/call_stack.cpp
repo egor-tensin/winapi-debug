@@ -5,8 +5,9 @@
 
 #include "fixtures.hpp"
 
-#include <pdb/all.hpp>
 #include <test_lib.hpp>
+
+#include <winapi/debug.hpp>
 
 #include <boost/optional.hpp>
 #include <boost/test/unit_test.hpp>

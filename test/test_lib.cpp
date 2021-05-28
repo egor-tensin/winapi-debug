@@ -5,7 +5,7 @@
 
 #include "test_lib.hpp"
 
-#include <pdb/all.hpp>
+#include <winapi/debug.hpp>
 
 #include <iostream>
 

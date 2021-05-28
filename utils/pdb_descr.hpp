@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "pdb/all.hpp"
+#include <winapi/debug.hpp>
 
 #include <boost/program_options.hpp>
 

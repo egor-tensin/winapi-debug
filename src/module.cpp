@@ -3,8 +3,7 @@
 // For details, see https://github.com/egor-tensin/winapi-debug.
 // Distributed under the MIT License.
 
-#include <pdb/all.hpp>
-
+#include <winapi/debug.hpp>
 #include <winapi/utf8.hpp>
 
 #include <cstring>

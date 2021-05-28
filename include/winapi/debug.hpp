@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include "address.hpp"
-#include "call_stack.hpp"
-#include "dbghelp.hpp"
-#include "module.hpp"
-#include "repo.hpp"
-#include "symbol.hpp"
+#include "debug/address.hpp"
+#include "debug/call_stack.hpp"
+#include "debug/dbghelp.hpp"
+#include "debug/module.hpp"
+#include "debug/repo.hpp"
+#include "debug/symbol.hpp"
