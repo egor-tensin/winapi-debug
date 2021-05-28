@@ -32,17 +32,17 @@ void do_throw_call_stack() {
 volatile int var = 42;
 
 void baz(F f) {
-    std::cout << "baz " << winapi::format_address(reinterpret_cast<void*>(&baz)) << '\n';
+    std::cout << "baz " << winapi::address::format(reinterpret_cast<void*>(&baz)) << '\n';
     f();
 }
 
 void bar(F f) {
-    std::cout << "bar " << winapi::format_address(reinterpret_cast<void*>(&bar)) << '\n';
+    std::cout << "bar " << winapi::address::format(reinterpret_cast<void*>(&bar)) << '\n';
     baz(f);
 }
 
 void foo(F f) {
-    std::cout << "foo " << winapi::format_address(reinterpret_cast<void*>(&foo)) << '\n';
+    std::cout << "foo " << winapi::address::format(reinterpret_cast<void*>(&foo)) << '\n';
     bar(f);
 }
 

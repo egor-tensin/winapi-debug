@@ -14,21 +14,24 @@ namespace winapi {
 
 typedef DWORD64 Address;
 
-inline std::string format_address(Address address) {
+namespace address {
+
+inline std::string format(Address address) {
     std::ostringstream oss;
     oss << std::hex << std::showbase << address;
     return oss.str();
 }
 
-inline std::string format_address(void* address) {
-    return format_address(reinterpret_cast<Address>(address));
+inline std::string format(void* address) {
+    return format(reinterpret_cast<Address>(address));
 }
 
-inline bool parse_address(Address& dest, const std::string& src) {
+inline bool parse(Address& dest, const std::string& src) {
     std::istringstream iss{src};
     iss >> std::hex;
     char c;
     return iss >> dest && !iss.get(c);
 }
 
+} // namespace address
 } // namespace winapi

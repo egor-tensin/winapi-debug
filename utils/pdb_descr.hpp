@@ -25,7 +25,7 @@ struct PDB {
             boost::throw_exception(boost::program_options::invalid_option_value{src});
 
         winapi::Address online_base;
-        if (!winapi::parse_address(online_base, src.substr(0, sep_pos)))
+        if (!winapi::address::parse(online_base, src.substr(0, sep_pos)))
             boost::throw_exception(boost::program_options::invalid_option_value{src});
 
         return {online_base, src.substr(sep_pos + 1)};
@@ -33,7 +33,7 @@ struct PDB {
 
     static winapi::Address parse_address(const std::string& src) {
         winapi::Address dest;
-        if (!winapi::parse_address(dest, src))
+        if (!winapi::address::parse(dest, src))
             boost::throw_exception(boost::program_options::invalid_option_value{src});
         return dest;
     }

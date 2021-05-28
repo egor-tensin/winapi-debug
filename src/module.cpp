@@ -60,15 +60,15 @@ Address Module::translate_online_address(Address online) const {
 
 std::string Module::invalid_offline_address(Address offline) const {
     std::ostringstream oss;
-    oss << "offline address " << format_address(offline) << " doesn't belong to module "
-        << get_name() << " (base offline address " << format_address(get_offline_base()) << ')';
+    oss << "offline address " << address::format(offline) << " doesn't belong to module "
+        << get_name() << " (base offline address " << address::format(get_offline_base()) << ')';
     return oss.str();
 }
 
 std::string Module::invalid_online_address(Address online) const {
     std::ostringstream oss;
-    oss << "online address " << format_address(online) << " doesn't belong to module " << get_name()
-        << " (base online address " << format_address(get_online_base()) << ')';
+    oss << "online address " << address::format(online) << " doesn't belong to module "
+        << get_name() << " (base online address " << address::format(get_online_base()) << ')';
     return oss.str();
 }
 

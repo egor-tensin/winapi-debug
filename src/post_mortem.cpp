@@ -17,7 +17,7 @@ namespace {
 
 std::string pdb_already_loaded(Address online_base, const std::string& path) {
     std::ostringstream oss;
-    oss << "module with online base address " << format_address(online_base)
+    oss << "module with online base address " << address::format(online_base)
         << " has already been loaded: " << path;
     return oss.str();
 }
@@ -30,27 +30,27 @@ std::string pdb_already_loaded(const std::string& path) {
 
 std::string offline_base_already_used(Address base) {
     std::ostringstream oss;
-    oss << "module with offline base address " << format_address(base)
+    oss << "module with offline base address " << address::format(base)
         << " has already been loaded (shouldn't happen)";
     return oss.str();
 }
 
 std::string module_not_found(Address base) {
     std::ostringstream oss;
-    oss << "module with base address " << format_address(base) << " wasn't found";
+    oss << "module with base address " << address::format(base) << " wasn't found";
     return oss.str();
 }
 
 std::string guess_module_no_modules(Address pivot) {
     std::ostringstream oss;
-    oss << "couldn't select a module for address " << format_address(pivot)
+    oss << "couldn't select a module for address " << address::format(pivot)
         << ": no modules have been loaded yet";
     return oss.str();
 }
 
 std::string guess_module_address_too_low(Address pivot) {
     std::ostringstream oss;
-    oss << "couldn't select a module for address " << format_address(pivot) << ": it's too low";
+    oss << "couldn't select a module for address " << address::format(pivot) << ": it's too low";
     return oss.str();
 }
 

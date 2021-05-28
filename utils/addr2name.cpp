@@ -48,7 +48,7 @@ std::string format_symbol(const winapi::Module& module, const winapi::Symbol& sy
     oss << module.get_name() << '!' << symbol.get_name();
     const auto displacement = symbol.get_displacement();
     if (displacement)
-        oss << '+' << winapi::format_address(displacement);
+        oss << '+' << winapi::address::format(displacement);
     return oss.str();
 }
 
@@ -84,7 +84,7 @@ void resolve_symbol(const winapi::PostMortem& analysis,
         std::cout << msg.str() << '\n';
     } catch (const std::exception& e) {
         dump_error(e);
-        std::cout << winapi::format_address(address) << '\n';
+        std::cout << winapi::address::format(address) << '\n';
     }
 }
 

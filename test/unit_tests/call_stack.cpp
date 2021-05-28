@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(call_stack) {
         BOOST_TEST_MESSAGE("Call stack:");
         for (const auto& addr : call_stack) {
             pretty.emplace_back(call_stack.pretty_print_address(dbghelp, addr));
-            BOOST_TEST_MESSAGE('\t' << winapi::format_address(addr) << ' ' << pretty.back());
+            BOOST_TEST_MESSAGE('\t' << winapi::address::format(addr) << ' ' << pretty.back());
         }
 
         // Second, resolve the symbols:
@@ -43,12 +43,12 @@ BOOST_AUTO_TEST_CASE(call_stack) {
         for (const auto& addr : call_stack) {
             try {
                 auto symbol = dbghelp.resolve_symbol(addr);
-                BOOST_TEST_MESSAGE('\t' << winapi::format_address(symbol.get_offline_address())
+                BOOST_TEST_MESSAGE('\t' << winapi::address::format(symbol.get_offline_address())
                                         << ' ' << symbol.get_name());
                 symbols.emplace_back(std::move(symbol));
             } catch (const std::system_error& e) {
                 symbols.emplace_back(boost::none);
-                BOOST_TEST_MESSAGE('\t' << winapi::format_address(addr)
+                BOOST_TEST_MESSAGE('\t' << winapi::address::format(addr)
                                         << " Couldn't resolve symbol: " << e.what());
             }
         }
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(call_stack) {
             };
             for (const auto& addr : expected) {
                 BOOST_TEST(check(addr),
-                           "Function frame captured: " << winapi::format_address(addr));
+                           "Function frame captured: " << winapi::address::format(addr));
             }
         }
 

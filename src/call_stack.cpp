@@ -27,14 +27,14 @@ static std::string put_between_brackets(const T& x) {
 }
 
 std::string format_address_fallback(Address addr) {
-    return put_between_brackets(format_address(addr));
+    return put_between_brackets(address::format(addr));
 }
 
 std::string offset_from(const std::string& thing, Address offset) {
     if (offset == 0)
         return put_between_brackets(thing);
     else
-        return put_between_brackets(thing + "+" + format_address(offset));
+        return put_between_brackets(thing + "+" + address::format(offset));
 }
 
 std::string offset_from_module(const ModuleInfo& module, Address addr) {
@@ -107,7 +107,7 @@ std::string CallStack::pretty_print_address(const DbgHelp& dbghelp, Address addr
 
 void CallStack::dump(std::ostream& os, const DbgHelp& dbghelp) const {
     for_each_address([&](Address addr) {
-        os << format_address(addr) << ' ' << pretty_print_address(dbghelp, addr) << '\n';
+        os << address::format(addr) << ' ' << pretty_print_address(dbghelp, addr) << '\n';
         return true;
     });
 }

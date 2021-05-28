@@ -45,7 +45,7 @@ void dump_error(const std::exception& e) {
 void resolve_symbol(const winapi::PostMortem& analysis, const std::string& name) {
     try {
         const auto address = analysis.resolve_symbol(name).get_online_address();
-        std::cout << winapi::format_address(address) << '\n';
+        std::cout << winapi::address::format(address) << '\n';
     } catch (const std::exception& e) {
         dump_error(e);
         std::cout << name << '\n';
