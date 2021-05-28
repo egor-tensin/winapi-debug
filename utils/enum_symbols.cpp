@@ -26,7 +26,7 @@ public:
                               "load a PDB file");
         visible.add_options()(
             "functions",
-            po::value<pdb::symbol::Tag>(&tag)->implicit_value(function_tag)->zero_tokens(),
+            po::value<winapi::symbol::Tag>(&tag)->implicit_value(function_tag)->zero_tokens(),
             "only list functions");
         visible.add_options()(
             "mask", po::value<std::string>(&symbol_mask)->value_name("MASK"), "symbol mask");
@@ -40,20 +40,22 @@ public:
 
     bool type_specified() const { return tag != reserved_tag; }
 
-    pdb::Symbol::Type get_type() const { return static_cast<pdb::Symbol::Type>(tag); }
+    winapi::Symbol::Type get_type() const { return static_cast<winapi::Symbol::Type>(tag); }
 
     std::string get_mask() const { return symbol_mask; }
 
 private:
-    static constexpr auto reserved_tag = static_cast<pdb::symbol::Tag>(pdb::Symbol::Type::RESERVED);
-    static constexpr auto function_tag = static_cast<pdb::symbol::Tag>(pdb::Symbol::Type::Function);
+    static constexpr auto reserved_tag =
+        static_cast<winapi::symbol::Tag>(winapi::Symbol::Type::RESERVED);
+    static constexpr auto function_tag =
+        static_cast<winapi::symbol::Tag>(winapi::Symbol::Type::Function);
 
-    pdb::symbol::Tag tag = reserved_tag;
-    std::string symbol_mask{pdb::DbgHelp::all_symbols};
+    winapi::symbol::Tag tag = reserved_tag;
+    std::string symbol_mask{winapi::DbgHelp::all_symbols};
 };
 
-constexpr pdb::symbol::Tag EnumSymbols::reserved_tag;
-constexpr pdb::symbol::Tag EnumSymbols::function_tag;
+constexpr winapi::symbol::Tag EnumSymbols::reserved_tag;
+constexpr winapi::symbol::Tag EnumSymbols::function_tag;
 
 } // namespace
 
@@ -73,12 +75,12 @@ int main(int argc, char* argv[]) {
             return 0;
         }
 
-        const auto dbghelp = pdb::DbgHelp::post_mortem();
+        const auto dbghelp = winapi::DbgHelp::post_mortem();
 
         for (const auto& pdb : settings.pdbs) {
             const auto id = dbghelp.load_pdb(pdb);
 
-            dbghelp.enum_symbols(id, settings.get_mask(), [&](const pdb::SymbolInfo& symbol) {
+            dbghelp.enum_symbols(id, settings.get_mask(), [&](const winapi::SymbolInfo& symbol) {
                 if (!settings.type_specified() || settings.get_type() == symbol.get_type())
                     std::cout << symbol.get_name() << '\n';
             });

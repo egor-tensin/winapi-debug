@@ -16,7 +16,7 @@
 #include <string>
 #include <type_traits>
 
-namespace pdb {
+namespace winapi {
 namespace {
 
 std::size_t calc_size(const SymbolInfo::Impl& impl) {
@@ -59,4 +59,4 @@ std::string SymbolInfo::get_name() const {
 LineInfo::LineInfo(const Impl& impl)
     : file_path{winapi::narrow(impl.FileName)}, line_number{cast_line_number(impl.LineNumber)} {}
 
-} // namespace pdb
+} // namespace winapi

@@ -16,7 +16,7 @@
 #include <ostream>
 #include <string>
 
-namespace pdb {
+namespace winapi {
 
 class CallStack {
 public:
@@ -50,4 +50,4 @@ private:
     CallStack() = default;
 };
 
-} // namespace pdb
+} // namespace winapi

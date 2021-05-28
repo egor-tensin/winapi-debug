@@ -14,7 +14,7 @@
 #include <functional>
 #include <string>
 
-namespace pdb {
+namespace winapi {
 
 class DbgHelp {
 public:
@@ -60,12 +60,12 @@ inline void swap(DbgHelp& a, DbgHelp& b) noexcept {
     a.swap(b);
 }
 
-} // namespace pdb
+} // namespace winapi
 
 namespace std {
 
 template <>
-inline void swap(pdb::DbgHelp& a, pdb::DbgHelp& b) noexcept {
+inline void swap(winapi::DbgHelp& a, winapi::DbgHelp& b) noexcept {
     a.swap(b);
 }
 

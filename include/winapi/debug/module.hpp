@@ -12,7 +12,7 @@
 
 #include <string>
 
-namespace pdb {
+namespace winapi {
 
 class ModuleInfo {
 public:
@@ -51,4 +51,4 @@ private:
     const Address online_base;
 };
 
-} // namespace pdb
+} // namespace winapi

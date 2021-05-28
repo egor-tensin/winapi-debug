@@ -30,11 +30,11 @@ Set<T> join(Set<T>&& xs, Set<T>&& ys) {
 
 class DbgHelp {
 public:
-    DbgHelp(pdb::DbgHelp&& dbghelp) : dbghelp{std::move(dbghelp)} {}
+    DbgHelp(winapi::DbgHelp&& dbghelp) : dbghelp{std::move(dbghelp)} {}
 
     ~DbgHelp() { BOOST_TEST_MESSAGE("Cleaning up DbgHelp"); }
 
-    const pdb::DbgHelp dbghelp;
+    const winapi::DbgHelp dbghelp;
 
     static const std::string& get_module_name() {
         static const std::string name{"test_lib"};
@@ -47,7 +47,7 @@ public:
     }
 
     typedef Set<std::string> SymbolList;
-    typedef Set<pdb::Address> AddressList;
+    typedef Set<winapi::Address> AddressList;
 
     static AddressList expected_function_addresses() {
         return cast({reinterpret_cast<void*>(&test_ns::foo),
@@ -66,12 +66,12 @@ public:
     }
 
 protected:
-    static pdb::DbgHelp init_dbghelp(bool current_process) {
+    static winapi::DbgHelp init_dbghelp(bool current_process) {
         BOOST_TEST_MESSAGE("Initializing DbgHelp");
         if (current_process) {
-            return pdb::DbgHelp::current_process();
+            return winapi::DbgHelp::current_process();
         } else {
-            return pdb::DbgHelp::post_mortem();
+            return winapi::DbgHelp::post_mortem();
         }
     }
 
@@ -79,7 +79,7 @@ private:
     static AddressList cast(Set<void*>&& fs) {
         AddressList addresses;
         for (auto&& f : fs) {
-            addresses.emplace(reinterpret_cast<pdb::Address>(f));
+            addresses.emplace(reinterpret_cast<winapi::Address>(f));
         }
         return addresses;
     }

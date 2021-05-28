@@ -14,7 +14,7 @@
 #include <vector>
 
 struct PDB {
-    pdb::Address online_base;
+    winapi::Address online_base;
     std::string path;
 
     static PDB parse(std::string src) {
@@ -24,16 +24,16 @@ struct PDB {
         if (sep_pos == std::string::npos)
             boost::throw_exception(boost::program_options::invalid_option_value{src});
 
-        pdb::Address online_base;
-        if (!pdb::parse_address(online_base, src.substr(0, sep_pos)))
+        winapi::Address online_base;
+        if (!winapi::parse_address(online_base, src.substr(0, sep_pos)))
             boost::throw_exception(boost::program_options::invalid_option_value{src});
 
         return {online_base, src.substr(sep_pos + 1)};
     }
 
-    static pdb::Address parse_address(const std::string& src) {
-        pdb::Address dest;
-        if (!pdb::parse_address(dest, src))
+    static winapi::Address parse_address(const std::string& src) {
+        winapi::Address dest;
+        if (!winapi::parse_address(dest, src))
             boost::throw_exception(boost::program_options::invalid_option_value{src});
         return dest;
     }
@@ -53,7 +53,7 @@ void validate(boost::any& dest,
 template <typename charT>
 void validate(boost::any& dest,
               const std::vector<std::basic_string<charT>>& src_tokens,
-              pdb::Address*,
+              winapi::Address*,
               int) {
     namespace po = boost::program_options;
     po::validators::check_first_occurrence(dest);

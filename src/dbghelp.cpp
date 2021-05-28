@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 
-namespace pdb {
+namespace winapi {
 namespace {
 
 void set_dbghelp_options() {
@@ -162,7 +162,7 @@ ModuleInfo DbgHelp::resolve_module(Address offline) const {
 void DbgHelp::enum_symbols(const ModuleInfo& module,
                            const std::string& mask,
                            const OnSymbol& callback) const {
-    pdb::enum_symbols(id, module.get_offline_base(), mask, callback);
+    winapi::enum_symbols(id, module.get_offline_base(), mask, callback);
 }
 
 void DbgHelp::enum_symbols(const ModuleInfo& module, const OnSymbol& callback) const {
@@ -170,7 +170,7 @@ void DbgHelp::enum_symbols(const ModuleInfo& module, const OnSymbol& callback) c
 }
 
 void DbgHelp::enum_symbols(const std::string& mask, const OnSymbol& callback) const {
-    pdb::enum_symbols(id, 0, mask, callback);
+    winapi::enum_symbols(id, 0, mask, callback);
 }
 
 void DbgHelp::enum_symbols(const OnSymbol& callback) const {
@@ -210,4 +210,4 @@ LineInfo DbgHelp::resolve_line(Address offline) const {
     return LineInfo{impl};
 }
 
-} // namespace pdb
+} // namespace winapi

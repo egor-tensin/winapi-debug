@@ -17,7 +17,7 @@
 #include <string>
 #include <unordered_set>
 
-namespace pdb {
+namespace winapi {
 
 class Repo {
 public:
@@ -55,4 +55,4 @@ private:
     std::map<Address, const Module&> offline_bases;
 };
 
-} // namespace pdb
+} // namespace winapi

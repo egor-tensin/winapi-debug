@@ -12,7 +12,7 @@
 #include <string>
 #include <utility>
 
-namespace pdb {
+namespace winapi {
 namespace {
 
 std::string pdb_already_loaded(Address online_base, const std::string& path) {
@@ -168,4 +168,4 @@ const Module& Repo::module_from_offline_address(Address offline) const {
     return guess_module(offline_bases, offline);
 }
 
-} // namespace pdb
+} // namespace winapi

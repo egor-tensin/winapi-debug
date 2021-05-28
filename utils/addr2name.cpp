@@ -27,9 +27,10 @@ public:
             "pdb", po::value<std::vector<PDB>>(&pdbs)->value_name("ADDR,PATH"), "load a PDB file");
         visible.add_options()(
             "lines,l", po::bool_switch(&lines), "try to resolve source files & line numbers");
-        hidden.add_options()("address",
-                             po::value<std::vector<pdb::Address>>(&addresses)->value_name("ADDR"),
-                             "add an address to resolve");
+        hidden.add_options()(
+            "address",
+            po::value<std::vector<winapi::Address>>(&addresses)->value_name("ADDR"),
+            "add an address to resolve");
         positional.add("address", -1);
     }
 
@@ -38,20 +39,20 @@ public:
     }
 
     std::vector<PDB> pdbs;
-    std::vector<pdb::Address> addresses;
+    std::vector<winapi::Address> addresses;
     bool lines = false;
 };
 
-std::string format_symbol(const pdb::Module& module, const pdb::Symbol& symbol) {
+std::string format_symbol(const winapi::Module& module, const winapi::Symbol& symbol) {
     std::ostringstream oss;
     oss << module.get_name() << '!' << symbol.get_name();
     const auto displacement = symbol.get_displacement();
     if (displacement)
-        oss << '+' << pdb::format_address(displacement);
+        oss << '+' << winapi::format_address(displacement);
     return oss.str();
 }
 
-std::string format_line_info(const pdb::LineInfo& line_info) {
+std::string format_line_info(const winapi::LineInfo& line_info) {
     std::ostringstream oss;
     oss << '[' << line_info.file_path << " @ " << line_info.line_number << ']';
     return oss.str();
@@ -61,7 +62,7 @@ void dump_error(const std::exception& e) {
     std::cerr << "error: " << e.what() << '\n';
 }
 
-void resolve_symbol(const pdb::Repo& repo, pdb::Address address, bool lines = false) {
+void resolve_symbol(const winapi::Repo& repo, winapi::Address address, bool lines = false) {
     try {
         const auto symbol = repo.resolve_symbol(address);
         const auto& module = repo.module_with_offline_base(symbol.get_offline_base());
@@ -81,7 +82,7 @@ void resolve_symbol(const pdb::Repo& repo, pdb::Address address, bool lines = fa
         std::cout << msg.str() << '\n';
     } catch (const std::exception& e) {
         dump_error(e);
-        std::cout << pdb::format_address(address) << '\n';
+        std::cout << winapi::format_address(address) << '\n';
     }
 }
 
@@ -103,7 +104,7 @@ int main(int argc, char* argv[]) {
             return 0;
         }
 
-        pdb::Repo repo;
+        winapi::Repo repo;
 
         for (const auto& pdb : settings.pdbs)
             repo.add_pdb(pdb.online_base, pdb.path);

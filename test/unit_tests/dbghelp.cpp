@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_CASE(enum_symbols) {
     // First, enumerate all the symbols:
     std::vector<std::string> all_symbols;
     {
-        const auto callback = [&all_symbols](const pdb::SymbolInfo& symbol) {
+        const auto callback = [&all_symbols](const winapi::SymbolInfo& symbol) {
             all_symbols.emplace_back(symbol.get_name());
         };
         dbghelp.enum_symbols(callback);

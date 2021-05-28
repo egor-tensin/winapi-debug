@@ -16,7 +16,7 @@
 #include <string>
 #include <system_error>
 
-namespace pdb {
+namespace winapi {
 namespace {
 
 template <typename T>
@@ -112,4 +112,4 @@ void CallStack::dump(std::ostream& os, const DbgHelp& dbghelp) const {
     });
 }
 
-} // namespace pdb
+} // namespace winapi

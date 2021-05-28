@@ -10,7 +10,7 @@
 #include <sstream>
 #include <string>
 
-namespace pdb {
+namespace winapi {
 
 typedef DWORD64 Address;
 
@@ -31,4 +31,4 @@ inline bool parse_address(Address& dest, const std::string& src) {
     return iss >> dest && !iss.get(c);
 }
 
-} // namespace pdb
+} // namespace winapi

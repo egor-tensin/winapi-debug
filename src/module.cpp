@@ -12,7 +12,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace pdb {
+namespace winapi {
 
 ModuleInfo::ModuleInfo() : ModuleInfo{create_impl()} {}
 
@@ -72,4 +72,4 @@ std::string Module::invalid_online_address(Address online) const {
     return oss.str();
 }
 
-} // namespace pdb
+} // namespace winapi

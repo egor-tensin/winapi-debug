@@ -17,7 +17,7 @@
 #include <string>
 #include <type_traits>
 
-namespace pdb {
+namespace winapi {
 namespace symbol {
 
 // MinGW-w64 (as of version 7.0) doesn't have SymTagEnum
@@ -94,4 +94,4 @@ public:
     const unsigned long line_number;
 };
 
-} // namespace pdb
+} // namespace winapi

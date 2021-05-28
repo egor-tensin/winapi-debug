@@ -21,7 +21,7 @@ BOOST_FIXTURE_TEST_SUITE(call_stack_tests, CurrentProcess)
 BOOST_AUTO_TEST_CASE(call_stack) {
     try {
         test_ns::throw_call_stack();
-    } catch (const pdb::CallStack& call_stack) {
+    } catch (const winapi::CallStack& call_stack) {
         // First, check that the call stack has been caught.
         BOOST_TEST(true, "Caught the call stack");
 
@@ -32,23 +32,23 @@ BOOST_AUTO_TEST_CASE(call_stack) {
         BOOST_TEST_MESSAGE("Call stack:");
         for (const auto& addr : call_stack) {
             pretty.emplace_back(call_stack.pretty_print_address(dbghelp, addr));
-            BOOST_TEST_MESSAGE('\t' << pdb::format_address(addr) << ' ' << pretty.back());
+            BOOST_TEST_MESSAGE('\t' << winapi::format_address(addr) << ' ' << pretty.back());
         }
 
         // Second, resolve the symbols:
-        std::vector<boost::optional<pdb::SymbolInfo>> symbols;
+        std::vector<boost::optional<winapi::SymbolInfo>> symbols;
         symbols.reserve(call_stack.length);
 
         BOOST_TEST_MESSAGE("Resolved symbols:");
         for (const auto& addr : call_stack) {
             try {
                 auto symbol = dbghelp.resolve_symbol(addr);
-                BOOST_TEST_MESSAGE('\t' << pdb::format_address(symbol.get_offline_address()) << ' '
-                                        << symbol.get_name());
+                BOOST_TEST_MESSAGE('\t' << winapi::format_address(symbol.get_offline_address())
+                                        << ' ' << symbol.get_name());
                 symbols.emplace_back(std::move(symbol));
             } catch (const std::system_error& e) {
                 symbols.emplace_back(boost::none);
-                BOOST_TEST_MESSAGE('\t' << pdb::format_address(addr)
+                BOOST_TEST_MESSAGE('\t' << winapi::format_address(addr)
                                         << " Couldn't resolve symbol: " << e.what());
             }
         }
@@ -57,14 +57,15 @@ BOOST_AUTO_TEST_CASE(call_stack) {
             // Third, check that the expected function addresses are in the call stack.
             const auto expected = expected_function_addresses();
 
-            const auto check = [&](pdb::Address addr) {
+            const auto check = [&](winapi::Address addr) {
                 for (const auto& symbol : symbols)
                     if (symbol && symbol->get_offline_address() == addr)
                         return true;
                 return false;
             };
             for (const auto& addr : expected) {
-                BOOST_TEST(check(addr), "Function frame captured: " << pdb::format_address(addr));
+                BOOST_TEST(check(addr),
+                           "Function frame captured: " << winapi::format_address(addr));
             }
         }
 
