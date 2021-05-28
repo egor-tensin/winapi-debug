@@ -27,7 +27,7 @@ endif()
 include(cmake/common.cmake)
 
 find_package(Boost REQUIRED)
-add_subdirectory(3rdparty/winapi/common)
+add_subdirectory(3rdparty/winapi/common EXCLUDE_FROM_ALL)
 
 file(GLOB_RECURSE winapi_debug_include "include/*.hpp")
 file(GLOB_RECURSE winapi_debug_src "src/*.cpp")
