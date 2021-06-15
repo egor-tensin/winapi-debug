@@ -10,7 +10,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: Linting
     if: github.ref == 'refs/heads/master'
     steps:
@@ -31,7 +31,7 @@ jobs:
           - boost-version: 1.65.0
           # MinGW builds are done on Linux, since it's more up-to-date there,
           # and it's much faster.
-          - {toolset: mingw,  os: ubuntu-20.04}
+          - {toolset: mingw,  os: ubuntu-latest}
           - {toolset: vs2015, os: windows-2016}
           - {toolset: vs2017, os: windows-2016}
           - {toolset: vs2019, os: windows-2019, boost-version: 1.72.0}
