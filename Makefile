@@ -57,7 +57,11 @@ clean:
 	rm -rf -- '$(call escape,$(build_dir))'
 
 $(boost_dir)/:
-	cd cmake && python3 -m project.boost.download --cache '$(call escape,$(build_dir))' -- '$(call escape,$(BOOST_VERSION))' '$(call escape,$(boost_dir))'
+	cd cmake && python3 -m project.boost.download \
+		--cache '$(call escape,$(build_dir))' \
+		-- \
+		'$(call escape,$(BOOST_VERSION))' \
+		'$(call escape,$(boost_dir))'
 
 .PHONY: deps
 ifdef CI
@@ -65,7 +69,12 @@ deps:
 	cd cmake && python3 -m project.ci.boost -- $(BOOST_LIBRARIES)
 else
 deps: $(boost_dir)/
-	cd cmake && python3 -m project.boost.build --toolset '$(call escape,$(TOOLSET))' --configuration '$(call escape,$(CONFIGURATION))' -- '$(call escape,$(boost_dir))' $(BOOST_LIBRARIES)
+	cd cmake && python3 -m project.boost.build \
+		--toolset '$(call escape,$(TOOLSET))' \
+		--configuration '$(call escape,$(CONFIGURATION))' \
+		-- \
+		'$(call escape,$(boost_dir))' \
+		$(BOOST_LIBRARIES)
 endif
 
 .PHONY: build
@@ -73,7 +82,15 @@ build:
 ifdef CI
 	cd cmake && python3 -m project.ci.cmake --install -- $(CMAKE_FLAGS)
 else
-	cd cmake && python3 -m project.cmake.build --toolset '$(call escape,$(TOOLSET))' --configuration '$(call escape,$(CONFIGURATION))' --build '$(call escape,$(cmake_dir))' --install '$(call escape,$(DESTDIR))' --boost '$(call escape,$(boost_dir))' -- '$(call escape,$(src_dir))' $(CMAKE_FLAGS)
+	cd cmake && python3 -m project.cmake.build \
+		--toolset '$(call escape,$(TOOLSET))' \
+		--configuration '$(call escape,$(CONFIGURATION))' \
+		--build '$(call escape,$(cmake_dir))' \
+		--install '$(call escape,$(DESTDIR))' \
+		--boost '$(call escape,$(boost_dir))' \
+		-- \
+		'$(call escape,$(src_dir))' \
+		$(CMAKE_FLAGS)
 endif
 
 .PHONY: install
