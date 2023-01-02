@@ -12,7 +12,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Run clang-format
@@ -42,16 +42,18 @@ jobs:
       BOOST_VERSION: '${{ matrix.boost-version }}'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Cache Boost
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: '${{ runner.workspace }}/build/boost_*.tar.gz'
           key: 'boost_${{ env.BOOST_VERSION }}'
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
       - name: Set up MinGW
         uses: egor-tensin/setup-mingw@v2
         with:
@@ -62,7 +64,7 @@ jobs:
       - name: Build
         run: make install
       - name: Upload binaries
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: 'winapi-debug-${{ matrix.toolset }}-${{ matrix.platform }}-${{ matrix.configuration }}'
           path: '${{ runner.workspace }}/build/install/'
