@@ -24,17 +24,15 @@ jobs:
   build:
     strategy:
       matrix:
-        toolset: [mingw, vs2015, vs2017, vs2019]
+        toolset: [mingw, vs2019]
         platform: [x64, x86]
         configuration: [Debug, RelWithDebInfo]
         include:
-          - boost-version: 1.65.0
+          - boost-version: 1.72.0
           # MinGW builds are done on Linux, since it's more up-to-date there,
           # and it's much faster.
           - {toolset: mingw,  os: ubuntu-latest}
-          - {toolset: vs2015, os: windows-2016}
-          - {toolset: vs2017, os: windows-2016}
-          - {toolset: vs2019, os: windows-2019, boost-version: 1.72.0}
+          - {toolset: vs2019, os: windows-2019}
     runs-on: '${{ matrix.os }}'
     name: 'Build: ${{ matrix.toolset }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
     defaults:
