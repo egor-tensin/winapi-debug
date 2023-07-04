@@ -1,6 +1,7 @@
 include prelude.mk
 
 TOOLSET ?= mingw
+PLATFORM ?= auto
 CONFIGURATION ?= Debug
 BOOST_VERSION ?= 1.65.0
 BOOST_LIBRARIES := --with-filesystem --with-program_options --with-test
@@ -8,16 +9,13 @@ CMAKE_FLAGS ?=
 
 this_dir  := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 src_dir   := $(this_dir)
-ifdef CI
-build_dir := $(this_dir)../build
-else
-build_dir := $(this_dir).build
-endif
+build_dir := $(this_dir)build
 boost_dir := $(build_dir)/boost
 cmake_dir := $(build_dir)/cmake
 DESTDIR   ?= $(build_dir)/install
 
 $(eval $(call noexpand,TOOLSET))
+$(eval $(call noexpand,PLATFORM))
 $(eval $(call noexpand,CONFIGURATION))
 $(eval $(call noexpand,BOOST_VERSION))
 $(eval $(call noexpand,CMAKE_FLAGS))
@@ -38,34 +36,27 @@ $(boost_dir)/:
 		'$(call escape,$(boost_dir))'
 
 .PHONY: deps
-ifdef CI
-deps:
-	cd cmake && python3 -m project.ci.boost -- $(BOOST_LIBRARIES)
-else
 deps: $(boost_dir)/
 	cd cmake && python3 -m project.boost.build \
 		--toolset '$(call escape,$(TOOLSET))' \
+		--platform '$(call escape,$(PLATFORM))' \
 		--configuration '$(call escape,$(CONFIGURATION))' \
 		-- \
 		'$(call escape,$(boost_dir))' \
 		$(BOOST_LIBRARIES)
-endif
 
 .PHONY: build
 build:
-ifdef CI
-	cd cmake && python3 -m project.ci.cmake --install -- $(CMAKE_FLAGS)
-else
-	cd cmake && python3 -m project.cmake.build \
+	cd cmake && python3 -m project.build \
 		--toolset '$(call escape,$(TOOLSET))' \
+		--platform '$(call escape,$(PLATFORM))' \
 		--configuration '$(call escape,$(CONFIGURATION))' \
-		--build '$(call escape,$(cmake_dir))' \
 		--install '$(call escape,$(DESTDIR))' \
 		--boost '$(call escape,$(boost_dir))' \
 		-- \
 		'$(call escape,$(src_dir))' \
+		'$(call escape,$(cmake_dir))' \
 		$(CMAKE_FLAGS)
-endif
 
 .PHONY: install
 install: build
