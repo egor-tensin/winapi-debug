@@ -21,7 +21,7 @@ jobs:
   build:
     strategy:
       matrix:
-        toolset: [mingw, vs2019, vs2022]
+        toolset: [mingw, vs2022]
         platform: [x64, x86]
         configuration: [Debug, RelWithDebInfo]
         include:
@@ -29,8 +29,9 @@ jobs:
           # MinGW builds are done on Linux, since it's more up-to-date there,
           # and it's much faster.
           - {toolset: mingw,  os: ubuntu-latest}
-          - {toolset: vs2019, os: windows-2019}
-          - {toolset: vs2022, os: windows-2022}
+          # At the moment, windows-2022 & windows-2025 both provide VS 2022, so
+          # there's no difference between the two.
+          - {toolset: vs2022, os: windows-2025}
     runs-on: '${{ matrix.os }}'
     name: 'Build: ${{ matrix.toolset }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
     defaults:
