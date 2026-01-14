@@ -16,7 +16,7 @@ jobs:
         with:
           submodules: recursive
       - name: Run clang-format
-        run: ./cmake/tools/project-clang-format.py
+        uses: egor-tensin/clang-format@v1
 
   build:
     strategy:
