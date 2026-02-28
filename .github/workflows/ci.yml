@@ -67,7 +67,7 @@ jobs:
       - name: Build
         run: make install
       - name: Upload binaries
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: 'winapi-debug-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.configuration }}'
           path: './build/install/'
