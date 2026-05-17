@@ -1,7 +1,18 @@
-cmake_minimum_required(VERSION 3.8)
+# oldstable as of May '26
+# Plus, I'm pretty sure it's required for things like CONFIGURE_DEPENDS and
+# CMAKE_MSVC_RUNTIME_LIBRARY and stuff.
+cmake_minimum_required(VERSION 3.25)
 
 project(winapi_debug CXX)
 enable_testing()
+
+if (MSVC)
+    add_compile_options(/MP /W4)
+else()
+    add_compile_options(-Wall -Wextra)
+endif()
+
+add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX)
 
 if(MSVC)
     # This is an ugly hack to make the tests work.
@@ -23,8 +34,6 @@ if(MSVC)
         CMAKE_SHARED_LINKER_FLAGS_DEBUG
         "${CMAKE_SHARED_LINKER_FLAGS_DEBUG}")
 endif()
-
-include(cmake/common.cmake)
 
 find_package(Boost REQUIRED)
 add_subdirectory(3rdparty/winapi/common EXCLUDE_FROM_ALL)

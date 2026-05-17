@@ -11,7 +11,7 @@ TOOLSET         ?= mingw
 PLATFORM        ?= auto
 CONFIGURATION   ?= Debug
 BOOST_VERSION   ?= 1.81.0
-BOOST_LIBRARIES := --with-filesystem --with-program_options --with-test
+BOOST_LIBRARIES := filesystem program_options test
 CMAKE_FLAGS     ?=
 INSTALL_PREFIX  ?= $(install_dir)
 
@@ -54,10 +54,10 @@ build:
 		--configuration '$(call escape,$(CONFIGURATION))' \
 		--install '$(call escape,$(INSTALL_PREFIX))' \
 		--boost '$(call escape,$(boost_dir))' \
+		$(CMAKE_FLAGS) \
 		-- \
 		'$(call escape,$(src_dir))' \
-		'$(call escape,$(cmake_dir))' \
-		$(CMAKE_FLAGS)
+		'$(call escape,$(cmake_dir))'
 
 .PHONY: install
 install: build
