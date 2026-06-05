@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 
 #include <exception>
+#include <filesystem>
 #include <iostream>
 #include <ostream>
 #include <string>
@@ -54,7 +54,7 @@ protected:
 
 private:
     static std::string extract_filename(char* path) {
-        return boost::filesystem::path{path}.filename().string();
+        return std::filesystem::path{path}.filename().string();
     }
 
     const std::string prog_name;

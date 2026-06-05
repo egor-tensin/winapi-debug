@@ -1,9 +1,9 @@
-find_package(Boost CONFIG REQUIRED COMPONENTS filesystem program_options)
+find_package(Boost CONFIG REQUIRED COMPONENTS program_options)
 
 function(add_util name src)
     add_executable("${name}" ${src})
     target_link_libraries("${name}" PRIVATE winapi_debug)
-    target_link_libraries("${name}" PRIVATE Boost::disable_autolinking Boost::filesystem Boost::program_options)
+    target_link_libraries("${name}" PRIVATE Boost::disable_autolinking Boost::program_options)
     install(TARGETS "${name}" RUNTIME DESTINATION bin)
     if(MSVC)
         install(FILES "$<TARGET_PDB_FILE:${name}>" DESTINATION bin OPTIONAL)

@@ -11,7 +11,6 @@
 
 #include <winapi/debug.hpp>
 
-#include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <iterator>
@@ -115,7 +114,7 @@ private:
         dbghelp.load_pdb(pdb_path);
     }
 
-    static boost::filesystem::path get_module_pdb_path() {
+    static std::filesystem::path get_module_pdb_path() {
         // That's pretty ad-hoc, but seems to work; based on
         // https://www.boost.org/doc/libs/1_70_0/libs/test/doc/html/boost_test/runtime_config/custom_command_line_arguments.html
         BOOST_TEST_REQUIRE(boost::unit_test::framework::master_test_suite().argc == 3);

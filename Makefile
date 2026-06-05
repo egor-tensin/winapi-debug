@@ -11,7 +11,7 @@ TOOLSET         ?= mingw
 PLATFORM        ?= auto
 CONFIGURATION   ?= Debug
 BOOST_VERSION   ?= 1.81.0
-BOOST_LIBRARIES := filesystem program_options test
+BOOST_LIBRARIES := program_options test
 CMAKE_FLAGS     ?=
 INSTALL_PREFIX  ?= $(install_dir)
 

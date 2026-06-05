@@ -5,14 +5,15 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
-using path = boost::filesystem::path;
+#include <filesystem>
+
+using path = std::filesystem::path;
 
 class Paths {
 public:
-    using path = boost::filesystem::path;
+    using path = std::filesystem::path;
 
     static Paths& get() {
         static Paths instance;
@@ -27,7 +28,7 @@ public:
 private:
     static path get_executable_path() {
         const auto argv0 = boost::unit_test::framework::master_test_suite().argv[0];
-        return boost::filesystem::system_complete(argv0);
+        return std::filesystem::absolute(argv0);
     }
 
     Paths(const Paths&) = delete;
