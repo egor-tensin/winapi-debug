@@ -1,4 +1,4 @@
-find_package(Boost REQUIRED COMPONENTS filesystem program_options)
+find_package(Boost CONFIG REQUIRED COMPONENTS filesystem program_options)
 
 function(add_util name src)
     add_executable("${name}" ${src})

@@ -38,7 +38,7 @@ if(MSVC)
         "${CMAKE_SHARED_LINKER_FLAGS_DEBUG}")
 endif()
 
-find_package(Boost REQUIRED)
+find_package(Boost CONFIG REQUIRED)
 add_subdirectory(3rdparty/winapi/common EXCLUDE_FROM_ALL)
 
 file(GLOB_RECURSE winapi_debug_include "include/*.hpp")
