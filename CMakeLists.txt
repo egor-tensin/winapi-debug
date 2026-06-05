@@ -6,6 +6,9 @@ cmake_minimum_required(VERSION 3.25)
 project(winapi_debug CXX)
 enable_testing()
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
 if (MSVC)
     add_compile_options(/MP /W4)
 else()
