@@ -9,9 +9,9 @@
 
 #include <winapi/debug.hpp>
 
-#include <boost/optional.hpp>
 #include <boost/test/unit_test.hpp>
 
+#include <optional>
 #include <string>
 #include <system_error>
 #include <vector>
@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(call_stack) {
         }
 
         // Second, resolve the symbols:
-        std::vector<boost::optional<winapi::SymbolInfo>> symbols;
+        std::vector<std::optional<winapi::SymbolInfo>> symbols;
         symbols.reserve(call_stack.length());
 
         BOOST_TEST_MESSAGE("Resolved symbols:");
@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE(call_stack) {
                                         << ' ' << symbol.get_name());
                 symbols.emplace_back(std::move(symbol));
             } catch (const std::system_error& e) {
-                symbols.emplace_back(boost::none);
+                symbols.emplace_back(std::nullopt);
                 BOOST_TEST_MESSAGE('\t' << winapi::address::format(addr)
                                         << " Couldn't resolve symbol: " << e.what());
             }
