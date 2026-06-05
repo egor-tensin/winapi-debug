@@ -6,8 +6,8 @@
 #include <winapi/debug.hpp>
 #include <winapi/file.hpp>
 
+#include <format>
 #include <map>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -16,42 +16,33 @@ namespace winapi {
 namespace {
 
 std::string pdb_already_loaded(Address online_base, const std::string& path) {
-    std::ostringstream oss;
-    oss << "module with online base address " << address::format(online_base)
-        << " has already been loaded: " << path;
-    return oss.str();
+    return std::format("module with online base address {} has already been loaded: {}",
+                       address::format(online_base),
+                       path);
 }
 
 std::string pdb_already_loaded(const std::string& path) {
-    std::ostringstream oss;
-    oss << "module has already been loaded: " << path;
-    return oss.str();
+    return std::format("module has already been loaded: {}", path);
 }
 
 std::string offline_base_already_used(Address base) {
-    std::ostringstream oss;
-    oss << "module with offline base address " << address::format(base)
-        << " has already been loaded (shouldn't happen)";
-    return oss.str();
+    return std::format(
+        "module with offline base address {} has already been loaded (shouldn't happen)",
+        address::format(base));
 }
 
 std::string module_not_found(Address base) {
-    std::ostringstream oss;
-    oss << "module with base address " << address::format(base) << " wasn't found";
-    return oss.str();
+    return std::format("module with base address {} wasn't found", address::format(base));
 }
 
 std::string guess_module_no_modules(Address pivot) {
-    std::ostringstream oss;
-    oss << "couldn't select a module for address " << address::format(pivot)
-        << ": no modules have been loaded yet";
-    return oss.str();
+    return std::format("couldn't select a module for address {}: no modules have been loaded yet",
+                       address::format(pivot));
 }
 
 std::string guess_module_address_too_low(Address pivot) {
-    std::ostringstream oss;
-    oss << "couldn't select a module for address " << address::format(pivot) << ": it's too low";
-    return oss.str();
+    return std::format("couldn't select a module for address {}: it's too low",
+                       address::format(pivot));
 }
 
 template <typename Value>

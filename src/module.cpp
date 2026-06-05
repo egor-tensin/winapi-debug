@@ -7,8 +7,8 @@
 #include <winapi/utf8.hpp>
 
 #include <cstring>
+#include <format>
 #include <limits>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -59,17 +59,17 @@ Address Module::translate_online_address(Address online) const {
 }
 
 std::string Module::invalid_offline_address(Address offline) const {
-    std::ostringstream oss;
-    oss << "offline address " << address::format(offline) << " doesn't belong to module "
-        << get_name() << " (base offline address " << address::format(get_offline_base()) << ')';
-    return oss.str();
+    return std::format("offline address {} doesn't belong to module {} (base offline address {})",
+                       address::format(offline),
+                       get_name(),
+                       address::format(get_offline_base()));
 }
 
 std::string Module::invalid_online_address(Address online) const {
-    std::ostringstream oss;
-    oss << "online address " << address::format(online) << " doesn't belong to module "
-        << get_name() << " (base online address " << address::format(get_online_base()) << ')';
-    return oss.str();
+    return std::format("online address {} doesn't belong to module {} (base online address {})",
+                       address::format(online),
+                       get_name(),
+                       address::format(get_online_base()));
 }
 
 } // namespace winapi

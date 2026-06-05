@@ -7,7 +7,8 @@
 
 #include <windows.h>
 
-#include <sstream>
+#include <charconv>
+#include <format>
 #include <string>
 
 namespace winapi {
@@ -17,9 +18,7 @@ typedef DWORD64 Address;
 namespace address {
 
 inline std::string format(Address address) {
-    std::ostringstream oss;
-    oss << std::hex << std::showbase << address;
-    return oss.str();
+    return std::format("{:#x}", address);
 }
 
 inline std::string format(void* address) {
@@ -27,10 +26,13 @@ inline std::string format(void* address) {
 }
 
 inline bool parse(Address& dest, const std::string& src) {
-    std::istringstream iss{src};
-    iss >> std::hex;
-    char c;
-    return iss >> dest && !iss.get(c);
+    Address result;
+    const auto [ptr, ec] = std::from_chars(src.c_str(), src.c_str() + src.length(), result, 16);
+    if (ec == std::errc()) {
+        dest = result;
+        return true;
+    }
+    return false;
 }
 
 } // namespace address

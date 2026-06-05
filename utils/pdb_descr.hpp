@@ -9,7 +9,6 @@
 
 #include <boost/program_options.hpp>
 
-#include <sstream>
 #include <string>
 #include <vector>
 

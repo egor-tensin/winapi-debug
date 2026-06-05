@@ -10,8 +10,8 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <format>
 #include <ostream>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <system_error>
@@ -21,9 +21,7 @@ namespace {
 
 template <typename T>
 static std::string put_between_brackets(const T& x) {
-    std::ostringstream oss;
-    oss << "[" << x << "]";
-    return oss.str();
+    return std::format("[{}]", x);
 }
 
 std::string format_address_fallback(Address addr) {

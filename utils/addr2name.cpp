@@ -11,6 +11,7 @@
 #include <boost/program_options.hpp>
 
 #include <exception>
+#include <format>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -44,18 +45,15 @@ public:
 };
 
 std::string format_symbol(const winapi::Module& module, const winapi::Symbol& symbol) {
-    std::ostringstream oss;
-    oss << module.get_name() << '!' << symbol.get_name();
+    const auto symbol_str = std::format("{}!{}", module.get_name(), symbol.get_name());
     const auto displacement = symbol.get_displacement();
-    if (displacement)
-        oss << '+' << winapi::address::format(displacement);
-    return oss.str();
+    if (!displacement)
+        return symbol_str;
+    return std::format("{}+{}", symbol_str, winapi::address::format(displacement));
 }
 
 std::string format_line_info(const winapi::LineInfo& line_info) {
-    std::ostringstream oss;
-    oss << '[' << line_info.file_path << " @ " << line_info.line_number << ']';
-    return oss.str();
+    return std::format("[{} @ {}]", line_info.file_path, line_info.line_number);
 }
 
 void dump_error(const std::exception& e) {
