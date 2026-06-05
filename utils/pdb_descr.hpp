@@ -10,13 +10,14 @@
 #include <boost/program_options.hpp>
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 struct PDB {
     winapi::Address online_base;
     std::string path;
 
-    static PDB parse(std::string src) {
+    static PDB parse(const std::string& src) {
         static constexpr auto sep = ',';
 
         const auto sep_pos = src.find(sep);

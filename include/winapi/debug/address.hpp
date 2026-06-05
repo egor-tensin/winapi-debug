@@ -10,6 +10,7 @@
 #include <charconv>
 #include <format>
 #include <string>
+#include <string_view>
 
 namespace winapi {
 
@@ -25,9 +26,9 @@ inline std::string format(void* address) {
     return format(reinterpret_cast<Address>(address));
 }
 
-inline bool parse(Address& dest, const std::string& src) {
+inline bool parse(Address& dest, std::string_view src) {
     Address result;
-    const auto [ptr, ec] = std::from_chars(src.c_str(), src.c_str() + src.length(), result, 16);
+    const auto [ptr, ec] = std::from_chars(src.data(), src.data() + src.length(), result, 16);
     if (ec == std::errc()) {
         dest = result;
         return true;

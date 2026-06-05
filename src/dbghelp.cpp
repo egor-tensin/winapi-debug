@@ -81,7 +81,7 @@ BOOL CALLBACK enum_symbols_callback(SYMBOL_INFOW* info, ULONG, VOID* raw_callbac
 
 void enum_symbols(HANDLE id,
                   Address module_base,
-                  const std::string& mask,
+                  std::string_view mask,
                   const DbgHelp::OnSymbol& callback) {
     if (!SymEnumSymbolsW(id,
                          module_base,
@@ -123,7 +123,7 @@ void DbgHelp::close() {
         clean_up(id);
 }
 
-ModuleInfo DbgHelp::load_pdb(const std::string& path) const {
+ModuleInfo DbgHelp::load_pdb(std::string_view path) const {
     DWORD size = 0;
 
     {
@@ -160,7 +160,7 @@ ModuleInfo DbgHelp::resolve_module(Address offline) const {
 }
 
 void DbgHelp::enum_symbols(const ModuleInfo& module,
-                           const std::string& mask,
+                           std::string_view mask,
                            const OnSymbol& callback) const {
     winapi::enum_symbols(id, module.get_offline_base(), mask, callback);
 }
@@ -169,7 +169,7 @@ void DbgHelp::enum_symbols(const ModuleInfo& module, const OnSymbol& callback) c
     enum_symbols(module, all_symbols, callback);
 }
 
-void DbgHelp::enum_symbols(const std::string& mask, const OnSymbol& callback) const {
+void DbgHelp::enum_symbols(std::string_view mask, const OnSymbol& callback) const {
     winapi::enum_symbols(id, 0, mask, callback);
 }
 
@@ -188,7 +188,7 @@ SymbolInfo DbgHelp::resolve_symbol(Address offline) const {
     return symbol;
 }
 
-SymbolInfo DbgHelp::resolve_symbol(const std::string& name) const {
+SymbolInfo DbgHelp::resolve_symbol(std::string_view name) const {
     SymbolInfo symbol;
 
     if (!SymFromNameW(id, winapi::widen(name).c_str(), &static_cast<SYMBOL_INFOW&>(symbol)))

@@ -12,7 +12,7 @@
 #include <windows.h>
 
 #include <functional>
-#include <string>
+#include <string_view>
 
 namespace winapi {
 
@@ -27,7 +27,7 @@ public:
     DbgHelp& operator=(DbgHelp) noexcept;
     ~DbgHelp();
 
-    ModuleInfo load_pdb(const std::string& path) const;
+    ModuleInfo load_pdb(std::string_view path) const;
 
     typedef std::function<void(const ModuleInfo&)> OnModule;
     void enum_modules(const OnModule&) const;
@@ -36,13 +36,13 @@ public:
 
     typedef std::function<void(const SymbolInfo&)> OnSymbol;
     static constexpr auto all_symbols = "*!*";
-    void enum_symbols(const ModuleInfo&, const std::string& mask, const OnSymbol&) const;
+    void enum_symbols(const ModuleInfo&, std::string_view mask, const OnSymbol&) const;
     void enum_symbols(const ModuleInfo&, const OnSymbol&) const;
-    void enum_symbols(const std::string& mask, const OnSymbol&) const;
+    void enum_symbols(std::string_view mask, const OnSymbol&) const;
     void enum_symbols(const OnSymbol&) const;
 
     SymbolInfo resolve_symbol(Address) const;
-    SymbolInfo resolve_symbol(const std::string&) const;
+    SymbolInfo resolve_symbol(std::string_view) const;
 
     LineInfo resolve_line(Address) const;
 

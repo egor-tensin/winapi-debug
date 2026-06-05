@@ -14,7 +14,7 @@
 
 #include <functional>
 #include <map>
-#include <string>
+#include <string_view>
 #include <unordered_set>
 
 namespace winapi {
@@ -23,7 +23,7 @@ class PostMortem {
 public:
     PostMortem() = default;
 
-    Address add_pdb(Address online_base, const std::string& path);
+    Address add_pdb(Address online_base, std::string_view path);
 
     typedef std::function<void(const Symbol&)> OnSymbol;
     void enum_symbols(const OnSymbol&) const;
@@ -31,7 +31,7 @@ public:
     void enum_symbols(const Module&, const OnSymbol&) const;
 
     Symbol resolve_symbol(Address) const;
-    Symbol resolve_symbol(const std::string&) const;
+    Symbol resolve_symbol(std::string_view) const;
 
     LineInfo resolve_line(Address) const;
 

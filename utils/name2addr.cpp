@@ -13,6 +13,7 @@
 #include <exception>
 #include <iostream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace {
@@ -42,7 +43,7 @@ void dump_error(const std::exception& e) {
     std::cerr << "error: " << e.what() << '\n';
 }
 
-void resolve_symbol(const winapi::PostMortem& analysis, const std::string& name) {
+void resolve_symbol(const winapi::PostMortem& analysis, std::string_view name) {
     try {
         const auto address = analysis.resolve_symbol(name).get_online_address();
         std::cout << winapi::address::format(address) << '\n';

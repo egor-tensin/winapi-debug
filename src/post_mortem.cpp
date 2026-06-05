@@ -15,13 +15,13 @@
 namespace winapi {
 namespace {
 
-std::string pdb_already_loaded(Address online_base, const std::string& path) {
+std::string pdb_already_loaded(Address online_base, std::string_view path) {
     return std::format("module with online base address {} has already been loaded: {}",
                        address::format(online_base),
                        path);
 }
 
-std::string pdb_already_loaded(const std::string& path) {
+std::string pdb_already_loaded(std::string_view path) {
     return std::format("module has already been loaded: {}", path);
 }
 
@@ -77,7 +77,7 @@ const Module& guess_module(const std::map<Address, Value>& modules, Address pivo
 
 } // namespace
 
-Address PostMortem::add_pdb(Address online_base, const std::string& path) {
+Address PostMortem::add_pdb(Address online_base, std::string_view path) {
     if (online_bases.find(online_base) != online_bases.cend())
         throw std::runtime_error{pdb_already_loaded(online_base, path)};
 
@@ -119,7 +119,7 @@ Symbol PostMortem::resolve_symbol(Address online) const {
     return symbol_from_buffer(dbghelp.resolve_symbol(address_online_to_offline(online)));
 }
 
-Symbol PostMortem::resolve_symbol(const std::string& name) const {
+Symbol PostMortem::resolve_symbol(std::string_view name) const {
     return symbol_from_buffer(dbghelp.resolve_symbol(name));
 }
 

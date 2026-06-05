@@ -14,6 +14,7 @@
 #include <ostream>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <system_error>
 
 namespace winapi {
@@ -28,11 +29,11 @@ std::string format_address_fallback(Address addr) {
     return put_between_brackets(address::format(addr));
 }
 
-std::string offset_from(const std::string& thing, Address offset) {
+std::string offset_from(std::string_view thing, Address offset) {
     if (offset == 0)
         return put_between_brackets(thing);
     else
-        return put_between_brackets(thing + "+" + address::format(offset));
+        return put_between_brackets(std::format("{}+{}", thing, "+", address::format(offset)));
 }
 
 std::string offset_from_module(const ModuleInfo& module, Address addr) {
