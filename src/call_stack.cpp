@@ -106,7 +106,7 @@ std::string CallStack::pretty_print_address(const DbgHelp& dbghelp, Address addr
 
 void CallStack::dump(std::ostream& os, const DbgHelp& dbghelp) const {
     for_each_address([&](Address addr) {
-        os << address::format(addr) << ' ' << pretty_print_address(dbghelp, addr) << '\n';
+        os << std::format("{} {}\n", address::format(addr), pretty_print_address(dbghelp, addr));
         return true;
     });
 }

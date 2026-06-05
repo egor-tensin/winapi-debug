@@ -48,7 +48,7 @@ private:
     std::string invalid_offline_address(Address offline) const;
     std::string invalid_online_address(Address online) const;
 
-    const Address online_base;
+    Address online_base;
 };
 
 } // namespace winapi

@@ -10,7 +10,6 @@
 #include <boost/program_options.hpp>
 
 #include <string>
-#include <string_view>
 #include <vector>
 
 struct PDB {

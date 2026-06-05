@@ -9,6 +9,7 @@
 
 #include <exception>
 #include <filesystem>
+#include <format>
 #include <iostream>
 #include <ostream>
 #include <string>
@@ -43,7 +44,7 @@ public:
     void usage() const { std::cout << *this; }
 
     void usage_error(const std::exception& e) const {
-        std::cerr << "usage error: " << e.what() << '\n';
+        std::cerr << std::format("usage error: {}\n", e.what());
         std::cerr << *this;
     }
 
@@ -61,7 +62,7 @@ private:
 
     friend std::ostream& operator<<(std::ostream& os, const SettingsParser& parser) {
         const auto short_descr = parser.get_short_description();
-        os << "usage: " << parser.prog_name << ' ' << short_descr << '\n';
+        os << std::format("usage: {} {}\n", parser.prog_name, short_descr);
         os << parser.visible;
         return os;
     }

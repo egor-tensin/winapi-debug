@@ -57,7 +57,7 @@ std::string format_line_info(const winapi::LineInfo& line_info) {
 }
 
 void dump_error(const std::exception& e) {
-    std::cerr << "error: " << e.what() << '\n';
+    std::cerr << std::format("error: {}\n", e.what());
 }
 
 void resolve_symbol(const winapi::PostMortem& analysis,
