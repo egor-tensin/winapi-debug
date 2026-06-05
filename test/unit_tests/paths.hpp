@@ -12,7 +12,7 @@ using path = boost::filesystem::path;
 
 class Paths {
 public:
-    typedef boost::filesystem::path path;
+    using path = boost::filesystem::path;
 
     static Paths& get() {
         static Paths instance;

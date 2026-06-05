@@ -14,7 +14,7 @@
 
 namespace winapi {
 
-typedef DWORD64 Address;
+using Address = DWORD64;
 
 namespace address {
 

@@ -25,7 +25,7 @@ public:
 
     Address add_pdb(Address online_base, std::string_view path);
 
-    typedef std::function<void(const Symbol&)> OnSymbol;
+    using OnSymbol = std::function<void(const Symbol&)>;
     void enum_symbols(const OnSymbol&) const;
     void enum_symbols(Address offline_base, const OnSymbol&) const;
     void enum_symbols(const Module&, const OnSymbol&) const;

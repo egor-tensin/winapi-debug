@@ -16,7 +16,7 @@ namespace winapi {
 
 class ModuleInfo {
 public:
-    typedef IMAGEHLP_MODULEW64 Impl;
+    using Impl = IMAGEHLP_MODULEW64;
 
     ModuleInfo();
     explicit ModuleInfo(const Impl& impl);

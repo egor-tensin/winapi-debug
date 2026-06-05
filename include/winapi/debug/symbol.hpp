@@ -21,7 +21,7 @@ namespace winapi {
 namespace symbol {
 
 // MinGW-w64 (as of version 7.0) doesn't have SymTagEnum
-typedef ULONG Tag;
+using Tag = ULONG;
 
 constexpr Tag SYM_TAG_FUNCTION = 5;
 
@@ -34,7 +34,7 @@ static_assert(static_cast<Tag>(SymTagFunction) == SYM_TAG_FUNCTION,
 
 class SymbolInfo {
 public:
-    typedef SYMBOL_INFOW Impl;
+    using Impl = SYMBOL_INFOW;
 
     SymbolInfo();
     explicit SymbolInfo(const Impl& impl);
@@ -86,7 +86,7 @@ private:
 
 class LineInfo {
 public:
-    typedef IMAGEHLP_LINEW64 Impl;
+    using Impl = IMAGEHLP_LINEW64;
 
     explicit LineInfo(const Impl& impl);
 

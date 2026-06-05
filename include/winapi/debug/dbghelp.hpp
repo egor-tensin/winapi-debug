@@ -29,12 +29,12 @@ public:
 
     ModuleInfo load_pdb(std::string_view path) const;
 
-    typedef std::function<void(const ModuleInfo&)> OnModule;
+    using OnModule = std::function<void(const ModuleInfo&)>;
     void enum_modules(const OnModule&) const;
 
     ModuleInfo resolve_module(Address) const;
 
-    typedef std::function<void(const SymbolInfo&)> OnSymbol;
+    using OnSymbol = std::function<void(const SymbolInfo&)>;
     static constexpr auto all_symbols = "*!*";
     void enum_symbols(const ModuleInfo&, std::string_view mask, const OnSymbol&) const;
     void enum_symbols(const ModuleInfo&, const OnSymbol&) const;

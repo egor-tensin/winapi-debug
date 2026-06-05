@@ -11,7 +11,7 @@
 
 namespace test_ns {
 
-typedef void (*F)();
+using F = void (*)();
 
 TEST_LIB_API extern volatile int var;
 

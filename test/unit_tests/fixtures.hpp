@@ -46,8 +46,8 @@ public:
         return name;
     }
 
-    typedef Set<std::string> SymbolList;
-    typedef Set<winapi::Address> AddressList;
+    using SymbolList = Set<std::string>;
+    using AddressList = Set<winapi::Address>;
 
     static AddressList expected_function_addresses() {
         return cast({reinterpret_cast<void*>(&test_ns::foo),
