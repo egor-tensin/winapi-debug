@@ -89,11 +89,11 @@ CallStack CallStack::capture() {
     std::transform(frames_impl.cbegin(), frames_impl.cend(), frames.begin(), [](void* addr) {
         return reinterpret_cast<Address>(addr);
     });
-    return {frames, length};
+    return {std::move(frames), length};
 }
 
 bool CallStack::for_each_address(const AddressCallback& callback) const {
-    for (std::size_t i = 0; i < length; ++i) {
+    for (std::size_t i = 0; i < _length; ++i) {
         if (!callback(frames[i])) {
             return false;
         }

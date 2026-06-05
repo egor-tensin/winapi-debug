@@ -38,16 +38,21 @@ public:
 
     void dump(std::ostream& os, const DbgHelp&) const;
 
-    const std::array<Address, max_length> frames;
-    const std::size_t length;
+    std::size_t length() const { return _length; }
 
     const Address* begin() const { return frames.data(); }
     const Address* cbegin() const { return begin(); }
-    const Address* end() const { return begin() + length; }
+    const Address* end() const { return begin() + _length; }
     const Address* cend() const { return end(); }
 
 private:
     CallStack() = default;
+
+    CallStack(std::array<Address, max_length>&& frames, std::size_t length)
+        : frames{std::move(frames)}, _length{length} {}
+
+    std::array<Address, max_length> frames;
+    std::size_t _length;
 };
 
 } // namespace winapi

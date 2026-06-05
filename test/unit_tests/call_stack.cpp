@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(call_stack) {
 
         // Debug output:
         std::vector<std::string> pretty;
-        pretty.reserve(call_stack.length);
+        pretty.reserve(call_stack.length());
 
         BOOST_TEST_MESSAGE("Call stack:");
         for (const auto& addr : call_stack) {
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(call_stack) {
 
         // Second, resolve the symbols:
         std::vector<boost::optional<winapi::SymbolInfo>> symbols;
-        symbols.reserve(call_stack.length);
+        symbols.reserve(call_stack.length());
 
         BOOST_TEST_MESSAGE("Resolved symbols:");
         for (const auto& addr : call_stack) {
