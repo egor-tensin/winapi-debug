@@ -1,7 +1,9 @@
 find_package(Boost CONFIG REQUIRED COMPONENTS program_options)
 
+file(GLOB headers CONFIGURE_DEPENDS "*.hpp")
+
 function(add_util name src)
-    add_executable("${name}" ${src})
+    add_executable("${name}" ${src} ${headers})
     target_link_libraries("${name}" PRIVATE winapi_debug)
     target_link_libraries("${name}" PRIVATE Boost::disable_autolinking Boost::program_options)
     install(TARGETS "${name}" RUNTIME DESTINATION bin)
@@ -10,9 +12,9 @@ function(add_util name src)
     endif()
 endfunction()
 
-add_util(enum_symbols enum_symbols.cpp command_line.hpp pdb_descr.hpp)
+add_util(enum_symbols enum_symbols.cpp)
 add_util(name2addr name2addr.cpp)
-add_util(addr2name addr2name.cpp command_line.hpp pdb_descr.hpp)
+add_util(addr2name addr2name.cpp)
 
 if(MSVC)
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
