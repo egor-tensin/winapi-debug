@@ -18,8 +18,13 @@ namespace winapi {
 
 class DbgHelp {
 public:
-    static DbgHelp current_process() { return DbgHelp{true}; }
-    static DbgHelp post_mortem() { return DbgHelp{false}; }
+    static DbgHelp current_process() {
+        return DbgHelp{true};
+    }
+
+    static DbgHelp post_mortem() {
+        return DbgHelp{false};
+    }
 
     void swap(DbgHelp& other) noexcept;
 

@@ -21,10 +21,17 @@ public:
     ModuleInfo();
     explicit ModuleInfo(const Impl& impl);
 
-    explicit operator Impl&() { return impl; }
-    explicit operator const Impl&() const { return impl; }
+    explicit operator Impl&() {
+        return impl;
+    }
 
-    Address get_offline_base() const { return impl.BaseOfImage; }
+    explicit operator const Impl&() const {
+        return impl;
+    }
+
+    Address get_offline_base() const {
+        return impl.BaseOfImage;
+    }
 
     std::string get_name() const;
 
@@ -39,7 +46,9 @@ public:
     Module(Address online_base, const ModuleInfo& info)
         : ModuleInfo{info}, online_base{online_base} {}
 
-    Address get_online_base() const { return online_base; }
+    Address get_online_base() const {
+        return online_base;
+    }
 
     Address translate_offline_address(Address offline) const;
     Address translate_online_address(Address online) const;

@@ -22,7 +22,9 @@ public:
 
     virtual ~SettingsParser() = default;
 
-    virtual const char* get_short_description() const { return "[--option VALUE]..."; }
+    virtual const char* get_short_description() const {
+        return "[--option VALUE]...";
+    }
 
     virtual void parse(int argc, char* argv[]) {
         boost::program_options::options_description all;
@@ -41,7 +43,9 @@ public:
 
     bool exit_with_usage = false;
 
-    void usage() const { std::cout << *this; }
+    void usage() const {
+        std::cout << *this;
+    }
 
     void usage_error(const std::exception& e) const {
         std::cerr << std::format("usage error: {}\n", e.what());

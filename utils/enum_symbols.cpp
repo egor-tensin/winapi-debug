@@ -38,11 +38,17 @@ public:
 
     std::vector<std::string> pdbs;
 
-    bool type_specified() const { return tag != reserved_tag; }
+    bool type_specified() const {
+        return tag != reserved_tag;
+    }
 
-    winapi::Symbol::Type get_type() const { return static_cast<winapi::Symbol::Type>(tag); }
+    winapi::Symbol::Type get_type() const {
+        return static_cast<winapi::Symbol::Type>(tag);
+    }
 
-    std::string get_mask() const { return symbol_mask; }
+    std::string get_mask() const {
+        return symbol_mask;
+    }
 
 private:
     static constexpr auto reserved_tag =

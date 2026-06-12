@@ -2,12 +2,19 @@
 Language: Cpp
 BasedOnStyle: Chromium
 
+IndentWidth: 4
+
 AccessModifierOffset: -4
+AlignConsecutiveMacros: AcrossComments
+AllowShortFunctionsOnASingleLine: Empty
 BinPackArguments: false
+BreakConstructorInitializers: BeforeComma
+BreakInheritanceList: BeforeComma
+BreakStringLiterals: false
 ColumnLimit: 100
 IncludeBlocks: Regroup
-IndentWidth: 4
 SpacesBeforeTrailingComments: 1
+WrapNamespaceBodyWithEmptyLines: Always
 
 IncludeCategories:
   - Regex: '^".+'

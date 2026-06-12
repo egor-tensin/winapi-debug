@@ -31,7 +31,9 @@ class DbgHelp {
 public:
     DbgHelp(winapi::DbgHelp&& dbghelp) : dbghelp{std::move(dbghelp)} {}
 
-    ~DbgHelp() { BOOST_TEST_MESSAGE("Cleaning up DbgHelp"); }
+    ~DbgHelp() {
+        BOOST_TEST_MESSAGE("Cleaning up DbgHelp");
+    }
 
     const winapi::DbgHelp dbghelp;
 
@@ -54,11 +56,17 @@ public:
                      reinterpret_cast<void*>(&test_ns::baz)});
     }
 
-    static SymbolList expected_functions() { return make_qualified({"foo", "bar", "baz"}); }
+    static SymbolList expected_functions() {
+        return make_qualified({"foo", "bar", "baz"});
+    }
 
-    static SymbolList expected_functions_full() { return add_module(expected_functions()); }
+    static SymbolList expected_functions_full() {
+        return add_module(expected_functions());
+    }
 
-    static SymbolList expected_variables() { return make_qualified({"var"}); }
+    static SymbolList expected_variables() {
+        return make_qualified({"var"});
+    }
 
     static SymbolList expected_symbols() {
         return join(expected_functions(), expected_variables());
@@ -105,7 +113,9 @@ private:
 
 class PostMortem : public DbgHelp {
 public:
-    PostMortem() : DbgHelp{init_dbghelp(false)} { load_module_pdb(); }
+    PostMortem() : DbgHelp{init_dbghelp(false)} {
+        load_module_pdb();
+    }
 
 private:
     void load_module_pdb() {
