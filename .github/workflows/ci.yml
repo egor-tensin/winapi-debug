@@ -36,8 +36,8 @@ jobs:
           # and it's much faster.
           - {os: ubuntu-latest, toolset: mingw}
           - {os: windows-2022, toolset: vs2022}
-          # At the moment, the 2025 image still has VS 2022.
-          - {os: windows-2025, toolset: vs2022}
+          # Boost supports VS 2026 starting with version 1.91, I think?
+          - {os: windows-2025, toolset: vs2026, boost-version: 1.91.0}
 
     runs-on: '${{ matrix.os }}'
     name: 'Build: ${{ matrix.os }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
