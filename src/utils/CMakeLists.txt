@@ -17,7 +17,7 @@ add_util(addr2name addr2name.cpp command_line.hpp pdb_descr.hpp)
 if(MSVC)
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     add_test(NAME enum_symbols COMMAND Python3::Interpreter
-        "${CMAKE_CURRENT_SOURCE_DIR}/../cmake/tools/ctest-driver.py"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/tools/ctest-driver.py"
         run
         --pass-regex test_ns::baz test_ns::bar test_ns::foo test_ns::var
         --

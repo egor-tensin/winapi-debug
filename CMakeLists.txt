@@ -42,6 +42,5 @@ add_subdirectory(3rdparty/winapi/common EXCLUDE_FROM_ALL)
 
 add_subdirectory(src)
 add_subdirectory(test)
-add_subdirectory(utils)
 
 install(FILES LICENSE.txt DESTINATION share)
