@@ -5,14 +5,17 @@ BasedOnStyle: Chromium
 IndentWidth: 4
 
 AccessModifierOffset: -4
+AlignAfterOpenBracket: BlockIndent
 AlignConsecutiveMacros: AcrossComments
 AllowShortFunctionsOnASingleLine: Empty
 BinPackArguments: false
+BinPackParameters: OnePerLine
 BreakConstructorInitializers: BeforeComma
 BreakInheritanceList: BeforeComma
 BreakStringLiterals: false
 ColumnLimit: 100
 IncludeBlocks: Regroup
+PenaltyReturnTypeOnItsOwnLine: 1000
 SpacesBeforeTrailingComments: 1
 WrapNamespaceBodyWithEmptyLines: Always
 

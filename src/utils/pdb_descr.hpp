@@ -39,10 +39,12 @@ struct PDB {
 };
 
 template <typename charT>
-void validate(boost::any& dest,
-              const std::vector<std::basic_string<charT>>& src_tokens,
-              PDB*,
-              int) {
+void validate(
+    boost::any& dest,
+    const std::vector<std::basic_string<charT>>& src_tokens,
+    PDB*,
+    int
+) {
     namespace po = boost::program_options;
     po::validators::check_first_occurrence(dest);
     const auto& src_token = po::validators::get_single_string(src_tokens);
@@ -50,10 +52,12 @@ void validate(boost::any& dest,
 }
 
 template <typename charT>
-void validate(boost::any& dest,
-              const std::vector<std::basic_string<charT>>& src_tokens,
-              winapi::Address*,
-              int) {
+void validate(
+    boost::any& dest,
+    const std::vector<std::basic_string<charT>>& src_tokens,
+    winapi::Address*,
+    int
+) {
     namespace po = boost::program_options;
     po::validators::check_first_occurrence(dest);
     const auto& src_token = po::validators::get_single_string(src_tokens);

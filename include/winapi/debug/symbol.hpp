@@ -26,8 +26,10 @@ using Tag = ULONG;
 constexpr Tag SYM_TAG_FUNCTION = 5;
 
 #ifdef _MSC_VER
-static_assert(static_cast<Tag>(SymTagFunction) == SYM_TAG_FUNCTION,
-              "unexpected SymTagFunction value");
+static_assert(
+    static_cast<Tag>(SymTagFunction) == SYM_TAG_FUNCTION,
+    "unexpected SymTagFunction value"
+);
 #endif
 
 } // namespace symbol

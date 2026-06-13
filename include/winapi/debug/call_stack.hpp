@@ -26,8 +26,10 @@ public:
     // Imposed by CaptureStackBackTrace:
     static constexpr std::size_t max_length = 62;
 
-    static_assert(frames_to_skip + frames_to_capture <= max_length,
-                  "Call stack length is too large");
+    static_assert(
+        frames_to_skip + frames_to_capture <= max_length,
+        "Call stack length is too large"
+    );
 
     static CallStack capture();
 

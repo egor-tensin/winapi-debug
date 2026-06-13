@@ -43,13 +43,17 @@ BOOST_AUTO_TEST_CASE(call_stack) {
         for (const auto& addr : call_stack) {
             try {
                 auto symbol = dbghelp.resolve_symbol(addr);
-                BOOST_TEST_MESSAGE('\t' << winapi::address::format(symbol.get_offline_address())
-                                        << ' ' << symbol.get_name());
+                BOOST_TEST_MESSAGE(
+                    '\t' << winapi::address::format(symbol.get_offline_address()) << ' '
+                         << symbol.get_name()
+                );
                 symbols.emplace_back(std::move(symbol));
             } catch (const std::system_error& e) {
                 symbols.emplace_back(std::nullopt);
-                BOOST_TEST_MESSAGE('\t' << winapi::address::format(addr)
-                                        << " Couldn't resolve symbol: " << e.what());
+                BOOST_TEST_MESSAGE(
+                    '\t' << winapi::address::format(addr)
+                         << " Couldn't resolve symbol: " << e.what()
+                );
             }
         }
 
@@ -64,8 +68,9 @@ BOOST_AUTO_TEST_CASE(call_stack) {
                 return false;
             };
             for (const auto& addr : expected) {
-                BOOST_TEST(check(addr),
-                           "Function frame captured: " << winapi::address::format(addr));
+                BOOST_TEST(
+                    check(addr), "Function frame captured: " << winapi::address::format(addr)
+                );
             }
         }
 

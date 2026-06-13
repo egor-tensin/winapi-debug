@@ -45,7 +45,8 @@ Address gen_next_offline_base(std::size_t pdb_size) {
     const auto max_addr = std::numeric_limits<decltype(next_offline_base)>::max();
     if (max_addr - next_offline_base < pdb_size)
         throw std::runtime_error{
-            "no more PDB files can be added, the internal address space is exhausted"};
+            "no more PDB files can be added, the internal address space is exhausted"
+        };
     next_offline_base += pdb_size;
 
     return base;
@@ -79,15 +80,19 @@ BOOL CALLBACK enum_symbols_callback(SYMBOL_INFOW* info, ULONG, VOID* raw_callbac
     return TRUE;
 }
 
-void enum_symbols(HANDLE id,
-                  Address module_base,
-                  std::string_view mask,
-                  const DbgHelp::OnSymbol& callback) {
-    if (!SymEnumSymbolsW(id,
-                         module_base,
-                         winapi::widen(mask).c_str(),
-                         &enum_symbols_callback,
-                         const_cast<DbgHelp::OnSymbol*>(&callback)))
+void enum_symbols(
+    HANDLE id,
+    Address module_base,
+    std::string_view mask,
+    const DbgHelp::OnSymbol& callback
+) {
+    if (!SymEnumSymbolsW(
+            id,
+            module_base,
+            winapi::widen(mask).c_str(),
+            &enum_symbols_callback,
+            const_cast<DbgHelp::OnSymbol*>(&callback)
+        ))
         throw winapi::error::windows(GetLastError(), "SymEnumSymbolsW");
 }
 
@@ -159,9 +164,11 @@ ModuleInfo DbgHelp::resolve_module(Address offline) const {
     return get_module_info(id, offline);
 }
 
-void DbgHelp::enum_symbols(const ModuleInfo& module,
-                           std::string_view mask,
-                           const OnSymbol& callback) const {
+void DbgHelp::enum_symbols(
+    const ModuleInfo& module,
+    std::string_view mask,
+    const OnSymbol& callback
+) const {
     winapi::enum_symbols(id, module.get_offline_base(), mask, callback);
 }
 

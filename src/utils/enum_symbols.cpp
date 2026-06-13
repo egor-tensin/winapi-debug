@@ -21,15 +21,17 @@ public:
     explicit EnumSymbols(int argc, char** argv) : SettingsParser{argc, argv} {
         namespace po = boost::program_options;
 
-        visible.add_options()("pdb",
-                              po::value<std::vector<std::string>>(&pdbs)->value_name("PATH"),
-                              "load a PDB file");
+        visible.add_options()(
+            "pdb", po::value<std::vector<std::string>>(&pdbs)->value_name("PATH"), "load a PDB file"
+        );
         visible.add_options()(
             "functions",
             po::value<winapi::symbol::Tag>(&tag)->implicit_value(function_tag)->zero_tokens(),
-            "only list functions");
+            "only list functions"
+        );
         visible.add_options()(
-            "mask", po::value<std::string>(&symbol_mask)->value_name("MASK"), "symbol mask");
+            "mask", po::value<std::string>(&symbol_mask)->value_name("MASK"), "symbol mask"
+        );
     }
 
     const char* get_short_description() const override {

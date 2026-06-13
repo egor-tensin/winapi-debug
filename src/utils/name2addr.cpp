@@ -24,10 +24,13 @@ public:
         namespace po = boost::program_options;
 
         visible.add_options()(
-            "pdb", po::value<std::vector<PDB>>(&pdbs)->value_name("ADDR,PATH"), "load a PDB file");
-        hidden.add_options()("name",
-                             po::value<std::vector<std::string>>(&names)->value_name("NAME"),
-                             "add a name to resolve");
+            "pdb", po::value<std::vector<PDB>>(&pdbs)->value_name("ADDR,PATH"), "load a PDB file"
+        );
+        hidden.add_options()(
+            "name",
+            po::value<std::vector<std::string>>(&names)->value_name("NAME"),
+            "add a name to resolve"
+        );
         positional.add("name", -1);
     }
 

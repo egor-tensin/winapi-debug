@@ -16,9 +16,11 @@ namespace winapi {
 namespace {
 
 std::string pdb_already_loaded(Address online_base, std::string_view path) {
-    return std::format("module with online base address {} has already been loaded: {}",
-                       address::format(online_base),
-                       path);
+    return std::format(
+        "module with online base address {} has already been loaded: {}",
+        address::format(online_base),
+        path
+    );
 }
 
 std::string pdb_already_loaded(std::string_view path) {
@@ -28,7 +30,8 @@ std::string pdb_already_loaded(std::string_view path) {
 std::string offline_base_already_used(Address base) {
     return std::format(
         "module with offline base address {} has already been loaded (shouldn't happen)",
-        address::format(base));
+        address::format(base)
+    );
 }
 
 std::string module_not_found(Address base) {
@@ -36,13 +39,16 @@ std::string module_not_found(Address base) {
 }
 
 std::string guess_module_no_modules(Address pivot) {
-    return std::format("couldn't select a module for address {}: no modules have been loaded yet",
-                       address::format(pivot));
+    return std::format(
+        "couldn't select a module for address {}: no modules have been loaded yet",
+        address::format(pivot)
+    );
 }
 
 std::string guess_module_address_too_low(Address pivot) {
-    return std::format("couldn't select a module for address {}: it's too low",
-                       address::format(pivot));
+    return std::format(
+        "couldn't select a module for address {}: it's too low", address::format(pivot)
+    );
 }
 
 template <typename Value>
@@ -111,8 +117,9 @@ void PostMortem::enum_symbols(Address offline_base, const OnSymbol& callback) co
 }
 
 void PostMortem::enum_symbols(const Module& module, const OnSymbol& callback) const {
-    dbghelp.enum_symbols(
-        module, [&](const SymbolInfo& impl) { callback(symbol_from_buffer(module, impl)); });
+    dbghelp.enum_symbols(module, [&](const SymbolInfo& impl) {
+        callback(symbol_from_buffer(module, impl));
+    });
 }
 
 Symbol PostMortem::resolve_symbol(Address online) const {

@@ -25,13 +25,16 @@ public:
         namespace po = boost::program_options;
 
         visible.add_options()(
-            "pdb", po::value<std::vector<PDB>>(&pdbs)->value_name("ADDR,PATH"), "load a PDB file");
+            "pdb", po::value<std::vector<PDB>>(&pdbs)->value_name("ADDR,PATH"), "load a PDB file"
+        );
         visible.add_options()(
-            "lines,l", po::bool_switch(&lines), "try to resolve source files & line numbers");
+            "lines,l", po::bool_switch(&lines), "try to resolve source files & line numbers"
+        );
         hidden.add_options()(
             "address",
             po::value<std::vector<winapi::Address>>(&addresses)->value_name("ADDR"),
-            "add an address to resolve");
+            "add an address to resolve"
+        );
         positional.add("address", -1);
     }
 
@@ -60,9 +63,11 @@ void dump_error(const std::exception& e) {
     std::cerr << std::format("error: {}\n", e.what());
 }
 
-void resolve_symbol(const winapi::PostMortem& analysis,
-                    winapi::Address address,
-                    bool lines = false) {
+void resolve_symbol(
+    const winapi::PostMortem& analysis,
+    winapi::Address address,
+    bool lines = false
+) {
     try {
         const auto symbol = analysis.resolve_symbol(address);
         const auto& module = analysis.module_with_offline_base(symbol.get_offline_base());
