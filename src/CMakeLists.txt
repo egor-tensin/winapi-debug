@@ -7,12 +7,14 @@ target_compile_definitions(winapi_debug PUBLIC _NO_CVCONST_H)
 target_include_directories(winapi_debug PUBLIC ../include/)
 target_link_libraries(winapi_debug
     PUBLIC winapi_common
-    PRIVATE winapi_utf8)
+    PRIVATE winapi_utf8
+)
 target_link_libraries(winapi_debug
     PUBLIC Boost::boost
-    PRIVATE Boost::disable_autolinking)
+    PRIVATE Boost::disable_autolinking
+)
 target_link_libraries(winapi_debug PRIVATE dbghelp)
-INSTALL(TARGETS winapi_debug ARCHIVE DESTINATION lib)
+install(TARGETS winapi_debug ARCHIVE DESTINATION lib)
 install(DIRECTORY ../include/winapi DESTINATION include)
 
 if(MSVC_VERSION EQUAL 1900)

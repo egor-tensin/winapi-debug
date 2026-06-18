@@ -5,7 +5,10 @@ file(GLOB headers CONFIGURE_DEPENDS "*.hpp")
 function(add_util name src)
     add_executable("${name}" ${src} ${headers})
     target_link_libraries("${name}" PRIVATE winapi_debug)
-    target_link_libraries("${name}" PRIVATE Boost::disable_autolinking Boost::program_options)
+    target_link_libraries("${name}" PRIVATE
+        Boost::disable_autolinking
+        Boost::program_options
+    )
     install(TARGETS "${name}" RUNTIME DESTINATION bin)
     if(MSVC)
         install(FILES "$<TARGET_PDB_FILE:${name}>" DESTINATION bin OPTIONAL)
@@ -25,5 +28,6 @@ if(MSVC)
         --
         "$<TARGET_FILE:enum_symbols>"
         --pdb "$<TARGET_PDB_FILE:test_lib>"
-        --mask "test_ns:*")
+        --mask "test_ns:*"
+    )
 endif()

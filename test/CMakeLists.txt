@@ -21,6 +21,7 @@ add_test(NAME call_stack COMMAND Python3::Interpreter
     run
     --pass-regex test_ns::baz test_ns::bar test_ns::foo
     --
-    "$<TARGET_FILE:call_stack>")
+    "$<TARGET_FILE:call_stack>"
+)
 
 add_subdirectory(unit_tests)
