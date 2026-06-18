@@ -73,8 +73,6 @@ std::string resolve_and_format(const DbgHelp& dbghelp, Address addr) {
             return format_address_fallback(addr);
         }
     }
-    assert(false);
-    return {};
 }
 
 } // namespace
