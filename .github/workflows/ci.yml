@@ -11,7 +11,7 @@ jobs:
     continue-on-error: "${{ github.ref == 'refs/heads/master' }}"
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Set up clang-format
         uses: egor-tensin/setup-clang@v2
         with:
@@ -46,7 +46,7 @@ jobs:
       BOOST_VERSION: '${{ matrix.boost-version }}'
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: recursive
       - name: Cache Boost
