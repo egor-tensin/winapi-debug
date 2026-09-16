@@ -5,6 +5,7 @@ shopt -s inherit_errexit lastpipe
 
 script_dir="$( dirname -- "${BASH_SOURCE[0]}" )"
 script_dir="$( cd -- "$script_dir" && pwd )"
+readonly script_dir
 
 setup_clang_format_hook() {
 	local gitdir
