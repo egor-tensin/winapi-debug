@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Egor Tensin <Egor.Tensin@gmail.com>
+// Copyright (c) 2017 Egor Tensin <egor@tensin.name>
 // This file is part of the "winapi-debug" project.
 // For details, see https://github.com/egor-tensin/winapi-debug.
 // Distributed under the MIT License.
