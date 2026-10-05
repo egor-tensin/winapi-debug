@@ -22,7 +22,7 @@ add_util(addr2name addr2name.cpp)
 if(MSVC)
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     add_test(NAME enum_symbols
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake"
+        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/cmake"
         COMMAND Python3::Interpreter
         -m project.ctest_driver
         run

@@ -17,7 +17,7 @@ endif()
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
 add_test(NAME call_stack
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../cmake"
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/cmake"
     COMMAND Python3::Interpreter
     -m project.ctest_driver
     run
