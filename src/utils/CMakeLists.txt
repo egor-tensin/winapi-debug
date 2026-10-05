@@ -21,8 +21,10 @@ add_util(addr2name addr2name.cpp)
 
 if(MSVC)
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
-    add_test(NAME enum_symbols COMMAND Python3::Interpreter
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/tools/ctest-driver.py"
+    add_test(NAME enum_symbols
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake"
+        COMMAND Python3::Interpreter
+        -m project.ctest_driver
         run
         --pass-regex test_ns::baz test_ns::bar test_ns::foo test_ns::var
         --
